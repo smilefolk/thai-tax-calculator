@@ -67,7 +67,16 @@ export function FilerStep() {
           <span className={s.cardMeta}>รวมลดหย่อนครอบครัว {money(familyTotal)}</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-          <Counter label="บุตร" value={p.childrenCount} onChange={(n) => setP({ childrenCount: n })} hint={`คนละ ${money(cfg.caps.childEach)} (คนที่ 2 เกิดปี 2561+ ได้ 60,000)`} />
+          <Counter label="บุตร" value={p.childrenCount} onChange={(n) => setP({ childrenCount: n })} hint={`คนละ ${money(cfg.caps.childEach)} · คนที่ 2 เป็นต้นไปที่เกิดปี 2561+ ได้ ${money(cfg.caps.childEachFrom2561)}`} />
+          {p.childrenCount > 0 && (
+            <Counter
+              label="ในจำนวนนี้ เกิดปี 2561 เป็นต้นไป"
+              value={p.childrenBornFrom2561}
+              onChange={(n) => setP({ childrenBornFrom2561: n })}
+              max={p.childrenCount}
+              hint={`นับเฉพาะบุตรคนที่ 2 ขึ้นไป · รวมลดหย่อนบุตร ${money(derived.deductionItems.find((i) => i.key === 'children')?.allowed ?? 0)}`}
+            />
+          )}
           <Counter label="บิดามารดาที่อุปการะ" value={p.parentsSupported} onChange={(n) => setP({ parentsSupported: n })} max={4} hint={`อายุ 60+ รายได้ไม่เกิน 30,000 · คนละ ${money(cfg.caps.parentEach)}`} />
           <Counter label="ผู้พิการ / ทุพพลภาพ" value={p.disabledDependents} onChange={(n) => setP({ disabledDependents: n })} max={4} hint={`คนละ ${money(cfg.caps.disabledEach)}`} />
         </div>

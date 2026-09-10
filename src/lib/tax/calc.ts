@@ -5,6 +5,7 @@ import type {
   DeductionKey,
   Deductions,
   DerivedTax,
+  ExpenseMethod,
   FilerProfile,
   IncomeCategory,
   IncomeEntry,
@@ -35,6 +36,15 @@ export function incomeByCategory(income: IncomeEntry[]): Record<IncomeCategory, 
 }
 
 /**
+ * The expense method the engine will actually apply: 'actual' only where the
+ * category's rule permits it (salary/commission 40(1)/40(2) never do).
+ */
+export function effectiveExpenseMethod(entry: IncomeEntry, cfg: TaxYearConfig): ExpenseMethod {
+  const rule = cfg.expenseRules[entry.category]
+  return rule.type === 'standard' && rule.actualAllowed && entry.expenseMethod === 'actual' ? 'actual' : 'standard'
+}
+
+/**
  * Expense deduction per entry, honouring per-category rules and
  * shared caps (40(1)+40(2) share one 100,000 ceiling).
  */
@@ -49,7 +59,7 @@ export function expenseByEntry(income: IncomeEntry[], cfg: TaxYearConfig): Recor
       out[e.id] = 0
       continue
     }
-    if (e.expenseMethod === 'actual') {
+    if (effectiveExpenseMethod(e, cfg) === 'actual') {
       out[e.id] = Math.min(clamp0(e.actualExpense), amt)
       continue
     }
@@ -82,6 +92,8 @@ export function salaryExpenseCap(cfg: TaxYearConfig): number {
 
 export interface DeductionContext {
   gross: number
+  /** 40(1) wages only — the base for PVD */
+  salaryIncome: number
   profile: FilerProfile
   cfg: TaxYearConfig
 }
@@ -89,14 +101,19 @@ export interface DeductionContext {
 /** Maximum allowed for one deduction key given the filer's situation. */
 export function deductionCap(key: DeductionKey, ctx: DeductionContext): number {
   const { caps } = ctx.cfg
-  const { gross, profile } = ctx
+  const { gross, salaryIncome, profile } = ctx
   switch (key) {
     case 'personal':
       return caps.personal
     case 'spouse':
       return profile.hasSpouse && !profile.spouseHasIncome ? caps.spouse : 0
-    case 'children':
-      return profile.childrenCount * caps.childEach
+    case 'children': {
+      // every child gets childEach; the 2nd child onward born 2561+ gets childEachFrom2561.
+      // The 2561+ children are assumed to be the youngest, so at most (count − 1) of them qualify.
+      const n = clamp0(profile.childrenCount)
+      const upgraded = Math.min(clamp0(profile.childrenBornFrom2561), clamp0(n - 1))
+      return n * caps.childEach + upgraded * (caps.childEachFrom2561 - caps.childEach)
+    }
     case 'parents':
       return profile.parentsSupported * caps.parentEach
     case 'disabled':
@@ -114,7 +131,7 @@ export function deductionCap(key: DeductionKey, ctx: DeductionContext): number {
     case 'rmf':
       return Math.min(gross * caps.rmf.rateOfIncome, caps.rmf.cap)
     case 'pvd':
-      return Math.min(gross * caps.pvd.rateOfIncome, caps.pvd.cap)
+      return Math.min(salaryIncome * caps.pvd.rateOfIncome, caps.pvd.cap)
     case 'nsf':
       return caps.nsf
     case 'homeLoanInterest':
@@ -125,6 +142,22 @@ export function deductionCap(key: DeductionKey, ctx: DeductionContext): number {
     case 'doubleDonations':
       // resolved after other deductions (10% of remaining net)
       return Infinity
+  }
+}
+
+const FAMILY_KEYS = ['spouse', 'children', 'parents', 'disabled'] as const
+
+/**
+ * Deduction figures that follow purely from the filer profile — what the
+ * store writes into `deductions` whenever the profile changes.
+ */
+export function familyDeductions(profile: FilerProfile, cfg: TaxYearConfig): Pick<Deductions, (typeof FAMILY_KEYS)[number]> {
+  const ctx: DeductionContext = { gross: 0, salaryIncome: 0, profile, cfg }
+  return {
+    spouse: deductionCap('spouse', ctx),
+    children: deductionCap('children', ctx),
+    parents: deductionCap('parents', ctx),
+    disabled: deductionCap('disabled', ctx),
   }
 }
 
@@ -152,7 +185,7 @@ const ORDERED_KEYS: DeductionKey[] = [
 
 /**
  * Apply every cap: per-item, the life+health combined 100k,
- * the retirement combined 500k, then donations at 10% of what's left.
+ * the retirement combined 500k, then the two donation ceilings on what's left.
  */
 export function cappedDeductions(
   d: Deductions,
@@ -188,17 +221,21 @@ export function cappedDeductions(
     subtotal += allowed[key] ?? 0
   }
 
-  // donations: 10% of (income − expenses − other deductions)
+  // donations are two sequential 10% ceilings, not one shared pool:
+  //  1. double-deduction donations (education/sport/state hospitals) count twice,
+  //     capped at 10% of (income − expenses − other deductions)
+  //  2. general donations capped at 10% of what is left *after* step 1
   const remaining = clamp0(incomeAfterExpenses - subtotal)
-  const donationRoom = remaining * caps.donationRateOfNet
-  const dbl = Math.min(clamp0(d.doubleDonations) * caps.doubleDonationMultiplier, donationRoom)
-  const normal = Math.min(clamp0(d.donations), clamp0(donationRoom - dbl))
+  const doubleRoom = remaining * caps.donationRateOfNet
+  const dbl = Math.min(clamp0(d.doubleDonations) * caps.doubleDonationMultiplier, doubleRoom)
+  const donationRoom = clamp0(remaining - dbl) * caps.donationRateOfNet
+  const normal = Math.min(clamp0(d.donations), donationRoom)
   allowed.doubleDonations = dbl
   allowed.donations = normal
 
   for (const key of ORDERED_KEYS) {
     const cap =
-      key === 'donations' || key === 'doubleDonations' ? round(donationRoom) : deductionCap(key, ctx)
+      key === 'doubleDonations' ? round(doubleRoom) : key === 'donations' ? round(donationRoom) : deductionCap(key, ctx)
     items.push({ key, entered: clamp0(d[key]), allowed: round(allowed[key] ?? 0), cap: round(cap) })
   }
   return items
@@ -232,11 +269,12 @@ export function taxOnNet(netIncome: number, cfg: TaxYearConfig): number {
 
 export function derive(ret: TaxReturn, cfg: TaxYearConfig): DerivedTax {
   const gross = grossIncome(ret.income)
+  const byCategory = incomeByCategory(ret.income)
   const byEntry = expenseByEntry(ret.income, cfg)
   const expenses = Object.values(byEntry).reduce((s, n) => s + n, 0)
   const afterExpenses = clamp0(gross - expenses)
 
-  const ctx: DeductionContext = { gross, profile: ret.filerProfile, cfg }
+  const ctx: DeductionContext = { gross, salaryIncome: byCategory['40(1)'], profile: ret.filerProfile, cfg }
   const items = cappedDeductions(ret.deductions, afterExpenses, ctx)
   const deductions = totalDeductions(items)
 
@@ -276,7 +314,7 @@ export function derive(ret: TaxReturn, cfg: TaxYearConfig): DerivedTax {
 
   return {
     grossIncome: gross,
-    incomeByCategory: incomeByCategory(ret.income),
+    incomeByCategory: byCategory,
     expenseDeduction: expenses,
     expenseByEntry: byEntry,
     deductionItems: items,

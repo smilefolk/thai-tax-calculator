@@ -24,23 +24,24 @@ export const y2568: TaxYearConfig = {
   ],
 
   expenseRules: {
-    // 40(1) + 40(2) หักเหมา 50% รวมกันไม่เกิน 100,000
-    '40(1)': { type: 'standard', rate: 0.5, cap: 100_000, sharedCapGroup: 'salary' },
-    '40(2)': { type: 'standard', rate: 0.5, cap: 100_000, sharedCapGroup: 'salary' },
+    // 40(1) + 40(2) หักเหมา 50% รวมกันไม่เกิน 100,000 — หักตามจริงไม่ได้
+    '40(1)': { type: 'standard', rate: 0.5, cap: 100_000, sharedCapGroup: 'salary', actualAllowed: false },
+    '40(2)': { type: 'standard', rate: 0.5, cap: 100_000, sharedCapGroup: 'salary', actualAllowed: false },
     // ดอกเบี้ย / เงินปันผล หักค่าใช้จ่ายไม่ได้
     '40(4)': { type: 'none' },
-    // ค่าเช่า (อาคาร) เหมา 30%
-    '40(5)': { type: 'standard', rate: 0.3 },
-    // วิชาชีพอิสระ (ทั่วไป) เหมา 30%
-    '40(6)': { type: 'standard', rate: 0.3 },
-    // ธุรกิจอื่น เหมา 60%
-    '40(8)': { type: 'standard', rate: 0.6 },
+    // ค่าเช่า (อาคาร) เหมา 30% หรือตามจริง
+    '40(5)': { type: 'standard', rate: 0.3, actualAllowed: true },
+    // วิชาชีพอิสระ (ทั่วไป) เหมา 30% หรือตามจริง
+    '40(6)': { type: 'standard', rate: 0.3, actualAllowed: true },
+    // ธุรกิจอื่น เหมา 60% หรือตามจริง
+    '40(8)': { type: 'standard', rate: 0.6, actualAllowed: true },
   },
 
   caps: {
     personal: 60_000,
     spouse: 60_000,
     childEach: 30_000,
+    childEachFrom2561: 60_000,
     parentEach: 30_000,
     disabledEach: 60_000,
     socialSecurity: 9_000,
@@ -49,6 +50,7 @@ export const y2568: TaxYearConfig = {
     parentHealthInsurance: 15_000,
     ssf: { rateOfIncome: 0.3, cap: 200_000 },
     rmf: { rateOfIncome: 0.3, cap: 500_000 },
+    // PVD: 15% ของค่าจ้าง (เงินได้ 40(1) เท่านั้น)
     pvd: { rateOfIncome: 0.15, cap: 500_000 },
     nsf: 30_000,
     retirementCombined: 500_000,

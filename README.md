@@ -20,8 +20,10 @@ npm run build      # production build → dist/
 | `src/lib/tax/config/` | กฎภาษีแยกตามปี (ขั้นบันได, เพดานลดหย่อน, กฎหักค่าใช้จ่ายราย 40(x), วันยื่น) |
 | `src/lib/tax/calc.ts` | pure functions: รายได้ → ค่าใช้จ่าย → ลดหย่อน (พร้อมเพดานรวม) → ขั้นภาษี → ภาษี/คืน |
 | `src/lib/tax/plans.ts` | แผน A/B/C และเส้นโค้ง diminishing-returns คำนวณจากตำแหน่งขั้นภาษีของผู้ใช้จริง |
-| `src/lib/tax/calc.test.ts` | Vitest — ทุกขอบขั้นภาษี, worked example ของ handoff, เพดานทุกตัว |
-| `src/store/taxReturn.tsx` | โมเดล tax return หนึ่งชุด + reducer + autosave ลง `localStorage` |
+| `src/lib/tax/normalize.ts` | ซ่อม draft จาก `localStorage` ทีละฟิลด์ (ปีภาษี, แถว salary/bonus, ค่าลดหย่อนจากโปรไฟล์) ก่อนถึง reducer/engine |
+| `src/lib/tax/*.test.ts` | Vitest — ทุกขอบขั้นภาษี, worked example ของ handoff, เพดานทุกตัว, draft เสีย |
+| `src/store/taxReturn.tsx` | โมเดล tax return หนึ่งชุด + reducer + autosave ลง `localStorage` (มี `version`) |
+| `src/components/DraftErrorBoundary.tsx` | ถ้า render พัง เสนอปุ่ม "ล้างร่างแล้วเริ่มใหม่" แทนหน้าขาว |
 | `src/styles/tokens.css` | design tokens ทั้งหมด (สี oklch, ฟอนต์, เงา, motion) |
 | `src/components/` | primitives (Button, MoneyInput, Slider, RadioCard, BracketBar, LedgerRow…) และ layout |
 | `src/pages/` | Landing · wizard (4 สเต็ป + 11 คำถามมือถือ) · Ledger · Result · Plan · Dashboard · Filing |
@@ -42,6 +44,8 @@ npm run build      # production build → dist/
 - **ประวัติปีก่อน** (`src/data/history.ts`) และผู้ใช้เป็น fixture เพราะยังไม่มี backend
 - **แท็บบาร์มือถือ** ใช้ชุดเดียว (ภาพรวม / คำนวณ / วางแผน / ฉัน) แทนที่จะสลับชุดตามหน้า
 - **Countdown วันยื่น** คำนวณจากวันจริงเทียบกับ `filingDeadline` ใน config — ถ้าเลยกำหนดจะแสดง 0 วัน
+- **เงินได้ 40(1)/40(2) หักค่าใช้จ่ายแบบเหมาเท่านั้น** — ต่างจาก handoff ที่วาด radio "ตามจริง" ไว้
+  เพราะกฎหมายไม่ให้เลือก (`actualAllowed: false` ใน config; engine ignore ค่า `actual` ที่ค้างใน draft)
 - ระบบสมาชิก, e-Filing, นำเข้าไฟล์ 50 ทวิ และโมดูลภาษีอื่นอีก 5 ตัว เป็น UI สาธิต/ยังไม่เปิด
 
 > ⚠️ อัตราและเพดานใน `config/y2568.ts` มาจาก handoff และความรู้ทั่วไป

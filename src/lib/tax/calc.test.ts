@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { amountToDropBracket, derive, expenseByEntry, savingsFor, taxByBracket, taxOnNet } from './calc'
+import { amountToDropBracket, derive, effectiveExpenseMethod, expenseByEntry, familyDeductions, savingsFor, taxByBracket, taxOnNet } from './calc'
 import { getTaxYearConfig } from './config'
-import { blankReturn, workedExample } from './defaults'
+import { blankReturn, emptyProfile, workedExample } from './defaults'
 import { buildPlans, savingsCurve } from './plans'
 import type { IncomeEntry } from './types'
 
@@ -57,6 +57,24 @@ describe('expenses', () => {
       { id: 'a', category: '40(6)', amount: 100_000, expenseMethod: 'actual', actualExpense: 120_000 },
     ]
     expect(expenseByEntry(income, cfg).a).toBe(100_000)
+  })
+
+  it('40(1)/40(2) ignore the actual method — standard 50% capped at 100,000 always applies', () => {
+    const income: IncomeEntry[] = [
+      { id: 'a', category: '40(1)', amount: 780_000, expenseMethod: 'actual', actualExpense: 700_000 },
+      { id: 'b', category: '40(2)', amount: 100_000, expenseMethod: 'actual', actualExpense: 90_000 },
+    ]
+    const by = expenseByEntry(income, cfg)
+    expect(by.a).toBe(100_000)
+    expect(by.b).toBe(0)
+    expect(effectiveExpenseMethod(income[0], cfg)).toBe('standard')
+    expect(effectiveExpenseMethod({ ...income[0], category: '40(6)' }, cfg)).toBe('actual')
+  })
+
+  it('worked example stays at 53,900 even if the draft carries actual expenses on salary', () => {
+    const r = workedExample()
+    r.income = r.income.map((e) => ({ ...e, expenseMethod: 'actual', actualExpense: 700_000 }))
+    expect(derive(r, cfg).taxDue).toBe(53_900)
   })
 
   it('dividends get no expense deduction', () => {
@@ -145,6 +163,44 @@ describe('deduction caps', () => {
     expect(it.allowed).toBe(60_000)
   })
 
+  it('2nd child onward born 2561+ gets 60,000; the first child never does', () => {
+    const cap = (childrenCount: number, childrenBornFrom2561: number) =>
+      familyDeductions({ ...emptyProfile, childrenCount, childrenBornFrom2561 }, cfg).children
+    expect(cap(1, 1)).toBe(30_000) // only child, even if born 2562
+    expect(cap(2, 2)).toBe(90_000) // both born 2562 → 30,000 + 60,000
+    expect(cap(2, 1)).toBe(90_000) // eldest born earlier, youngest 2561+
+    expect(cap(3, 1)).toBe(120_000) // 30 + 30 + 60
+    expect(cap(3, 3)).toBe(150_000) // 30 + 60 + 60
+    expect(cap(2, 5)).toBe(90_000) // subset can't exceed the total
+    expect(cap(0, 0)).toBe(0)
+  })
+
+  it('familyDeductions mirrors what the engine will allow', () => {
+    const r = workedExample()
+    r.filerProfile = { ...r.filerProfile, hasSpouse: true, childrenCount: 2, childrenBornFrom2561: 1, parentsSupported: 2, disabledDependents: 1 }
+    r.deductions = { ...r.deductions, ...familyDeductions(r.filerProfile, cfg) }
+    const items = derive(r, cfg).deductionItems
+    for (const k of ['spouse', 'children', 'parents', 'disabled'] as const) {
+      const it = items.find((i) => i.key === k)!
+      expect(it.allowed).toBe(it.cap)
+    }
+    expect(items.find((i) => i.key === 'children')!.allowed).toBe(90_000)
+    expect(items.find((i) => i.key === 'parents')!.allowed).toBe(60_000)
+  })
+
+  it('PVD is capped at 15% of 40(1) wages, not of total income', () => {
+    const r = workedExample()
+    r.income = [
+      { id: 'salary', category: '40(1)', amount: 300_000, expenseMethod: 'standard', actualExpense: 0 },
+      { id: 'bonus', category: '40(1)', amount: 0, expenseMethod: 'standard', actualExpense: 0 },
+      { id: 'biz', category: '40(8)', amount: 2_000_000, expenseMethod: 'standard', actualExpense: 0 },
+    ]
+    r.deductions = { ...r.deductions, ssf: 0, pvd: 100_000 }
+    const pvd = derive(r, cfg).deductionItems.find((i) => i.key === 'pvd')!
+    expect(pvd.cap).toBe(45_000)
+    expect(pvd.allowed).toBe(45_000)
+  })
+
   it('health insurance sits inside the life-insurance ceiling', () => {
     const r = workedExample()
     r.deductions = { ...r.deductions, lifeInsurance: 90_000, healthInsurance: 25_000 }
@@ -162,13 +218,28 @@ describe('deduction caps', () => {
     expect(items.find((i) => i.key === 'pvd')!.allowed).toBe(27_000)
   })
 
-  it('donations capped at 10% of remaining net, double donations count twice', () => {
+  it('double donations count twice up to 10%, general donations get 10% of what is left after them', () => {
     const r = workedExample()
     r.deductions = { ...r.deductions, donations: 100_000, doubleDonations: 10_000 }
     const items = derive(r, cfg).deductionItems
-    // remaining before donations = 810,000 − 134,000 = 676,000 → room 67,600
-    expect(items.find((i) => i.key === 'doubleDonations')!.allowed).toBe(20_000)
-    expect(items.find((i) => i.key === 'donations')!.allowed).toBe(47_600)
+    // remaining before donations = 810,000 − 134,000 = 676,000
+    const dbl = items.find((i) => i.key === 'doubleDonations')!
+    const normal = items.find((i) => i.key === 'donations')!
+    expect(dbl.cap).toBe(67_600)
+    expect(dbl.allowed).toBe(20_000)
+    // 10% × (676,000 − 20,000)
+    expect(normal.cap).toBe(65_600)
+    expect(normal.allowed).toBe(65_600)
+  })
+
+  it('general donations are not zeroed when double donations fill their own 10% ceiling', () => {
+    const r = workedExample()
+    r.deductions = { ...r.deductions, donations: 50_000, doubleDonations: 50_000 }
+    const items = derive(r, cfg).deductionItems
+    expect(items.find((i) => i.key === 'doubleDonations')!.allowed).toBe(67_600)
+    // 10% × (676,000 − 67,600) = 60,840 ≥ 50,000 entered
+    expect(items.find((i) => i.key === 'donations')!.cap).toBe(60_840)
+    expect(items.find((i) => i.key === 'donations')!.allowed).toBe(50_000)
   })
 
   it('owed verdict when withholding is short', () => {

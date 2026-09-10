@@ -107,34 +107,51 @@ function SpouseQuestion() {
   )
 }
 
-function ChildrenQuestion() {
-  const { ret, dispatch, cfg } = useTaxReturn()
-  const n = ret.filerProfile.childrenCount
-  const set = (v: number) => dispatch({ type: 'setProfile', profile: { childrenCount: Math.max(0, Math.min(10, v)) } })
+function CountRow({ label, value, max, onChange }: { label: string; value: number; max: number; onChange: (n: number) => void }) {
+  const set = (v: number) => onChange(Math.max(0, Math.min(max, v)))
   return (
-    <>
-      <div className={s.counterBox} role="group" aria-label="จำนวนบุตร">
-        <div>
-          <div style={{ font: '400 12px var(--sans)', color: 'var(--ink-faint)', marginBottom: 6 }}>จำนวนบุตร</div>
-          <div className={s.counterVal} aria-live="polite">
-            {n} <span style={{ font: '400 16px var(--sans)', color: 'var(--ink-faint)' }}>คน</span>
-          </div>
-        </div>
-        <div className={s.counterBtns}>
-          <button type="button" className={s.counterBtn} onClick={() => set(n - 1)} aria-label="ลดจำนวนบุตร">
-            −
-          </button>
-          <button type="button" className={s.counterBtn} onClick={() => set(n + 1)} aria-label="เพิ่มจำนวนบุตร">
-            +
-          </button>
+    <div className={s.counterBox} role="group" aria-label={label}>
+      <div>
+        <div style={{ font: '400 12px var(--sans)', color: 'var(--ink-faint)', marginBottom: 6 }}>{label}</div>
+        <div className={s.counterVal} aria-live="polite">
+          {value} <span style={{ font: '400 16px var(--sans)', color: 'var(--ink-faint)' }}>คน</span>
         </div>
       </div>
+      <div className={s.counterBtns}>
+        <button type="button" className={s.counterBtn} onClick={() => set(value - 1)} aria-label={`ลด${label}`}>
+          −
+        </button>
+        <button type="button" className={s.counterBtn} onClick={() => set(value + 1)} aria-label={`เพิ่ม${label}`}>
+          +
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function ChildrenQuestion() {
+  const { ret, derived, dispatch, cfg } = useTaxReturn()
+  const p = ret.filerProfile
+  const allowed = derived.deductionItems.find((i) => i.key === 'children')?.allowed ?? 0
+  return (
+    <>
+      <CountRow label="จำนวนบุตร" value={p.childrenCount} max={10} onChange={(n) => dispatch({ type: 'setProfile', profile: { childrenCount: n } })} />
+      {p.childrenCount > 0 && (
+        <div style={{ marginTop: 10 }}>
+          <CountRow
+            label="ในจำนวนนี้ เกิดปี 2561 เป็นต้นไป"
+            value={p.childrenBornFrom2561}
+            max={p.childrenCount}
+            onChange={(n) => dispatch({ type: 'setProfile', profile: { childrenBornFrom2561: n } })}
+          />
+        </div>
+      )}
       <div className={s.info}>
         <span className={s.infoIcon} aria-hidden="true">
           i
         </span>
         <div className={s.infoText}>
-          ลดหย่อนบุตรได้คนละ {money(cfg.caps.childEach)} บาท — ตอนนี้ได้ <strong>{money(n * cfg.caps.childEach)}</strong>
+          ลดหย่อนบุตรได้คนละ {money(cfg.caps.childEach)} บาท คนที่ 2 เป็นต้นไปที่เกิดปี 2561+ ได้ {money(cfg.caps.childEachFrom2561)} — ตอนนี้ได้ <strong>{money(allowed)}</strong>
         </div>
       </div>
     </>
@@ -203,7 +220,7 @@ function SkipButton({ q, onDone }: { q: Question; onDone: () => void }) {
   const { dispatch } = useTaxReturn()
   const skip = () => {
     if (q.q.kind === 'spouse') dispatch({ type: 'setProfile', profile: { hasSpouse: false, spouseHasIncome: false } })
-    else if (q.q.kind === 'children') dispatch({ type: 'setProfile', profile: { childrenCount: 0 } })
+    else if (q.q.kind === 'children') dispatch({ type: 'setProfile', profile: { childrenCount: 0, childrenBornFrom2561: 0 } })
     else m.skip()
     onDone()
   }
