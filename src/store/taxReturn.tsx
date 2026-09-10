@@ -1,7 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react'
 import { derive, familyDeductions } from '../lib/tax/calc'
-import { getTaxYearConfig } from '../lib/tax/config'
+import { availableTaxYears, getTaxYearConfig } from '../lib/tax/config'
 import { blankReturn, workedExample } from '../lib/tax/defaults'
+import { normalizeDeductionKeys, normalizeReturn } from '../lib/tax/normalize'
 import type {
   Attachment,
   AttachmentStatus,
@@ -17,12 +18,27 @@ import type {
 } from '../lib/tax/types'
 
 const STORAGE_KEY = 'pasee-ngai:draft:v1'
+/** bump when the persisted shape changes in a way normalizeReturn() can't repair */
+const PERSIST_VERSION = 2
 
-interface Persisted {
+interface State {
   ret: TaxReturn
   savedAt: number
   /** deduction keys the user explicitly skipped (mobile "ข้าม") */
   skipped: DeductionKey[]
+}
+
+interface Persisted extends State {
+  version: number
+}
+
+/** Drop the saved draft — the escape hatch when a stored state can't be rendered. */
+export function clearDraftStorage() {
+  try {
+    localStorage.removeItem(STORAGE_KEY)
+  } catch {
+    /* storage unavailable */
+  }
 }
 
 type Action =
@@ -42,8 +58,6 @@ type Action =
   | { type: 'addAttachment'; attachment: Attachment }
   | { type: 'setAttachmentStatus'; id: string; status: AttachmentStatus }
   | { type: 'removeAttachment'; id: string }
-
-interface State extends Persisted {}
 
 function reducer(state: State, a: Action): State {
   const ret = state.ret
@@ -100,7 +114,7 @@ function reducer(state: State, a: Action): State {
     case 'setStep':
       return { ...state, ret: { ...ret, ui: { ...ret.ui, currentStep: a.step } } }
     case 'setTaxYear':
-      return touch({ ...ret, taxYear: a.year })
+      return availableTaxYears().includes(a.year) ? touch({ ...ret, taxYear: a.year }) : state
     case 'setViewMode':
       return { ...state, ret: { ...ret, ui: { ...ret.ui, viewMode: a.mode } } }
     case 'setFilingMethod':
@@ -117,17 +131,40 @@ function reducer(state: State, a: Action): State {
   }
 }
 
+const fresh = (): State => ({ ret: workedExample(), savedAt: Date.now(), skipped: [] })
+
+/**
+ * Restore the autosaved draft. Every field is run through normalizeReturn()
+ * so a draft from an older build, another tax year, or a hand-edited
+ * localStorage never throws inside render; a draft that isn't a return at
+ * all is deleted so it can't trip the next load either.
+ */
 function load(): State {
+  let raw: string | null = null
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      const p = JSON.parse(raw) as Persisted
-      if (p && p.ret && p.ret.income) return { ret: p.ret, savedAt: p.savedAt ?? Date.now(), skipped: p.skipped ?? [] }
+    raw = localStorage.getItem(STORAGE_KEY)
+  } catch {
+    return fresh()
+  }
+  if (!raw) return fresh()
+  try {
+    const p: unknown = JSON.parse(raw)
+    if (typeof p === 'object' && p !== null) {
+      const { ret, savedAt, skipped } = p as Partial<Persisted>
+      const normalized = normalizeReturn(ret)
+      if (normalized) {
+        return {
+          ret: normalized,
+          savedAt: typeof savedAt === 'number' && Number.isFinite(savedAt) ? savedAt : Date.now(),
+          skipped: normalizeDeductionKeys(skipped),
+        }
+      }
     }
   } catch {
-    /* ignore corrupt drafts */
+    /* corrupt JSON */
   }
-  return { ret: workedExample(), savedAt: Date.now(), skipped: [] }
+  clearDraftStorage()
+  return fresh()
 }
 
 interface Ctx {
@@ -156,7 +193,7 @@ export function TaxReturnProvider({ children }: { children: ReactNode }) {
       return
     }
     try {
-      const p: Persisted = { ret: state.ret, savedAt: state.savedAt, skipped: state.skipped }
+      const p: Persisted = { version: PERSIST_VERSION, ret: state.ret, savedAt: state.savedAt, skipped: state.skipped }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(p))
     } catch {
       /* storage unavailable */

@@ -20,8 +20,10 @@ npm run build      # production build → dist/
 | `src/lib/tax/config/` | กฎภาษีแยกตามปี (ขั้นบันได, เพดานลดหย่อน, กฎหักค่าใช้จ่ายราย 40(x), วันยื่น) |
 | `src/lib/tax/calc.ts` | pure functions: รายได้ → ค่าใช้จ่าย → ลดหย่อน (พร้อมเพดานรวม) → ขั้นภาษี → ภาษี/คืน |
 | `src/lib/tax/plans.ts` | แผน A/B/C และเส้นโค้ง diminishing-returns คำนวณจากตำแหน่งขั้นภาษีของผู้ใช้จริง |
-| `src/lib/tax/calc.test.ts` | Vitest — ทุกขอบขั้นภาษี, worked example ของ handoff, เพดานทุกตัว |
-| `src/store/taxReturn.tsx` | โมเดล tax return หนึ่งชุด + reducer + autosave ลง `localStorage` |
+| `src/lib/tax/normalize.ts` | ซ่อม draft จาก `localStorage` ทีละฟิลด์ (ปีภาษี, แถว salary/bonus, ค่าลดหย่อนจากโปรไฟล์) ก่อนถึง reducer/engine |
+| `src/lib/tax/*.test.ts` | Vitest — ทุกขอบขั้นภาษี, worked example ของ handoff, เพดานทุกตัว, draft เสีย |
+| `src/store/taxReturn.tsx` | โมเดล tax return หนึ่งชุด + reducer + autosave ลง `localStorage` (มี `version`) |
+| `src/components/DraftErrorBoundary.tsx` | ถ้า render พัง เสนอปุ่ม "ล้างร่างแล้วเริ่มใหม่" แทนหน้าขาว |
 | `src/styles/tokens.css` | design tokens ทั้งหมด (สี oklch, ฟอนต์, เงา, motion) |
 | `src/components/` | primitives (Button, MoneyInput, Slider, RadioCard, BracketBar, LedgerRow…) และ layout |
 | `src/pages/` | Landing · wizard (4 สเต็ป + 11 คำถามมือถือ) · Ledger · Result · Plan · Dashboard · Filing |

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { DraftErrorBoundary } from './components/DraftErrorBoundary'
 import { ComingSoon } from './pages/ComingSoon'
 import { Dashboard } from './pages/Dashboard'
 import { Filing } from './pages/Filing'
@@ -27,23 +28,25 @@ function CalcIndex() {
 
 export default function App() {
   return (
-    <TaxReturnProvider>
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/calc" element={<CalcIndex />} />
-          <Route path="/calc/ledger" element={<Ledger />} />
-          <Route path="/calc/q/:n" element={<MobileFlow />} />
-          <Route path="/calc/:step" element={<WizardLayout />} />
-          <Route path="/result" element={<Result />} />
-          <Route path="/plan" element={<Plan />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/file" element={<Filing />} />
-          <Route path="/soon/:id" element={<ComingSoon />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </TaxReturnProvider>
+    <DraftErrorBoundary>
+      <TaxReturnProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/calc" element={<CalcIndex />} />
+            <Route path="/calc/ledger" element={<Ledger />} />
+            <Route path="/calc/q/:n" element={<MobileFlow />} />
+            <Route path="/calc/:step" element={<WizardLayout />} />
+            <Route path="/result" element={<Result />} />
+            <Route path="/plan" element={<Plan />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/file" element={<Filing />} />
+            <Route path="/soon/:id" element={<ComingSoon />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </TaxReturnProvider>
+    </DraftErrorBoundary>
   )
 }
