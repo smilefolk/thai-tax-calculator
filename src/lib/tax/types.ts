@@ -84,6 +84,8 @@ export interface StandardExpenseRule {
   cap?: number
   /** categories sharing a combined cap (e.g. 40(1)+40(2)) */
   sharedCapGroup?: string
+  /** whether the filer may elect actual expenses instead of the standard rate (false for 40(1)/40(2)) */
+  actualAllowed: boolean
 }
 export interface NoExpenseRule {
   type: 'none'

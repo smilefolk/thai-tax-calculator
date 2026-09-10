@@ -5,6 +5,7 @@ import type {
   DeductionKey,
   Deductions,
   DerivedTax,
+  ExpenseMethod,
   FilerProfile,
   IncomeCategory,
   IncomeEntry,
@@ -35,6 +36,15 @@ export function incomeByCategory(income: IncomeEntry[]): Record<IncomeCategory, 
 }
 
 /**
+ * The expense method the engine will actually apply: 'actual' only where the
+ * category's rule permits it (salary/commission 40(1)/40(2) never do).
+ */
+export function effectiveExpenseMethod(entry: IncomeEntry, cfg: TaxYearConfig): ExpenseMethod {
+  const rule = cfg.expenseRules[entry.category]
+  return rule.type === 'standard' && rule.actualAllowed && entry.expenseMethod === 'actual' ? 'actual' : 'standard'
+}
+
+/**
  * Expense deduction per entry, honouring per-category rules and
  * shared caps (40(1)+40(2) share one 100,000 ceiling).
  */
@@ -49,7 +59,7 @@ export function expenseByEntry(income: IncomeEntry[], cfg: TaxYearConfig): Recor
       out[e.id] = 0
       continue
     }
-    if (e.expenseMethod === 'actual') {
+    if (effectiveExpenseMethod(e, cfg) === 'actual') {
       out[e.id] = Math.min(clamp0(e.actualExpense), amt)
       continue
     }

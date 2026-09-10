@@ -24,17 +24,17 @@ export const y2568: TaxYearConfig = {
   ],
 
   expenseRules: {
-    // 40(1) + 40(2) หักเหมา 50% รวมกันไม่เกิน 100,000
-    '40(1)': { type: 'standard', rate: 0.5, cap: 100_000, sharedCapGroup: 'salary' },
-    '40(2)': { type: 'standard', rate: 0.5, cap: 100_000, sharedCapGroup: 'salary' },
+    // 40(1) + 40(2) หักเหมา 50% รวมกันไม่เกิน 100,000 — หักตามจริงไม่ได้
+    '40(1)': { type: 'standard', rate: 0.5, cap: 100_000, sharedCapGroup: 'salary', actualAllowed: false },
+    '40(2)': { type: 'standard', rate: 0.5, cap: 100_000, sharedCapGroup: 'salary', actualAllowed: false },
     // ดอกเบี้ย / เงินปันผล หักค่าใช้จ่ายไม่ได้
     '40(4)': { type: 'none' },
-    // ค่าเช่า (อาคาร) เหมา 30%
-    '40(5)': { type: 'standard', rate: 0.3 },
-    // วิชาชีพอิสระ (ทั่วไป) เหมา 30%
-    '40(6)': { type: 'standard', rate: 0.3 },
-    // ธุรกิจอื่น เหมา 60%
-    '40(8)': { type: 'standard', rate: 0.6 },
+    // ค่าเช่า (อาคาร) เหมา 30% หรือตามจริง
+    '40(5)': { type: 'standard', rate: 0.3, actualAllowed: true },
+    // วิชาชีพอิสระ (ทั่วไป) เหมา 30% หรือตามจริง
+    '40(6)': { type: 'standard', rate: 0.3, actualAllowed: true },
+    // ธุรกิจอื่น เหมา 60% หรือตามจริง
+    '40(8)': { type: 'standard', rate: 0.6, actualAllowed: true },
   },
 
   caps: {

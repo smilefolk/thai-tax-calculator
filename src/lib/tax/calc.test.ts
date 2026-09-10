@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { amountToDropBracket, derive, expenseByEntry, savingsFor, taxByBracket, taxOnNet } from './calc'
+import { amountToDropBracket, derive, effectiveExpenseMethod, expenseByEntry, savingsFor, taxByBracket, taxOnNet } from './calc'
 import { getTaxYearConfig } from './config'
 import { blankReturn, workedExample } from './defaults'
 import { buildPlans, savingsCurve } from './plans'
@@ -57,6 +57,24 @@ describe('expenses', () => {
       { id: 'a', category: '40(6)', amount: 100_000, expenseMethod: 'actual', actualExpense: 120_000 },
     ]
     expect(expenseByEntry(income, cfg).a).toBe(100_000)
+  })
+
+  it('40(1)/40(2) ignore the actual method — standard 50% capped at 100,000 always applies', () => {
+    const income: IncomeEntry[] = [
+      { id: 'a', category: '40(1)', amount: 780_000, expenseMethod: 'actual', actualExpense: 700_000 },
+      { id: 'b', category: '40(2)', amount: 100_000, expenseMethod: 'actual', actualExpense: 90_000 },
+    ]
+    const by = expenseByEntry(income, cfg)
+    expect(by.a).toBe(100_000)
+    expect(by.b).toBe(0)
+    expect(effectiveExpenseMethod(income[0], cfg)).toBe('standard')
+    expect(effectiveExpenseMethod({ ...income[0], category: '40(6)' }, cfg)).toBe('actual')
+  })
+
+  it('worked example stays at 53,900 even if the draft carries actual expenses on salary', () => {
+    const r = workedExample()
+    r.income = r.income.map((e) => ({ ...e, expenseMethod: 'actual', actualExpense: 700_000 }))
+    expect(derive(r, cfg).taxDue).toBe(53_900)
   })
 
   it('dividends get no expense deduction', () => {

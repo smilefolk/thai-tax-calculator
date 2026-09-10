@@ -39,7 +39,7 @@ function OtherIncomeCard({ entry }: { entry: IncomeEntry }) {
           onChange={(n) => dispatch({ type: 'setIncome', id: entry.id, amount: n })}
           helper={meta.hint}
         />
-        {rule.type === 'standard' && (
+        {rule.type === 'standard' && rule.actualAllowed && (
           <div>
             <div style={{ font: '500 12px/1.4 var(--sans)', color: 'var(--ink-muted)', marginBottom: 7 }}>วิธีหักค่าใช้จ่าย</div>
             <div className={s.radios}>
@@ -61,7 +61,7 @@ function OtherIncomeCard({ entry }: { entry: IncomeEntry }) {
           </div>
         )}
       </div>
-      {entry.expenseMethod === 'actual' && rule.type === 'standard' && (
+      {rule.type === 'standard' && rule.actualAllowed && entry.expenseMethod === 'actual' && (
         <div className={s.grid2} style={{ marginTop: 16 }}>
           <MoneyInput
             label="ค่าใช้จ่ายจริงทั้งปี"
@@ -83,13 +83,10 @@ export function IncomeStep() {
   const monthly = Math.round(salary.amount / 12)
   const cat1 = d.incomeByCategory['40(1)']
   const cap = salaryExpenseCap(cfg)
-  const standardAmount = Math.min(cat1 * 0.5, cap)
+  const salaryRule = cfg.expenseRules['40(1)']
+  const salaryRate = salaryRule.type === 'standard' ? salaryRule.rate : 0
+  const standardAmount = ret.income.filter((e) => e.category === '40(1)').reduce((sum, e) => sum + (d.expenseByEntry[e.id] ?? 0), 0)
   const atCap = standardAmount >= cap
-  const method = salary.expenseMethod
-  const setMethod = (m: 'standard' | 'actual') => {
-    dispatch({ type: 'setIncomeMethod', id: SALARY_ID, method: m })
-    dispatch({ type: 'setIncomeMethod', id: BONUS_ID, method: m, actualExpense: 0 })
-  }
   const availableOther = OTHER.filter((o) => !others.some((e) => e.category === o.category))
 
   return (
@@ -150,42 +147,24 @@ export function IncomeStep() {
       </section>
 
       <section className={s.card} style={{ marginBottom: 0 }} aria-labelledby="inc-exp">
-        <div id="inc-exp" className={s.cardTitle} style={{ marginBottom: 4 }}>
-          วิธีหักค่าใช้จ่าย
+        <div className={s.cardHead}>
+          <span id="inc-exp" className={s.cardTitle}>
+            หักค่าใช้จ่ายเงินได้ประเภทที่ 1
+          </span>
+          <span className={s.cardMeta}>
+            เหมา {pctInt(salaryRate)} ไม่เกิน {money(cap)}
+          </span>
         </div>
-        <div className={s.cardSub} style={{ margin: '0 0 16px' }}>
-          เงินได้ประเภทที่ 1 หักแบบเหมาได้ 50% แต่ไม่เกิน {money(cap)} บาท
+        <div className={s.cardSub} style={{ margin: '0 0 12px' }}>
+          เงินเดือน ค่าจ้าง โบนัส (40(1)) และค่านายหน้า (40(2)) หักค่าใช้จ่ายได้แบบเหมาเท่านั้น เลือกหักตามจริงไม่ได้
         </div>
-        <div className={s.radios} role="radiogroup" aria-label="วิธีหักค่าใช้จ่าย">
-          <RadioCard
-            name="method-salary"
-            selected={method === 'standard'}
-            onSelect={() => setMethod('standard')}
-            title="เหมา 50%"
-            sub={
-              <span className={s.radioSub}>
-                หักได้ <strong>{money(standardAmount)}</strong> {atCap ? '(เต็มเพดาน)' : ''}
-              </span>
-            }
-          />
-          <RadioCard
-            name="method-salary"
-            selected={method === 'actual'}
-            onSelect={() => setMethod('actual')}
-            title="ตามจริง"
-            sub="ต้องแนบหลักฐานค่าใช้จ่าย"
-          />
+        <div className={s.total}>
+          <span className={s.totalLabel}>หักได้</span>
+          <span className={s.totalFig}>
+            {money(standardAmount)}
+            {atCap && <span style={{ font: '400 13px var(--sans)', color: 'var(--ink-muted)', marginLeft: 8 }}>เต็มเพดาน</span>}
+          </span>
         </div>
-        {method === 'actual' && (
-          <div className={s.grid2} style={{ marginTop: 16, marginBottom: 0 }}>
-            <MoneyInput
-              label="ค่าใช้จ่ายจริงของเงินได้ประเภทที่ 1"
-              value={salary.actualExpense}
-              onChange={(n) => dispatch({ type: 'setIncomeMethod', id: SALARY_ID, method: 'actual', actualExpense: n })}
-              helper="แนบหลักฐานค่าใช้จ่ายในขั้นตอนยื่นแบบ"
-            />
-          </div>
-        )}
       </section>
 
       <StepFooter step="income" />

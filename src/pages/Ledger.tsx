@@ -4,6 +4,7 @@ import { LedgerRow, ProgressBar } from '../components/ui/Bits'
 import { Button } from '../components/ui/Button'
 import { user } from '../data/history'
 import { abbrev, money, pctInt, signed } from '../lib/format'
+import { effectiveExpenseMethod, salaryExpenseCap } from '../lib/tax/calc'
 import { BONUS_ID, SALARY_ID } from '../lib/tax/defaults'
 import type { DeductionKey } from '../lib/tax/types'
 import { useTaxReturn } from '../store/taxReturn'
@@ -29,6 +30,7 @@ export function Ledger() {
   const others = ret.income.filter((e) => e.id !== SALARY_ID && e.id !== BONUS_ID)
   const onlySalary = ret.income.every((e) => e.category === '40(1)')
   const form = onlySalary ? 'ภ.ง.ด. 91' : 'ภ.ง.ด. 90'
+  const salaryRule = cfg.expenseRules['40(1)']
 
   const item = (k: DeductionKey) => d.deductionItems.find((i) => i.key === k)!
   const setD = (k: DeductionKey) => (n: number) => dispatch({ type: 'setDeduction', key: k, value: n })
@@ -126,8 +128,8 @@ export function Ledger() {
         <LedgerRow
           label={
             <>
-              {salary.expenseMethod === 'standard' ? `เหมาจ่าย ${pctInt(0.5)}` : 'ตามจริง'}{' '}
-              <span style={{ color: 'var(--ink-faint)', fontSize: 12.5 }}>(เพดาน {money(cfg.expenseRules['40(1)'].type === 'standard' ? (cfg.expenseRules['40(1)'].cap ?? 0) : 0)})</span>
+              {effectiveExpenseMethod(salary, cfg) === 'standard' ? `เหมาจ่าย ${pctInt(salaryRule.type === 'standard' ? salaryRule.rate : 0)}` : 'ตามจริง'}{' '}
+              <span style={{ color: 'var(--ink-faint)', fontSize: 12.5 }}>(เพดาน {money(salaryExpenseCap(cfg))})</span>
             </>
           }
           value={d.expenseDeduction}
