@@ -162,7 +162,7 @@ const ORDERED_KEYS: DeductionKey[] = [
 
 /**
  * Apply every cap: per-item, the life+health combined 100k,
- * the retirement combined 500k, then donations at 10% of what's left.
+ * the retirement combined 500k, then the two donation ceilings on what's left.
  */
 export function cappedDeductions(
   d: Deductions,
@@ -198,17 +198,21 @@ export function cappedDeductions(
     subtotal += allowed[key] ?? 0
   }
 
-  // donations: 10% of (income − expenses − other deductions)
+  // donations are two sequential 10% ceilings, not one shared pool:
+  //  1. double-deduction donations (education/sport/state hospitals) count twice,
+  //     capped at 10% of (income − expenses − other deductions)
+  //  2. general donations capped at 10% of what is left *after* step 1
   const remaining = clamp0(incomeAfterExpenses - subtotal)
-  const donationRoom = remaining * caps.donationRateOfNet
-  const dbl = Math.min(clamp0(d.doubleDonations) * caps.doubleDonationMultiplier, donationRoom)
-  const normal = Math.min(clamp0(d.donations), clamp0(donationRoom - dbl))
+  const doubleRoom = remaining * caps.donationRateOfNet
+  const dbl = Math.min(clamp0(d.doubleDonations) * caps.doubleDonationMultiplier, doubleRoom)
+  const donationRoom = clamp0(remaining - dbl) * caps.donationRateOfNet
+  const normal = Math.min(clamp0(d.donations), donationRoom)
   allowed.doubleDonations = dbl
   allowed.donations = normal
 
   for (const key of ORDERED_KEYS) {
     const cap =
-      key === 'donations' || key === 'doubleDonations' ? round(donationRoom) : deductionCap(key, ctx)
+      key === 'doubleDonations' ? round(doubleRoom) : key === 'donations' ? round(donationRoom) : deductionCap(key, ctx)
     items.push({ key, entered: clamp0(d[key]), allowed: round(allowed[key] ?? 0), cap: round(cap) })
   }
   return items

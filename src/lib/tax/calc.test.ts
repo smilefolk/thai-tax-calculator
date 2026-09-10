@@ -180,13 +180,28 @@ describe('deduction caps', () => {
     expect(items.find((i) => i.key === 'pvd')!.allowed).toBe(27_000)
   })
 
-  it('donations capped at 10% of remaining net, double donations count twice', () => {
+  it('double donations count twice up to 10%, general donations get 10% of what is left after them', () => {
     const r = workedExample()
     r.deductions = { ...r.deductions, donations: 100_000, doubleDonations: 10_000 }
     const items = derive(r, cfg).deductionItems
-    // remaining before donations = 810,000 − 134,000 = 676,000 → room 67,600
-    expect(items.find((i) => i.key === 'doubleDonations')!.allowed).toBe(20_000)
-    expect(items.find((i) => i.key === 'donations')!.allowed).toBe(47_600)
+    // remaining before donations = 810,000 − 134,000 = 676,000
+    const dbl = items.find((i) => i.key === 'doubleDonations')!
+    const normal = items.find((i) => i.key === 'donations')!
+    expect(dbl.cap).toBe(67_600)
+    expect(dbl.allowed).toBe(20_000)
+    // 10% × (676,000 − 20,000)
+    expect(normal.cap).toBe(65_600)
+    expect(normal.allowed).toBe(65_600)
+  })
+
+  it('general donations are not zeroed when double donations fill their own 10% ceiling', () => {
+    const r = workedExample()
+    r.deductions = { ...r.deductions, donations: 50_000, doubleDonations: 50_000 }
+    const items = derive(r, cfg).deductionItems
+    expect(items.find((i) => i.key === 'doubleDonations')!.allowed).toBe(67_600)
+    // 10% × (676,000 − 67,600) = 60,840 ≥ 50,000 entered
+    expect(items.find((i) => i.key === 'donations')!.cap).toBe(60_840)
+    expect(items.find((i) => i.key === 'donations')!.allowed).toBe(50_000)
   })
 
   it('owed verdict when withholding is short', () => {

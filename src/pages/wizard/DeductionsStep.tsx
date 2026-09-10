@@ -37,8 +37,8 @@ const GROUPS: { title: string; meta?: string; fields: Field[] }[] = [
     fields: [
       { key: 'homeLoanInterest', label: 'ดอกเบี้ยกู้ซื้อบ้าน' },
       { key: 'stimulusSchemes', label: 'มาตรการรัฐ (Easy E-Receipt ฯลฯ)' },
-      { key: 'donations', label: 'เงินบริจาคทั่วไป', hint: '10% ของเงินได้หลังหักลดหย่อน' },
-      { key: 'doubleDonations', label: 'บริจาคการศึกษา/กีฬา (2 เท่า)', hint: 'นับ 2 เท่า ภายในเพดาน 10%' },
+      { key: 'donations', label: 'เงินบริจาคทั่วไป', hint: '10% ของเงินได้หลังหักลดหย่อนและบริจาค 2 เท่า' },
+      { key: 'doubleDonations', label: 'บริจาคการศึกษา/กีฬา (2 เท่า)', hint: 'นับ 2 เท่า ไม่เกิน 10% ของเงินได้หลังหักลดหย่อนอื่น' },
     ],
   },
 ]
