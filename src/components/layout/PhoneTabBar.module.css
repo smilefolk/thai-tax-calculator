@@ -1,0 +1,35 @@
+.bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-around;
+  padding: 14px 0 calc(14px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: var(--card);
+}
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  min-width: 56px;
+  min-height: 44px;
+  justify-content: center;
+  font: 400 10.5px/1.4 var(--sans);
+  color: var(--ink-faint);
+  border-radius: 6px;
+}
+.icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: var(--line-strong);
+}
+.tab[aria-current='page'] {
+  font-weight: 500;
+  color: var(--teal-deep);
+}
+.tab[aria-current='page'] .icon {
+  background: var(--teal);
+}

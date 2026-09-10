@@ -1,0 +1,15 @@
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  transition: box-shadow var(--t-state), border-color var(--t-state);
+}
+.card[data-hover='true']:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: var(--line-strong);
+}
+.dark {
+  background: var(--ink);
+  color: #fff;
+  border-color: transparent;
+}

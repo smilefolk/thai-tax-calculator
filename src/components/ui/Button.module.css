@@ -1,0 +1,140 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  border-radius: 9px;
+  font: 600 14px/1.4 var(--sans);
+  padding: 13px 30px;
+  border: 1px solid transparent;
+  transition: background var(--t-state), color var(--t-state), border-color var(--t-state), box-shadow var(--t-state);
+  text-decoration: none;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
+/* variants */
+.primary {
+  background: var(--teal);
+  color: #fff;
+}
+.primary:not(:disabled):hover {
+  background: var(--teal-hover);
+}
+.dark {
+  background: var(--ink);
+  color: #fff;
+}
+.dark:not(:disabled):hover {
+  background: #000;
+}
+.secondary {
+  background: var(--card);
+  color: var(--ink-muted);
+  border-color: var(--line-strong);
+  font-weight: 500;
+}
+.secondary:not(:disabled):hover {
+  background: var(--sheet);
+  color: var(--ink);
+}
+.secondaryInk {
+  background: var(--card);
+  color: var(--ink);
+  border-color: var(--line-strong);
+  font-weight: 500;
+}
+.secondaryInk:not(:disabled):hover {
+  background: var(--sheet);
+}
+.ghost {
+  background: transparent;
+  color: var(--ink-muted);
+  border-color: var(--line-strong);
+  font-weight: 500;
+}
+.ghost:not(:disabled):hover {
+  background: var(--sheet);
+  color: var(--ink);
+}
+.green {
+  background: var(--green-mid);
+  color: #fff;
+}
+.green:not(:disabled):hover {
+  background: var(--green-deep);
+}
+.clay {
+  background: var(--clay);
+  color: #fff;
+}
+.clay:not(:disabled):hover {
+  background: var(--clay-btn);
+}
+.onDarkOutline {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.25);
+  font-weight: 500;
+}
+.onDarkOutline:not(:disabled):hover {
+  background: var(--on-dark-fill);
+  color: #fff;
+}
+.onDarkWhite {
+  background: #fff;
+  color: var(--ink);
+}
+.onDarkWhite:not(:disabled):hover {
+  background: var(--surface);
+}
+.lightTeal {
+  background: var(--teal-on-dark-btn);
+  color: var(--ink);
+}
+.lightTeal:not(:disabled):hover {
+  background: var(--teal-on-dark-2);
+}
+.link {
+  background: transparent;
+  color: var(--teal-deep);
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.link:hover {
+  color: var(--teal-deeper);
+}
+
+/* sizes */
+.sm {
+  font-size: 12.5px;
+  padding: 10px 16px;
+  border-radius: 8px;
+}
+.md {
+  font-size: 13px;
+  padding: 11px 18px;
+  border-radius: 8px;
+}
+.lg {
+  font-size: 15px;
+  padding: 15px 30px;
+  border-radius: 10px;
+}
+.xl {
+  font-size: 15px;
+  padding: 16px 22px;
+  border-radius: 12px;
+}
+.block {
+  display: flex;
+  width: 100%;
+}

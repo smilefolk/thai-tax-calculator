@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"><style>
+body{margin:0;background:#EDEAE3;font-family:'IBM Plex Sans Thai',system-ui,sans-serif;color:#1A1917;-webkit-font-smoothing:antialiased}
+a{color:oklch(0.56 0.15 195);text-decoration:none}
+a:hover{color:oklch(0.44 0.14 195)}
+.dv-turn{padding:44px 48px 36px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 24px}
+.dv-tid{font:600 10px 'IBM Plex Mono',monospace;padding:3px 7px;background:#1A1917;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tid:hover{color:#fff}
+.dv-tname{font:600 13px/1.5 'IBM Plex Sans Thai',sans-serif;color:#1A1917}
+.dv-opts{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:10px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px 'IBM Plex Mono',monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1A1917;border-radius:5px;text-decoration:none}
+.dv-oid:hover{color:#1A1917}
+{display:flex;align-items:baseline;gap:9px;font:400 11.5px/1.55 'IBM Plex Sans Thai',sans-serif;color:rgba(0,0,0,.55)}
+.dv-card{box-sizing:border-box;max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.10);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.05);overflow:hidden}
+.dv-opt:target .dv-oid{background:oklch(0.56 0.15 195);color:#fff}
+.dv-next{margin:26px 0 0;font:12.5px/1.6 'IBM Plex Sans Thai',sans-serif;color:rgba(0,0,0,.5)}
+</style></helmet>
+
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">ขยายเป็นทั้งผลิตภัณฑ์ — 6 โมดูลภาษี, หน้าแรก, แดชบอร์ด, เปรียบเทียบแผน, ยื่นแบบ, เข้าสู่ระบบ</span></div>
+
+<div style="display:flex;gap:14px;flex-wrap:wrap;margin:-8px 0 26px;font:400 11.5px/1.5 'IBM Plex Sans Thai',sans-serif;color:rgba(0,0,0,.5)">
+<span style="padding:4px 9px;background:rgba(0,0,0,.05);border-radius:999px">ตัดสินใจแทน: ใช้ระบบของ <a class="dv-oid" href="#1a">1a</a> เป็นแกน (wizard + แถบสรุปสด) เพราะรองรับทั้งมือใหม่และนักบัญชี</span>
+<span style="padding:4px 9px;background:rgba(0,0,0,.05);border-radius:999px">6 โมดูลภาษี = 6 เฉดสี ค่าความสว่าง/ความสดเท่ากัน ต่างแค่เฉด</span>
+<span style="padding:4px 9px;background:rgba(0,0,0,.05);border-radius:999px">มุมมองนักบัญชีใช้เลย์เอาต์สมุดบัญชีของ <a class="dv-oid" href="#1b">1b</a></span>
+</div>
+
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a">
+<div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>หน้าแรก — เลือกโมดูลภาษีจากตารางสี ไม่ต้องอ่านเมนู</div>
+<div class="dv-card" style="width:1282px;background:#F6F4EF">
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:0 44px;height:68px;background:#fff;border-bottom:1px solid #E3DFD6">
+<div style="display:flex;align-items:center;gap:34px">
+<div style="display:flex;align-items:center;gap:10px"><div style="width:24px;height:24px;border-radius:6px;background:oklch(0.56 0.15 195)"></div><span style="font:600 16px/1.4 'IBM Plex Sans Thai',sans-serif">ภาษีง่าย</span></div>
+<div style="display:flex;gap:24px">
+<span style="font:500 13.5px 'IBM Plex Sans Thai',sans-serif;color:#1A1917">เครื่องคำนวณ</span>
+<span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">วางแผนภาษี</span>
+<span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">สำหรับสำนักงานบัญชี</span>
+<span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">คลังความรู้</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:14px">
+<span style="font:500 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เข้าสู่ระบบ</span>
+<span style="font:600 13.5px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:#1A1917;padding:11px 20px;border-radius:8px">เริ่มคำนวณฟรี</span>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 452px;gap:44px;padding:56px 44px 48px;align-items:center">
+<div>
+<div style="display:inline-flex;align-items:center;gap:8px;background:oklch(0.92 0.07 195);border-radius:999px;padding:6px 13px;margin-bottom:20px">
+<span style="width:7px;height:7px;border-radius:999px;background:oklch(0.56 0.15 195)"></span>
+<span style="font:500 12px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.40 0.13 195)">อัปเดตอัตราและสิทธิลดหย่อนปีภาษี 2568 แล้ว</span>
+</div>
+<h1 style="margin:0 0 16px;font:600 50px/1.42 'IBM Plex Sans Thai',sans-serif;max-width:15ch">รู้ว่าต้องจ่ายภาษีเท่าไหร่ ภายในสามนาที</h1>
+<p style="margin:0 0 30px;font:300 17px/1.65 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;max-width:46ch">กรอกทีละคำถาม เห็นตัวเลขขยับสดๆ ทุกครั้งที่พิมพ์ แล้วบอกต่อว่าถ้าอยากจ่ายน้อยลงต้องทำอะไร</p>
+<div style="display:flex;gap:12px;margin-bottom:26px">
+<span style="font:600 15px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:oklch(0.56 0.15 195);padding:15px 30px;border-radius:10px">คำนวณภาษีเงินเดือน →</span>
+<span style="font:500 15px 'IBM Plex Sans Thai',sans-serif;color:#1A1917;background:#fff;border:1px solid #D5D0C6;padding:15px 26px;border-radius:10px">ดูตัวอย่างผลลัพธ์</span>
+</div>
+<div style="display:flex;gap:26px;font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">
+<span>ไม่ต้องสมัครสมาชิก</span><span>คำนวณในเครื่องคุณ</span><span>อ้างอิงประมวลรัษฎากร</span>
+</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:16px;padding:28px;box-shadow:0 14px 40px rgba(26,25,23,.09)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px">
+<span style="font:600 14.5px 'IBM Plex Sans Thai',sans-serif">ลองเลื่อนดูเงินเดือน</span>
+<span style="font:500 11px 'IBM Plex Mono',monospace;color:#7A756C">ปี 2568</span>
+</div>
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:14px"><span style="font:600 32px 'IBM Plex Mono',monospace;letter-spacing:-.02em">65,000</span><span style="font:400 14px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">บาท / เดือน</span></div>
+<div style="position:relative;height:8px;background:#EDEAE3;border-radius:999px;margin-bottom:26px">
+<div style="position:absolute;left:0;top:0;bottom:0;width:43%;background:oklch(0.56 0.15 195);border-radius:999px"></div>
+<div style="position:absolute;left:43%;top:50%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:999px;background:#fff;border:2px solid oklch(0.56 0.15 195);box-shadow:0 2px 8px rgba(0,0,0,.16)"></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;padding-bottom:20px;border-bottom:1px solid #E3DFD6">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เงินได้ทั้งปี</span><span style="font:500 14px 'IBM Plex Mono',monospace">910,000</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เงินได้สุทธิ</span><span style="font:500 14px 'IBM Plex Mono',monospace">676,000</span></div>
+</div>
+<div style="padding-top:20px">
+<div style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:4px">ภาษีโดยประมาณ</div>
+<div style="display:flex;align-items:baseline;gap:9px"><span style="font:600 42px 'IBM Plex Mono',monospace;color:oklch(0.56 0.15 195);letter-spacing:-.03em">53,900</span><span style="font:400 15px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">บาท</span></div>
+</div>
+<div style="margin-top:18px;display:flex;height:10px;border-radius:999px;overflow:hidden">
+<div style="width:22.2%;background:#E3DFD6"></div><div style="width:22.2%;background:oklch(0.87 0.09 195)"></div><div style="width:29.6%;background:oklch(0.70 0.13 195)"></div><div style="width:26%;background:oklch(0.56 0.15 195)"></div>
+</div>
+<div style="margin-top:9px;font:400 11.5px 'IBM Plex Mono',monospace;color:#7A756C">ขั้นบันได 0% · 5% · 10% · 15%</div>
+</div>
+</div>
+
+<div style="padding:0 44px 56px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px">
+<h2 style="margin:0;font:600 22px/1.4 'IBM Plex Sans Thai',sans-serif">เลือกภาษีที่ต้องคำนวณ</h2>
+<span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ทุกโมดูลใช้ข้อมูลร่วมกัน กรอกครั้งเดียว</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:14px;padding:22px 22px 20px;border-top:3px solid oklch(0.56 0.15 195)">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+<span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:oklch(0.44 0.14 195);background:oklch(0.92 0.07 195);padding:4px 8px;border-radius:5px">ภ.ง.ด. 90/91</span>
+<span style="font:500 11px 'IBM Plex Mono',monospace;color:#7A756C">ยอดนิยม</span>
+</div>
+<div style="font:600 17px/1.4 'IBM Plex Sans Thai',sans-serif;margin-bottom:6px">ภาษีเงินได้บุคคลธรรมดา</div>
+<div style="font:300 13px/1.6 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:16px">เงินเดือน โบนัส ฟรีแลนซ์ ค่าเช่า พร้อมค่าลดหย่อนครบทุกรายการ</div>
+<div style="font:500 13px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.44 0.14 195)">เริ่มคำนวณ →</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:14px;padding:22px 22px 20px;border-top:3px solid oklch(0.60 0.16 45)">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+<span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:oklch(0.46 0.15 45);background:oklch(0.94 0.05 45);padding:4px 8px;border-radius:5px">ภ.ง.ด. 50</span>
+</div>
+<div style="font:600 17px/1.4 'IBM Plex Sans Thai',sans-serif;margin-bottom:6px">ภาษีเงินได้นิติบุคคล</div>
+<div style="font:300 13px/1.6 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:16px">รวมสิทธิ SME กำไรสุทธิ 3 ขั้น และรายจ่ายต้องห้าม</div>
+<div style="font:500 13px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.46 0.15 45)">เริ่มคำนวณ →</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:14px;padding:22px 22px 20px;border-top:3px solid oklch(0.56 0.15 300)">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+<span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:oklch(0.44 0.14 300);background:oklch(0.93 0.05 300);padding:4px 8px;border-radius:5px">ภ.พ. 30</span>
+</div>
+<div style="font:600 17px/1.4 'IBM Plex Sans Thai',sans-serif;margin-bottom:6px">ภาษีมูลค่าเพิ่ม</div>
+<div style="font:300 13px/1.6 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:16px">ภาษีขาย ภาษีซื้อ ยอดชำระ/ขอคืน และเช็กเกณฑ์ 1.8 ล้าน</div>
+<div style="font:500 13px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.44 0.14 300)">เริ่มคำนวณ →</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:14px;padding:22px 22px 20px;border-top:3px solid oklch(0.58 0.16 152)">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+<span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:oklch(0.44 0.14 152);background:oklch(0.93 0.06 152);padding:4px 8px;border-radius:5px">ภ.ง.ด. 3/53</span>
+</div>
+<div style="font:600 17px/1.4 'IBM Plex Sans Thai',sans-serif;margin-bottom:6px">ภาษีหัก ณ ที่จ่าย</div>
+<div style="font:300 13px/1.6 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:16px">เลือกประเภทเงินได้ ระบบเลือกอัตรา 1% / 2% / 3% / 5% ให้</div>
+<div style="font:500 13px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.44 0.14 152)">เริ่มคำนวณ →</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:14px;padding:22px 22px 20px;border-top:3px solid oklch(0.60 0.14 90)">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+<span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:oklch(0.44 0.12 90);background:oklch(0.94 0.05 90);padding:4px 8px;border-radius:5px">ท้องถิ่น</span>
+</div>
+<div style="font:600 17px/1.4 'IBM Plex Sans Thai',sans-serif;margin-bottom:6px">ภาษีที่ดินและสิ่งปลูกสร้าง</div>
+<div style="font:300 13px/1.6 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:16px">แยกตามการใช้ประโยชน์ เกษตร ที่อยู่อาศัย พาณิชย์ ว่างเปล่า</div>
+<div style="font:500 13px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.44 0.12 90)">เริ่มคำนวณ →</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:14px;padding:22px 22px 20px;border-top:3px solid oklch(0.56 0.15 262)">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+<span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:oklch(0.44 0.14 262);background:oklch(0.93 0.05 262);padding:4px 8px;border-radius:5px">40(4)(ฌ)</span>
+<span style="font:500 11px 'IBM Plex Mono',monospace;color:#7A756C">ใหม่</span>
+</div>
+<div style="font:600 17px/1.4 'IBM Plex Sans Thai',sans-serif;margin-bottom:6px">ภาษีคริปโตและการลงทุน</div>
+<div style="font:300 13px/1.6 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:16px">นำเข้าประวัติเทรด คำนวณกำไร เงินปันผล และเครดิตภาษี</div>
+<div style="font:500 13px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.44 0.14 262)">เริ่มคำนวณ →</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2b">
+<div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>แดชบอร์ดย้อนหลัง — ภาษีทุกโมดูลรวมที่เดียว มีนับถอยหลังวันยื่น</div>
+<div class="dv-card" style="width:1282px">
+<div style="display:grid;grid-template-columns:216px 1fr">
+
+<div style="background:#1A1917;padding:26px 20px;color:#fff;min-height:868px;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;gap:9px;margin-bottom:30px"><div style="width:22px;height:22px;border-radius:6px;background:oklch(0.68 0.15 195)"></div><span style="font:600 15px 'IBM Plex Sans Thai',sans-serif">ภาษีง่าย</span></div>
+<div style="display:flex;flex-direction:column;gap:3px;margin-bottom:26px">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:7px;background:rgba(255,255,255,.10)"><span style="width:8px;height:8px;border-radius:2px;background:oklch(0.68 0.15 195)"></span><span style="font:500 13px 'IBM Plex Sans Thai',sans-serif">ภาพรวม</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:7px"><span style="width:8px;height:8px;border-radius:2px;background:rgba(255,255,255,.3)"></span><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.65)">เครื่องคำนวณ</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:7px"><span style="width:8px;height:8px;border-radius:2px;background:rgba(255,255,255,.3)"></span><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.65)">วางแผนลดหย่อน</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:7px"><span style="width:8px;height:8px;border-radius:2px;background:rgba(255,255,255,.3)"></span><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.65)">เอกสาร</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:7px"><span style="width:8px;height:8px;border-radius:2px;background:rgba(255,255,255,.3)"></span><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.65)">ยื่นแบบ</span></div>
+</div>
+<div style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,255,255,.62);margin-bottom:11px">โมดูลที่เปิดใช้</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:9px"><span style="width:7px;height:7px;border-radius:999px;background:oklch(0.68 0.15 195)"></span><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.72)">บุคคลธรรมดา</span></div>
+<div style="display:flex;align-items:center;gap:9px"><span style="width:7px;height:7px;border-radius:999px;background:oklch(0.72 0.16 45)"></span><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.72)">นิติบุคคล</span></div>
+<div style="display:flex;align-items:center;gap:9px"><span style="width:7px;height:7px;border-radius:999px;background:oklch(0.68 0.15 300)"></span><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.72)">VAT</span></div>
+<div style="display:flex;align-items:center;gap:9px"><span style="width:7px;height:7px;border-radius:999px;background:oklch(0.70 0.16 152)"></span><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.72)">หัก ณ ที่จ่าย</span></div>
+<div style="display:flex;align-items:center;gap:9px"><span style="width:7px;height:7px;border-radius:999px;background:oklch(0.70 0.15 262)"></span><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.72)">คริปโต</span></div>
+</div>
+<div style="margin-top:26px;padding:15px 14px;border:1px solid rgba(255,255,255,.16);border-radius:10px">
+<div style="font:600 12.5px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.80 0.14 195);margin-bottom:5px">โหมดสำนักงานบัญชี</div>
+<div style="font:300 11.5px/1.55 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.5)">จัดการลูกค้าหลายรายในหน้าเดียว</div>
+</div>
+<div style="margin-top:auto;padding-top:26px;display:flex;align-items:center;gap:10px">
+<div style="width:28px;height:28px;border-radius:999px;background:rgba(255,255,255,.16)"></div>
+<div><div style="font:500 12.5px 'IBM Plex Sans Thai',sans-serif">สมชาย ใจดี</div><div style="font:400 11px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.68)">แผน Pro</div></div>
+</div>
+</div>
+
+<div style="background:#F6F4EF;padding:32px 40px 40px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px">
+<div>
+<h1 style="margin:0 0 4px;font:600 28px/1.42 'IBM Plex Sans Thai',sans-serif">สวัสดีตอนบ่าย คุณสมชาย</h1>
+<div style="font:300 14px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ยื่นแบบปีภาษี 2568 ได้ตั้งแต่ 1 ม.ค. 2569 — คุณเตรียมข้อมูลไว้ครบ 75% แล้ว</div>
+</div>
+<div style="display:flex;gap:9px">
+<span style="font:500 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;background:#fff;border:1px solid #D5D0C6;padding:10px 15px;border-radius:8px">ปีภาษี 2568 ▾</span>
+<span style="font:600 12.5px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:oklch(0.56 0.15 195);padding:11px 18px;border-radius:8px">+ คำนวณใหม่</span>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:20px">
+<div style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:8px">ภาษีบุคคลธรรมดา</div>
+<div style="font:600 26px 'IBM Plex Mono',monospace;letter-spacing:-.02em">53,900</div>
+<div style="font:400 11.5px 'IBM Plex Mono',monospace;color:oklch(0.50 0.16 45);margin-top:5px">↑ 6,700 จากปีก่อน</div>
+</div>
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:20px">
+<div style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:8px">ขอคืนได้</div>
+<div style="font:600 26px 'IBM Plex Mono',monospace;letter-spacing:-.02em;color:oklch(0.45 0.15 152)">4,100</div>
+<div style="font:400 11.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C;margin-top:5px">ยังไม่ได้ยื่น</div>
+</div>
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:20px">
+<div style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:8px">สิทธิลดหย่อนคงเหลือ</div>
+<div style="font:600 26px 'IBM Plex Mono',monospace;letter-spacing:-.02em">326,000</div>
+<div style="height:5px;border-radius:999px;background:#EDEAE3;margin-top:9px;overflow:hidden"><div style="width:29%;height:100%;background:oklch(0.56 0.15 195);border-radius:999px"></div></div>
+</div>
+<div style="background:#1A1917;border-radius:12px;padding:20px;color:#fff">
+<div style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.55);margin-bottom:8px">เหลือเวลายื่น</div>
+<div style="display:flex;align-items:baseline;gap:6px"><span style="font:600 26px 'IBM Plex Mono',monospace;letter-spacing:-.02em">114</span><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.6)">วัน</span></div>
+<div style="font:400 11.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.68);margin-top:5px">ปิดรับ 8 เม.ย. 2569</div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 336px;gap:16px">
+<div style="display:flex;flex-direction:column;gap:16px">
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:24px 26px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px">
+<span style="font:600 15.5px 'IBM Plex Sans Thai',sans-serif">ภาษีที่จ่ายจริง 5 ปีย้อนหลัง</span>
+<span style="font:400 12px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">รวมทุกโมดูล</span>
+</div>
+<div style="display:flex;align-items:flex-end;gap:20px;height:172px">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:9px"><span style="font:500 12px 'IBM Plex Mono',monospace;color:#6E6A63">31,400</span><div style="width:100%;height:58px;background:#E3DFD6;border-radius:7px 7px 0 0"></div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:9px"><span style="font:500 12px 'IBM Plex Mono',monospace;color:#6E6A63">36,800</span><div style="width:100%;height:69px;background:#E3DFD6;border-radius:7px 7px 0 0"></div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:9px"><span style="font:500 12px 'IBM Plex Mono',monospace;color:#6E6A63">42,100</span><div style="width:100%;height:79px;background:#E3DFD6;border-radius:7px 7px 0 0"></div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:9px"><span style="font:500 12px 'IBM Plex Mono',monospace;color:#6E6A63">47,200</span><div style="width:100%;height:88px;background:oklch(0.87 0.09 195);border-radius:7px 7px 0 0"></div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:9px"><span style="font:600 12px 'IBM Plex Mono',monospace;color:oklch(0.44 0.14 195)">53,900</span><div style="width:100%;height:101px;background:oklch(0.56 0.15 195);border-radius:7px 7px 0 0"></div></div>
+</div>
+<div style="display:flex;gap:20px;padding-top:11px;border-top:1px solid #EDEAE3;margin-top:0;font:400 11.5px 'IBM Plex Mono',monospace;color:#7A756C">
+<span style="flex:1;text-align:center">2564</span><span style="flex:1;text-align:center">2565</span><span style="flex:1;text-align:center">2566</span><span style="flex:1;text-align:center">2567</span><span style="flex:1;text-align:center;color:#1A1917;font-weight:600">2568</span>
+</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:24px 26px 12px">
+<div style="font:600 15.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:16px">ประวัติการยื่นแบบ</div>
+<div style="display:grid;grid-template-columns:0.8fr 1.4fr 1fr 1fr 0.9fr;font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.08em;color:#7A756C;padding-bottom:10px;border-bottom:1px solid #E3DFD6">
+<span>ปีภาษี</span><span>แบบ</span><span style="text-align:right">ภาษี</span><span style="text-align:right">คืน/จ่ายเพิ่ม</span><span style="text-align:right">สถานะ</span>
+</div>
+<div style="display:grid;grid-template-columns:0.8fr 1.4fr 1fr 1fr 0.9fr;align-items:center;padding:13px 0;border-bottom:1px solid #F2EFE9">
+<span style="font:500 13px 'IBM Plex Mono',monospace">2568</span><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif">ภ.ง.ด. 91</span><span style="font:500 13px 'IBM Plex Mono',monospace;text-align:right">53,900</span><span style="font:500 13px 'IBM Plex Mono',monospace;text-align:right;color:oklch(0.45 0.15 152)">+4,100</span><span style="text-align:right"><span style="font:500 11px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.46 0.15 45);background:oklch(0.94 0.05 45);padding:4px 9px;border-radius:999px">ร่าง</span></span>
+</div>
+<div style="display:grid;grid-template-columns:0.8fr 1.4fr 1fr 1fr 0.9fr;align-items:center;padding:13px 0;border-bottom:1px solid #F2EFE9">
+<span style="font:500 13px 'IBM Plex Mono',monospace">2567</span><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif">ภ.ง.ด. 91</span><span style="font:500 13px 'IBM Plex Mono',monospace;text-align:right">47,200</span><span style="font:500 13px 'IBM Plex Mono',monospace;text-align:right;color:oklch(0.45 0.15 152)">+2,300</span><span style="text-align:right"><span style="font:500 11px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.40 0.13 152);background:oklch(0.93 0.06 152);padding:4px 9px;border-radius:999px">คืนแล้ว</span></span>
+</div>
+<div style="display:grid;grid-template-columns:0.8fr 1.4fr 1fr 1fr 0.9fr;align-items:center;padding:13px 0;border-bottom:1px solid #F2EFE9">
+<span style="font:500 13px 'IBM Plex Mono',monospace">2566</span><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif">ภ.ง.ด. 90</span><span style="font:500 13px 'IBM Plex Mono',monospace;text-align:right">42,100</span><span style="font:500 13px 'IBM Plex Mono',monospace;text-align:right;color:#6E6A63">−1,850</span><span style="text-align:right"><span style="font:500 11px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.40 0.13 152);background:oklch(0.93 0.06 152);padding:4px 9px;border-radius:999px">ชำระแล้ว</span></span>
+</div>
+<div style="padding:14px 0;font:500 13px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.44 0.14 195)">ดูทั้งหมด 5 ปี →</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:22px 22px 18px">
+<div style="font:600 15px 'IBM Plex Sans Thai',sans-serif;margin-bottom:15px">สิ่งที่ต้องทำต่อ</div>
+<div style="display:flex;gap:12px;padding-bottom:14px;border-bottom:1px solid #F2EFE9;margin-bottom:14px">
+<div style="width:6px;border-radius:999px;background:oklch(0.60 0.16 45);flex:none"></div>
+<div><div style="font:600 13.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:3px">อัปโหลดหนังสือรับรอง SSF</div><div style="font:300 12.5px/1.5 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ยังขาด 1 ฉบับจาก บลจ.</div></div>
+</div>
+<div style="display:flex;gap:12px;padding-bottom:14px;border-bottom:1px solid #F2EFE9;margin-bottom:14px">
+<div style="width:6px;border-radius:999px;background:oklch(0.56 0.15 195);flex:none"></div>
+<div><div style="font:600 13.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:3px">ตัดสินใจแผนลดหย่อนก่อนสิ้นปี</div><div style="font:300 12.5px/1.5 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เหลือ 22 วันในการซื้อกองทุน</div></div>
+</div>
+<div style="display:flex;gap:12px">
+<div style="width:6px;border-radius:999px;background:#D5D0C6;flex:none"></div>
+<div><div style="font:600 13.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:3px">ยืนยันเลขบัญชีรับเงินคืน</div><div style="font:300 12.5px/1.5 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">พร้อมเพย์ ••••4471</div></div>
+</div>
+</div>
+
+<div style="background:oklch(0.96 0.045 195);border:1px solid oklch(0.87 0.09 195);border-radius:12px;padding:22px">
+<div style="font:600 14.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:6px">คุณจ่ายภาษีมากกว่าที่จำเป็น</div>
+<div style="font:300 13px/1.6 'IBM Plex Sans Thai',sans-serif;color:#4A5F5A;margin-bottom:14px">ใช้สิทธิลดหย่อนเพียง 29% ถ้าวางแผนเต็มที่ประหยัดได้ถึง <span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:#1A1917">24,000</span> บาทต่อปี</div>
+<span style="display:inline-block;font:600 13px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:oklch(0.50 0.15 195);padding:11px 18px;border-radius:8px">เปิดตัววางแผน</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2c">
+<div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>เปรียบเทียบแผนลดหย่อน — วางสามแผนข้างกัน เห็นทั้งภาษีที่ประหยัดและเงินที่ต้องล็อก</div>
+<div class="dv-card" style="width:1282px;background:#F6F4EF">
+<div style="padding:40px 44px 44px">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px">
+<div>
+<div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#7A756C;text-transform:uppercase;margin-bottom:9px">วางแผนภาษี · ปีภาษี 2568</div>
+<h1 style="margin:0 0 6px;font:600 34px/1.42 'IBM Plex Sans Thai',sans-serif">ประหยัดภาษีได้เท่าไหร่ แลกกับเงินที่ต้องล็อกไว้แค่ไหน</h1>
+<p style="margin:0;font:300 15px/1.6 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;max-width:64ch">ทุกแผนคำนวณจากเงินได้สุทธิ 676,000 บาทเท่ากัน ต่างกันแค่จำนวนเงินที่คุณเอาไปลงในสิทธิลดหย่อน</p>
+</div>
+<div style="display:flex;gap:9px">
+<span style="font:500 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;background:#fff;border:1px solid #D5D0C6;padding:10px 16px;border-radius:8px">สร้างแผนเอง</span>
+<span style="font:600 12.5px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:#1A1917;padding:11px 18px;border-radius:8px">ส่งให้ที่ปรึกษาดู</span>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px">
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:14px;overflow:hidden">
+<div style="padding:22px 24px 18px;border-bottom:1px solid #EDEAE3">
+<div style="font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#7A756C;margin-bottom:10px">แผน A</div>
+<div style="font:600 19px/1.4 'IBM Plex Sans Thai',sans-serif;margin-bottom:5px">ไม่ทำอะไรเพิ่ม</div>
+<div style="font:300 13px/1.55 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ใช้เฉพาะสิทธิที่มีอยู่แล้ว ไม่ต้องเอาเงินไปล็อกที่ไหน</div>
+</div>
+<div style="padding:20px 24px;display:flex;flex-direction:column;gap:11px;border-bottom:1px solid #EDEAE3">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">SSF เพิ่ม</span><span style="font:400 13.5px 'IBM Plex Mono',monospace;color:#8C877D">—</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">RMF</span><span style="font:400 13.5px 'IBM Plex Mono',monospace;color:#8C877D">—</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ประกันชีวิตเพิ่ม</span><span style="font:400 13.5px 'IBM Plex Mono',monospace;color:#8C877D">—</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">บริจาค</span><span style="font:400 13.5px 'IBM Plex Mono',monospace;color:#8C877D">—</span></div>
+</div>
+<div style="padding:22px 24px 24px">
+<div style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:4px">ภาษีที่ต้องจ่าย</div>
+<div style="font:600 34px 'IBM Plex Mono',monospace;letter-spacing:-.03em;margin-bottom:16px">53,900</div>
+<div style="display:flex;flex-direction:column;gap:9px;padding-top:16px;border-top:1px solid #EDEAE3">
+<div style="display:flex;justify-content:space-between"><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ประหยัดได้</span><span style="font:600 13px 'IBM Plex Mono',monospace">0</span></div>
+<div style="display:flex;justify-content:space-between"><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เงินที่ต้องล็อก</span><span style="font:600 13px 'IBM Plex Mono',monospace">0</span></div>
+<div style="display:flex;justify-content:space-between"><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">สภาพคล่องคงเหลือ</span><span style="font:600 13px 'IBM Plex Mono',monospace">สูงสุด</span></div>
+</div>
+</div>
+</div>
+
+<div style="background:#fff;border:2px solid oklch(0.56 0.15 195);border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(26,25,23,.10)">
+<div style="padding:22px 24px 18px;border-bottom:1px solid #EDEAE3;background:oklch(0.97 0.03 195)">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+<span style="font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:oklch(0.44 0.14 195)">แผน B</span>
+<span style="font:600 10.5px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:oklch(0.56 0.15 195);padding:4px 10px;border-radius:999px">แนะนำ</span>
+</div>
+<div style="font:600 19px/1.4 'IBM Plex Sans Thai',sans-serif;margin-bottom:5px">สมดุล</div>
+<div style="font:300 13px/1.55 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ลดภาษีลงหนึ่งขั้น โดยยังเหลือเงินสดไว้ใช้พอสมควร</div>
+</div>
+<div style="padding:20px 24px;display:flex;flex-direction:column;gap:11px;border-bottom:1px solid #EDEAE3">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">SSF เพิ่ม</span><span style="font:600 13.5px 'IBM Plex Mono',monospace">60,000</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">RMF</span><span style="font:400 13.5px 'IBM Plex Mono',monospace;color:#8C877D">—</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ประกันชีวิตเพิ่ม</span><span style="font:600 13.5px 'IBM Plex Mono',monospace">15,000</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">บริจาค</span><span style="font:600 13.5px 'IBM Plex Mono',monospace">5,000</span></div>
+</div>
+<div style="padding:22px 24px 24px">
+<div style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:4px">ภาษีที่ต้องจ่าย</div>
+<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
+<span style="font:600 34px 'IBM Plex Mono',monospace;letter-spacing:-.03em;color:oklch(0.44 0.14 195)">41,900</span>
+<span style="font:400 15px 'IBM Plex Mono',monospace;color:#8C877D;text-decoration:line-through">53,900</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:9px;padding-top:16px;border-top:1px solid #EDEAE3">
+<div style="display:flex;justify-content:space-between"><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ประหยัดได้</span><span style="font:600 13px 'IBM Plex Mono',monospace;color:oklch(0.45 0.15 152)">12,000</span></div>
+<div style="display:flex;justify-content:space-between"><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เงินที่ต้องล็อก</span><span style="font:600 13px 'IBM Plex Mono',monospace">80,000</span></div>
+<div style="display:flex;justify-content:space-between"><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">สภาพคล่องคงเหลือ</span><span style="font:600 13px 'IBM Plex Mono',monospace">ปานกลาง</span></div>
+</div>
+<span style="display:block;text-align:center;margin-top:18px;font:600 13.5px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:oklch(0.56 0.15 195);padding:13px 0;border-radius:9px">เลือกแผนนี้</span>
+</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:14px;overflow:hidden">
+<div style="padding:22px 24px 18px;border-bottom:1px solid #EDEAE3">
+<div style="font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#7A756C;margin-bottom:10px">แผน C</div>
+<div style="font:600 19px/1.4 'IBM Plex Sans Thai',sans-serif;margin-bottom:5px">ใช้สิทธิเต็มเพดาน</div>
+<div style="font:300 13px/1.55 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ภาษีต่ำสุดเท่าที่กฎหมายให้ แต่เงินก้อนใหญ่จะถูกล็อกยาว</div>
+</div>
+<div style="padding:20px 24px;display:flex;flex-direction:column;gap:11px;border-bottom:1px solid #EDEAE3">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">SSF เพิ่ม</span><span style="font:600 13.5px 'IBM Plex Mono',monospace">160,000</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">RMF</span><span style="font:600 13.5px 'IBM Plex Mono',monospace">113,000</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ประกันชีวิตเพิ่ม</span><span style="font:600 13.5px 'IBM Plex Mono',monospace">75,000</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">บริจาค</span><span style="font:600 13.5px 'IBM Plex Mono',monospace">20,000</span></div>
+</div>
+<div style="padding:22px 24px 24px">
+<div style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:4px">ภาษีที่ต้องจ่าย</div>
+<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
+<span style="font:600 34px 'IBM Plex Mono',monospace;letter-spacing:-.03em">19,850</span>
+<span style="font:400 15px 'IBM Plex Mono',monospace;color:#8C877D;text-decoration:line-through">53,900</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:9px;padding-top:16px;border-top:1px solid #EDEAE3">
+<div style="display:flex;justify-content:space-between"><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ประหยัดได้</span><span style="font:600 13px 'IBM Plex Mono',monospace;color:oklch(0.45 0.15 152)">34,050</span></div>
+<div style="display:flex;justify-content:space-between"><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เงินที่ต้องล็อก</span><span style="font:600 13px 'IBM Plex Mono',monospace;color:oklch(0.50 0.16 45)">368,000</span></div>
+<div style="display:flex;justify-content:space-between"><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">สภาพคล่องคงเหลือ</span><span style="font:600 13px 'IBM Plex Mono',monospace;color:oklch(0.50 0.16 45)">ต่ำ</span></div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:14px;padding:24px 26px;margin-top:18px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px">
+<span style="font:600 15.5px 'IBM Plex Sans Thai',sans-serif">ภาษีที่ประหยัดได้ เทียบกับเงินที่ต้องล็อก</span>
+<span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ยิ่งไปทางขวา ยิ่งต้องล็อกเงินมากขึ้นเพื่อประหยัดเพิ่มทีละน้อย</span>
+</div>
+<div style="display:flex;gap:2px;align-items:flex-end;height:104px;margin-bottom:12px">
+<div style="flex:1;height:6%;background:oklch(0.90 0.05 195);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:12%;background:oklch(0.88 0.06 195);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:19%;background:oklch(0.86 0.07 195);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:26%;background:oklch(0.84 0.08 195);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:35%;background:oklch(0.80 0.09 195);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:43%;background:oklch(0.76 0.11 195);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:52%;background:oklch(0.70 0.13 195);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:60%;background:oklch(0.64 0.14 195);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:66%;background:oklch(0.58 0.15 195);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:71%;background:oklch(0.56 0.15 195);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:76%;background:oklch(0.56 0.15 195);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:80%;background:oklch(0.60 0.14 90);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:84%;background:oklch(0.60 0.14 90);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:87%;background:oklch(0.62 0.15 60);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:90%;background:oklch(0.62 0.15 60);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:93%;background:oklch(0.60 0.16 45);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:95%;background:oklch(0.60 0.16 45);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:97%;background:oklch(0.60 0.16 45);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:99%;background:oklch(0.60 0.16 45);border-radius:3px 3px 0 0"></div>
+<div style="flex:1;height:100%;background:oklch(0.60 0.16 45);border-radius:3px 3px 0 0"></div>
+</div>
+<div style="display:flex;justify-content:space-between;font:400 11.5px 'IBM Plex Mono',monospace;color:#7A756C;padding-top:11px;border-top:1px solid #EDEAE3">
+<span>ล็อก 0</span><span style="color:oklch(0.44 0.14 195);font-weight:600">แผน B · 80,000</span><span>200,000</span><span style="color:oklch(0.50 0.16 45);font-weight:600">แผน C · 368,000</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2d">
+<div class="dv-olabel"><a class="dv-oid" href="#2d">2d</a>ยื่นแบบ / ดาวน์โหลด และ เข้าสู่ระบบ</div>
+<div class="dv-card" style="width:1282px;background:#EDEAE3;padding:30px">
+<div style="display:grid;grid-template-columns:1fr 452px;gap:24px;align-items:start">
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:14px;padding:32px 34px">
+<div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#7A756C;text-transform:uppercase;margin-bottom:10px">ขั้นตอนสุดท้าย</div>
+<h2 style="margin:0 0 7px;font:600 27px/1.42 'IBM Plex Sans Thai',sans-serif">ยื่นแบบ ภ.ง.ด. 91 ปีภาษี 2568</h2>
+<p style="margin:0 0 26px;font:300 14.5px/1.6 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;max-width:58ch">เราตรวจครบทุกช่องแล้ว เลือกได้ว่าจะยื่นผ่านระบบให้เลย หรือดาวน์โหลดไปกรอกในเว็บกรมสรรพากรเอง</p>
+
+<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:26px">
+<div style="display:flex;align-items:center;gap:16px;border:2px solid oklch(0.56 0.15 195);background:oklch(0.97 0.03 195);border-radius:12px;padding:20px 22px">
+<div style="width:17px;height:17px;border-radius:999px;border:5px solid oklch(0.56 0.15 195);background:#fff;flex:none"></div>
+<div style="flex:1">
+<div style="font:600 15.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:3px">ยื่นออนไลน์ผ่านภาษีง่าย</div>
+<div style="font:300 13px/1.55 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เชื่อมกับ e-Filing ของกรมสรรพากร ได้เลขรับทันที เงินคืนเข้าพร้อมเพย์ภายใน 7 วัน</div>
+</div>
+<span style="font:500 11.5px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.40 0.13 152);background:oklch(0.93 0.06 152);padding:5px 11px;border-radius:999px;flex:none">เร็วที่สุด</span>
+</div>
+<div style="display:flex;align-items:center;gap:16px;border:1px solid #E3DFD6;border-radius:12px;padding:20px 22px">
+<div style="width:17px;height:17px;border-radius:999px;border:1.5px solid #D5D0C6;flex:none"></div>
+<div style="flex:1">
+<div style="font:600 15.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:3px">ดาวน์โหลดไฟล์ไปยื่นเอง</div>
+<div style="font:300 13px/1.55 'IBM Plex Sans Thai',sans-serif;color:#7A756C">ได้ PDF ที่กรอกครบ พร้อมไฟล์สรุปสำหรับส่งให้นักบัญชี</div>
+</div>
+</div>
+</div>
+
+<div style="font:600 14.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:13px">เอกสารที่จะแนบไปด้วย</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:26px">
+<div style="display:flex;align-items:center;gap:12px;border:1px solid #E3DFD6;border-radius:10px;padding:13px 15px">
+<div style="width:30px;height:36px;border-radius:4px;background:#EDEAE3;flex:none"></div>
+<div style="flex:1;min-width:0"><div style="font:500 13px 'IBM Plex Sans Thai',sans-serif">50ทวิ-2568.pdf</div><div style="font:400 11px 'IBM Plex Mono',monospace;color:#7A756C">248 KB</div></div>
+<span style="width:17px;height:17px;border-radius:999px;background:oklch(0.58 0.16 152);color:#fff;font:600 10px 'IBM Plex Mono',monospace;display:flex;align-items:center;justify-content:center;flex:none">✓</span>
+</div>
+<div style="display:flex;align-items:center;gap:12px;border:1px solid #E3DFD6;border-radius:10px;padding:13px 15px">
+<div style="width:30px;height:36px;border-radius:4px;background:#EDEAE3;flex:none"></div>
+<div style="flex:1;min-width:0"><div style="font:500 13px 'IBM Plex Sans Thai',sans-serif">ประกันชีวิต-AIA.pdf</div><div style="font:400 11px 'IBM Plex Mono',monospace;color:#7A756C">96 KB</div></div>
+<span style="width:17px;height:17px;border-radius:999px;background:oklch(0.58 0.16 152);color:#fff;font:600 10px 'IBM Plex Mono',monospace;display:flex;align-items:center;justify-content:center;flex:none">✓</span>
+</div>
+<div style="display:flex;align-items:center;gap:12px;border:1px dashed oklch(0.75 0.11 45);background:oklch(0.98 0.03 45);border-radius:10px;padding:13px 15px">
+<div style="width:30px;height:36px;border-radius:4px;background:oklch(0.94 0.05 45);flex:none"></div>
+<div style="flex:1;min-width:0"><div style="font:500 13px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.46 0.15 45)">หนังสือรับรอง SSF</div><div style="font:400 11px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">ยังไม่ได้อัปโหลด</div></div>
+<span style="font:600 11.5px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:oklch(0.60 0.16 45);padding:6px 11px;border-radius:6px;flex:none">อัปโหลด</span>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;gap:8px;border:1px dashed #D5D0C6;border-radius:10px;padding:13px 15px;font:500 12.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">+ ลากไฟล์มาวางที่นี่</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding-top:22px;border-top:1px solid #E3DFD6">
+<div>
+<div style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:2px">ยอดขอคืน</div>
+<div style="display:flex;align-items:baseline;gap:8px"><span style="font:600 28px 'IBM Plex Mono',monospace;color:oklch(0.45 0.15 152);letter-spacing:-.02em">4,100</span><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">เข้าพร้อมเพย์ ••••4471</span></div>
+</div>
+<div style="display:flex;gap:11px">
+<span style="font:500 14px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;border:1px solid #D5D0C6;padding:14px 22px;border-radius:10px">ดาวน์โหลด PDF</span>
+<span style="font:600 14px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:oklch(0.56 0.15 195);padding:14px 30px;border-radius:10px">ยื่นแบบเลย</span>
+</div>
+</div>
+</div>
+
+<div style="background:#1A1917;border-radius:14px;padding:38px 36px;color:#fff;min-height:520px;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:34px"><div style="width:24px;height:24px;border-radius:6px;background:oklch(0.68 0.15 195)"></div><span style="font:600 16px 'IBM Plex Sans Thai',sans-serif">ภาษีง่าย</span></div>
+<h2 style="margin:0 0 8px;font:600 26px/1.42 'IBM Plex Sans Thai',sans-serif">เก็บผลคำนวณไว้ดูปีหน้า</h2>
+<p style="margin:0 0 28px;font:300 14px/1.65 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.6)">สมัครฟรี ไม่ต้องผูกบัตร ข้อมูลเข้ารหัสและลบได้ตลอดเวลา</p>
+
+<div style="display:flex;flex-direction:column;gap:11px;margin-bottom:20px">
+<div style="display:flex;flex-direction:column;gap:7px">
+<label style="font:500 12px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.55)">อีเมล</label>
+<div style="border:1px solid rgba(255,255,255,.22);border-radius:9px;padding:13px 15px;font:400 14px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.66)">somchai@email.com</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<label style="font:500 12px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.55)">รหัสผ่าน</label>
+<div style="border:1.5px solid oklch(0.68 0.15 195);border-radius:9px;padding:13px 15px;font:400 14px 'IBM Plex Mono',monospace;color:#fff;display:flex;justify-content:space-between"><span>••••••••••</span><span style="font:500 12px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.78 0.14 195)">แสดง</span></div>
+</div>
+</div>
+
+<span style="display:block;text-align:center;font:600 15px 'IBM Plex Sans Thai',sans-serif;color:#1A1917;background:oklch(0.78 0.14 195);padding:15px 0;border-radius:10px;margin-bottom:18px">สร้างบัญชี</span>
+
+<div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
+<div style="flex:1;height:1px;background:rgba(255,255,255,.16)"></div>
+<span style="font:400 11.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.66)">หรือ</span>
+<div style="flex:1;height:1px;background:rgba(255,255,255,.16)"></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;justify-content:center;gap:11px;border:1px solid rgba(255,255,255,.22);border-radius:9px;padding:13px 0"><div style="width:17px;height:17px;border-radius:4px;background:rgba(255,255,255,.85)"></div><span style="font:500 13.5px 'IBM Plex Sans Thai',sans-serif">ดำเนินการต่อด้วย Google</span></div>
+<div style="display:flex;align-items:center;justify-content:center;gap:11px;border:1px solid rgba(255,255,255,.22);border-radius:9px;padding:13px 0"><div style="width:17px;height:17px;border-radius:4px;background:oklch(0.72 0.16 152)"></div><span style="font:500 13.5px 'IBM Plex Sans Thai',sans-serif">ดำเนินการต่อด้วย LINE</span></div>
+</div>
+<div style="margin-top:auto;padding-top:26px;font:300 11.5px/1.6 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.64)">การสมัครถือว่ายอมรับเงื่อนไขการใช้งานและนโยบายความเป็นส่วนตัว · ภาษีง่ายไม่ใช่หน่วยงานของรัฐ</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2e">
+<div class="dv-olabel"><a class="dv-oid" href="#2e">2e</a>มือถือ — หน้าแรกและแดชบอร์ดในระบบเดียวกัน</div>
+<div class="dv-card" style="width:834px;background:#EDEAE3;padding:34px 0">
+<div style="display:flex;gap:30px;justify-content:center">
+
+<div style="width:372px;height:790px;background:#1A1917;border-radius:42px;padding:9px;flex:none">
+<div style="width:100%;height:100%;background:#F6F4EF;border-radius:34px;overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 26px 8px;font:600 13px 'IBM Plex Mono',monospace"><span>9:41</span><div style="display:flex;gap:5px;align-items:center"><div style="width:16px;height:9px;border:1px solid #1A1917;border-radius:2px"></div><div style="width:18px;height:9px;border:1px solid #1A1917;border-radius:2px;position:relative"><div style="position:absolute;inset:1px;right:5px;background:#1A1917;border-radius:1px"></div></div></div></div>
+<div style="padding:18px 24px 0;flex:1;overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:26px">
+<div style="display:flex;align-items:center;gap:9px"><div style="width:22px;height:22px;border-radius:6px;background:oklch(0.56 0.15 195)"></div><span style="font:600 15px 'IBM Plex Sans Thai',sans-serif">ภาษีง่าย</span></div>
+<span style="font:500 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เข้าสู่ระบบ</span>
+</div>
+<h1 style="margin:0 0 12px;font:600 31px/1.42 'IBM Plex Sans Thai',sans-serif">รู้ว่าต้องจ่ายภาษีเท่าไหร่ ในสามนาที</h1>
+<p style="margin:0 0 22px;font:300 14.5px/1.65 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">กรอกทีละคำถาม เห็นตัวเลขขยับสดๆ</p>
+<span style="display:block;text-align:center;font:600 15px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:oklch(0.56 0.15 195);padding:16px 0;border-radius:12px;margin-bottom:26px">เริ่มคำนวณฟรี</span>
+<div style="font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#7A756C;margin-bottom:12px">เลือกภาษี</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="background:#fff;border:1px solid #E3DFD6;border-top:3px solid oklch(0.56 0.15 195);border-radius:12px;padding:15px 15px 14px"><div style="font:600 13.5px/1.45 'IBM Plex Sans Thai',sans-serif;margin-bottom:4px">บุคคลธรรมดา</div><div style="font:400 11px 'IBM Plex Mono',monospace;color:#7A756C">ภ.ง.ด. 90/91</div></div>
+<div style="background:#fff;border:1px solid #E3DFD6;border-top:3px solid oklch(0.60 0.16 45);border-radius:12px;padding:15px 15px 14px"><div style="font:600 13.5px/1.45 'IBM Plex Sans Thai',sans-serif;margin-bottom:4px">นิติบุคคล</div><div style="font:400 11px 'IBM Plex Mono',monospace;color:#7A756C">ภ.ง.ด. 50</div></div>
+<div style="background:#fff;border:1px solid #E3DFD6;border-top:3px solid oklch(0.56 0.15 300);border-radius:12px;padding:15px 15px 14px"><div style="font:600 13.5px/1.45 'IBM Plex Sans Thai',sans-serif;margin-bottom:4px">มูลค่าเพิ่ม</div><div style="font:400 11px 'IBM Plex Mono',monospace;color:#7A756C">ภ.พ. 30</div></div>
+<div style="background:#fff;border:1px solid #E3DFD6;border-top:3px solid oklch(0.58 0.16 152);border-radius:12px;padding:15px 15px 14px"><div style="font:600 13.5px/1.45 'IBM Plex Sans Thai',sans-serif;margin-bottom:4px">หัก ณ ที่จ่าย</div><div style="font:400 11px 'IBM Plex Mono',monospace;color:#7A756C">ภ.ง.ด. 3/53</div></div>
+<div style="background:#fff;border:1px solid #E3DFD6;border-top:3px solid oklch(0.60 0.14 90);border-radius:12px;padding:15px 15px 14px"><div style="font:600 13.5px/1.45 'IBM Plex Sans Thai',sans-serif;margin-bottom:4px">ที่ดินและ<br/>สิ่งปลูกสร้าง</div><div style="font:400 11px 'IBM Plex Mono',monospace;color:#7A756C">ท้องถิ่น</div></div>
+<div style="background:#fff;border:1px solid #E3DFD6;border-top:3px solid oklch(0.56 0.15 262);border-radius:12px;padding:15px 15px 14px"><div style="font:600 13.5px/1.45 'IBM Plex Sans Thai',sans-serif;margin-bottom:4px">คริปโตและ<br/>การลงทุน</div><div style="font:400 11px 'IBM Plex Mono',monospace;color:#7A756C">40(4)(ฌ)</div></div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="width:372px;height:790px;background:#1A1917;border-radius:42px;padding:9px;flex:none">
+<div style="width:100%;height:100%;background:#F6F4EF;border-radius:34px;overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 26px 8px;font:600 13px 'IBM Plex Mono',monospace"><span>9:41</span><div style="display:flex;gap:5px;align-items:center"><div style="width:16px;height:9px;border:1px solid #1A1917;border-radius:2px"></div><div style="width:18px;height:9px;border:1px solid #1A1917;border-radius:2px;position:relative"><div style="position:absolute;inset:1px;right:5px;background:#1A1917;border-radius:1px"></div></div></div></div>
+<div style="padding:18px 24px 0;flex:1;overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+<div><div style="font:600 20px/1.4 'IBM Plex Sans Thai',sans-serif">ภาพรวมของคุณ</div><div style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">ปีภาษี 2568</div></div>
+<div style="width:32px;height:32px;border-radius:999px;background:#E3DFD6"></div>
+</div>
+<div style="background:#1A1917;border-radius:14px;padding:20px;color:#fff;margin-bottom:12px">
+<div style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.55);margin-bottom:6px">ภาษีรวมทุกโมดูล</div>
+<div style="font:600 38px 'IBM Plex Mono',monospace;letter-spacing:-.03em;margin-bottom:14px">53,900</div>
+<div style="display:flex;gap:20px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)">
+<div><div style="font:400 11.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.5);margin-bottom:2px">ขอคืน</div><div style="font:600 15px 'IBM Plex Mono',monospace;color:oklch(0.83 0.18 152)">4,100</div></div>
+<div><div style="font:400 11.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.5);margin-bottom:2px">เหลือเวลายื่น</div><div style="font:600 15px 'IBM Plex Mono',monospace">114 วัน</div></div>
+</div>
+</div>
+<div style="background:oklch(0.96 0.045 195);border:1px solid oklch(0.87 0.09 195);border-radius:14px;padding:17px 18px;margin-bottom:16px">
+<div style="font:600 13.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:4px">ยังประหยัดได้อีก 24,000</div>
+<div style="font:300 12.5px/1.55 'IBM Plex Sans Thai',sans-serif;color:#4A5F5A">ใช้สิทธิลดหย่อนไปแค่ 29% ของเพดาน</div>
+</div>
+<div style="font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#7A756C;margin-bottom:11px">5 ปีย้อนหลัง</div>
+<div style="display:flex;align-items:flex-end;gap:11px;height:96px;margin-bottom:8px">
+<div style="flex:1;height:55%;background:#E3DFD6;border-radius:6px 6px 0 0"></div>
+<div style="flex:1;height:65%;background:#E3DFD6;border-radius:6px 6px 0 0"></div>
+<div style="flex:1;height:75%;background:#E3DFD6;border-radius:6px 6px 0 0"></div>
+<div style="flex:1;height:85%;background:oklch(0.87 0.09 195);border-radius:6px 6px 0 0"></div>
+<div style="flex:1;height:100%;background:oklch(0.56 0.15 195);border-radius:6px 6px 0 0"></div>
+</div>
+<div style="display:flex;gap:11px;font:400 10.5px 'IBM Plex Mono',monospace;color:#7A756C;margin-bottom:18px"><span style="flex:1;text-align:center">64</span><span style="flex:1;text-align:center">65</span><span style="flex:1;text-align:center">66</span><span style="flex:1;text-align:center">67</span><span style="flex:1;text-align:center;color:#1A1917;font-weight:600">68</span></div>
+<div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:14px 16px">
+<div style="width:6px;height:34px;border-radius:999px;background:oklch(0.60 0.16 45);flex:none"></div>
+<div style="flex:1"><div style="font:600 13px 'IBM Plex Sans Thai',sans-serif">อัปโหลดหนังสือรับรอง SSF</div><div style="font:300 11.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">ยังขาด 1 ฉบับ</div></div>
+<span style="font:400 18px 'IBM Plex Sans Thai',sans-serif;color:#8C877D">›</span>
+</div>
+</div>
+<div style="display:flex;justify-content:space-around;padding:14px 0 22px;border-top:1px solid #E3DFD6;background:#fff">
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:20px;height:20px;border-radius:5px;background:oklch(0.56 0.15 195)"></div><span style="font:500 10.5px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.44 0.14 195)">ภาพรวม</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:20px;height:20px;border-radius:5px;background:#D5D0C6"></div><span style="font:400 10.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">คำนวณ</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:20px;height:20px;border-radius:5px;background:#D5D0C6"></div><span style="font:400 10.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">วางแผน</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:20px;height:20px;border-radius:5px;background:#D5D0C6"></div><span style="font:400 10.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">ฉัน</span></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">ลองสั่งต่อได้ เช่น "ทำหน้ากรอกของโมดูล VAT กับนิติบุคคล" · "ขอมุมมองสำนักงานบัญชี จัดการลูกค้าหลายราย" · "เอา <a class="dv-oid" href="#2c">2c</a> มาทำเป็นแบบเลื่อนปรับสดๆ" · "ทำให้คำนวณได้จริงทั้ง <a class="dv-oid" href="#1a">1a</a>"</p>
+</section>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">เว็บคำนวณภาษีเงินได้บุคคลธรรมดา ปีภาษี 2568 — สี่ทิศทาง</span></div>
+
+<div style="display:flex;gap:14px;flex-wrap:wrap;margin:-8px 0 26px;font:400 11.5px/1.5 'IBM Plex Sans Thai',sans-serif;color:rgba(0,0,0,.5)">
+<span style="padding:4px 9px;background:rgba(0,0,0,.05);border-radius:999px">สมมติฐาน: มนุษย์เงินเดือน + ฟรีแลนซ์</span>
+<span style="padding:4px 9px;background:rgba(0,0,0,.05);border-radius:999px">เคสตัวอย่างเดียวกันทุกแบบ: รายได้ 910,000 · เงินได้สุทธิ 676,000 · ภาษี 53,900</span>
+<span style="padding:4px 9px;background:rgba(0,0,0,.05);border-radius:999px">ตัวอักษร IBM Plex Sans Thai + Plex Mono สำหรับตัวเลข</span>
+</div>
+
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Wizard ทีละสเต็ป + แถบสรุปสดข้างขวา — ปลอดภัยที่สุด กรอกไม่หลง</div>
+<div class="dv-card" style="width:1282px">
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:62px;border-bottom:1px solid #E3DFD6;background:#fff">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:24px;height:24px;border-radius:6px;background:oklch(0.56 0.15 195)"></div>
+<span style="font:600 16px/1.4 'IBM Plex Sans Thai',sans-serif">ภาษีง่าย</span>
+</div>
+<div style="display:flex;align-items:center;gap:26px">
+<div style="display:flex;align-items:center;gap:8px"><div style="width:20px;height:20px;border-radius:999px;background:oklch(0.90 0.08 195);color:oklch(0.44 0.14 195);font:600 10px 'IBM Plex Mono',monospace;display:flex;align-items:center;justify-content:center">✓</div><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ผู้ยื่น</span></div>
+<div style="width:22px;height:1px;background:#E3DFD6"></div>
+<div style="display:flex;align-items:center;gap:8px"><div style="width:20px;height:20px;border-radius:999px;background:oklch(0.56 0.15 195);color:#fff;font:600 10px 'IBM Plex Mono',monospace;display:flex;align-items:center;justify-content:center">2</div><span style="font:600 13px 'IBM Plex Sans Thai',sans-serif;color:#1A1917">รายได้</span></div>
+<div style="width:22px;height:1px;background:#E3DFD6"></div>
+<div style="display:flex;align-items:center;gap:8px"><div style="width:20px;height:20px;border-radius:999px;border:1px solid #D5D0C6;color:#7A756C;font:500 10px 'IBM Plex Mono',monospace;display:flex;align-items:center;justify-content:center">3</div><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">ค่าลดหย่อน</span></div>
+<div style="width:22px;height:1px;background:#E3DFD6"></div>
+<div style="display:flex;align-items:center;gap:8px"><div style="width:20px;height:20px;border-radius:999px;border:1px solid #D5D0C6;color:#7A756C;font:500 10px 'IBM Plex Mono',monospace;display:flex;align-items:center;justify-content:center">4</div><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">สรุป</span></div>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font:500 11.5px 'IBM Plex Mono',monospace;color:#6E6A63;padding:5px 10px;border:1px solid #E3DFD6;border-radius:999px">ปีภาษี 2568</span>
+<div style="width:28px;height:28px;border-radius:999px;background:#E8E4DB"></div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 372px;background:#F6F4EF">
+<div style="padding:34px 34px 40px 40px">
+<div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:oklch(0.56 0.15 195);text-transform:uppercase">STEP 02 / 04</div>
+<h1 style="margin:8px 0 6px;font:600 32px/1.42 'IBM Plex Sans Thai',sans-serif">รายได้ทั้งปี 2568</h1>
+<p style="margin:0 0 26px;font:300 15px/1.6 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;max-width:56ch">กรอกยอดก่อนหักภาษี ระบบจะรวมและหักค่าใช้จ่ายให้อัตโนมัติ ดูผลได้ทันทีทางขวา</p>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:22px 24px;margin-bottom:16px">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font:500 10px 'IBM Plex Mono',monospace;color:#fff;background:#1A1917;padding:3px 6px;border-radius:4px">40(1)</span>
+<span style="font:600 15px 'IBM Plex Sans Thai',sans-serif">เงินเดือน ค่าจ้าง โบนัส</span>
+</div>
+<span style="font:400 12px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">จากหนังสือรับรอง 50 ทวิ</span>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+<div style="display:flex;flex-direction:column;gap:7px">
+<label style="font:500 12px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เงินเดือนต่อเดือน</label>
+<div style="display:flex;align-items:center;gap:8px;border:1.5px solid oklch(0.56 0.15 195);background:#fff;border-radius:9px;padding:11px 14px;box-shadow:0 0 0 3px oklch(0.92 0.07 195)">
+<input value="65,000" style="flex:1;border:0;outline:0;font:500 16px 'IBM Plex Mono',monospace;color:#1A1917;background:transparent;min-width:0" />
+<span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">บาท</span>
+</div>
+<span style="font:400 11.5px 'IBM Plex Mono',monospace;color:#7A756C">× 12 เดือน = 780,000</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<label style="font:500 12px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">โบนัส / ค่าคอมมิชชั่น</label>
+<div style="display:flex;align-items:center;gap:8px;border:1px solid #E3DFD6;background:#fff;border-radius:9px;padding:12px 14px">
+<input value="130,000" style="flex:1;border:0;outline:0;font:500 16px 'IBM Plex Mono',monospace;color:#1A1917;background:transparent;min-width:0" />
+<span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">บาท</span>
+</div>
+<span style="font:400 11.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">รวมเงินได้ที่จ่ายครั้งเดียวเพราะเหตุออกจากงานด้วย</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px dashed #E3DFD6">
+<span style="font:500 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">รวมเงินได้ประเภทที่ 1</span>
+<span style="font:600 18px 'IBM Plex Mono',monospace">910,000</span>
+</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:22px 24px;margin-bottom:16px">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+<span style="font:600 15px 'IBM Plex Sans Thai',sans-serif">เงินได้ประเภทอื่น</span>
+<span style="font:400 12px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">ยังไม่มีรายการ</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:9px">
+<span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;border:1px dashed #D5D0C6;border-radius:999px;padding:7px 13px">+ รับจ้างทั่วไป 40(2)</span>
+<span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;border:1px dashed #D5D0C6;border-radius:999px;padding:7px 13px">+ วิชาชีพอิสระ 40(6)</span>
+<span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;border:1px dashed #D5D0C6;border-radius:999px;padding:7px 13px">+ ค่าเช่า 40(5)</span>
+<span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;border:1px dashed #D5D0C6;border-radius:999px;padding:7px 13px">+ เงินปันผล 40(4)</span>
+</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:22px 24px">
+<div style="font:600 15px 'IBM Plex Sans Thai',sans-serif;margin-bottom:4px">วิธีหักค่าใช้จ่าย</div>
+<div style="font:300 13px/1.5 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:16px">เงินได้ประเภทที่ 1 หักแบบเหมาได้ 50% แต่ไม่เกิน 100,000 บาท</div>
+<div style="display:flex;gap:12px">
+<div style="flex:1;border:1.5px solid oklch(0.56 0.15 195);background:oklch(0.97 0.03 195);border-radius:10px;padding:14px 16px">
+<div style="display:flex;align-items:center;gap:9px;margin-bottom:5px">
+<div style="width:15px;height:15px;border-radius:999px;border:4px solid oklch(0.56 0.15 195);background:#fff"></div>
+<span style="font:600 13.5px 'IBM Plex Sans Thai',sans-serif">เหมา 50%</span>
+</div>
+<div style="font:400 12px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;padding-left:24px">หักได้ <span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:#1A1917">100,000</span> (เต็มเพดาน)</div>
+</div>
+<div style="flex:1;border:1px solid #E3DFD6;border-radius:10px;padding:14px 16px">
+<div style="display:flex;align-items:center;gap:9px;margin-bottom:5px">
+<div style="width:15px;height:15px;border-radius:999px;border:1.5px solid #D5D0C6"></div>
+<span style="font:500 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ตามจริง</span>
+</div>
+<div style="font:400 12px 'IBM Plex Sans Thai',sans-serif;color:#7A756C;padding-left:24px">ต้องแนบหลักฐานค่าใช้จ่าย</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:26px">
+<span style="font:500 14px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;padding:12px 20px;border:1px solid #D5D0C6;border-radius:9px">← ย้อนกลับ</span>
+<div style="display:flex;align-items:center;gap:16px">
+<span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">บันทึกร่างอัตโนมัติ · 2 นาทีที่แล้ว</span>
+<span style="font:600 14px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:oklch(0.56 0.15 195);padding:13px 30px;border-radius:9px">ถัดไป: ค่าลดหย่อน →</span>
+</div>
+</div>
+</div>
+
+<div style="border-left:1px solid #E3DFD6;background:#fff;padding:34px 30px">
+<div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#7A756C;text-transform:uppercase;margin-bottom:18px">สรุปแบบเรียลไทม์</div>
+<div style="display:flex;flex-direction:column;gap:11px;padding-bottom:18px;border-bottom:1px solid #E3DFD6">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เงินได้พึงประเมิน</span><span style="font:500 14px 'IBM Plex Mono',monospace">910,000</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">หักค่าใช้จ่าย</span><span style="font:500 14px 'IBM Plex Mono',monospace;color:#6E6A63">−100,000</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">หักค่าลดหย่อน<span style="font-size:11px;color:#7A756C"> (ประมาณการ)</span></span><span style="font:500 14px 'IBM Plex Mono',monospace;color:#6E6A63">−134,000</span></div>
+</div>
+<div style="padding:18px 0;border-bottom:1px solid #E3DFD6">
+<div style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:4px">เงินได้สุทธิ</div>
+<div style="font:600 30px 'IBM Plex Mono',monospace;letter-spacing:-.02em">676,000</div>
+</div>
+<div style="padding:18px 0 20px;border-bottom:1px solid #E3DFD6">
+<div style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:4px">ภาษีที่ต้องชำระ</div>
+<div style="display:flex;align-items:baseline;gap:8px">
+<span style="font:600 38px 'IBM Plex Mono',monospace;color:oklch(0.56 0.15 195);letter-spacing:-.03em">53,900</span>
+<span style="font:400 14px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">บาท</span>
+</div>
+<div style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C;margin-top:5px">อัตราภาษีเฉลี่ยจริง 5.9%</div>
+</div>
+<div style="padding-top:20px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px">
+<span style="font:500 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ขั้นภาษีปัจจุบัน</span>
+<span style="font:600 12.5px 'IBM Plex Mono',monospace;color:oklch(0.56 0.15 195)">15%</span>
+</div>
+<div style="height:7px;border-radius:999px;background:#EDEAE3;overflow:hidden;margin-bottom:9px">
+<div style="width:70.4%;height:100%;background:oklch(0.56 0.15 195);border-radius:999px"></div>
+</div>
+<div style="font:300 12.5px/1.5 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">อีก <span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:#1A1917">74,000</span> จะขยับขึ้นขั้น 20%</div>
+</div>
+<div style="margin-top:22px;background:oklch(0.97 0.035 45);border:1px solid oklch(0.88 0.08 45);border-radius:10px;padding:14px 15px">
+<div style="font:600 12.5px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.50 0.16 45);margin-bottom:5px">ยังลดได้อีก</div>
+<div style="font:300 12.5px/1.55 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ซื้อ SSF/RMF เพิ่ม <span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:#1A1917">60,000</span> ประหยัดภาษีได้ <span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:oklch(0.50 0.16 45)">9,000</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>สมุดบัญชีหน้าเดียว — เห็นทุกบรรทัดพร้อมกัน แก้ตรงไหนก็ได้ สำหรับคนที่เคยยื่นเอง</div>
+<div class="dv-card" style="width:1282px">
+<div style="display:grid;grid-template-columns:216px 1fr;background:#fff">
+
+<div style="background:#1A1917;padding:26px 20px;color:#fff;min-height:940px">
+<div style="display:flex;align-items:center;gap:9px;margin-bottom:34px">
+<div style="width:22px;height:22px;border-radius:6px;background:oklch(0.68 0.15 195)"></div>
+<span style="font:600 15px 'IBM Plex Sans Thai',sans-serif">ภาษีง่าย</span>
+</div>
+<div style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,255,255,.66);margin-bottom:12px">แบบ ภ.ง.ด. 91 / 2568</div>
+<div style="display:flex;flex-direction:column;gap:2px">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:7px;background:rgba(255,255,255,.10)"><span style="font:500 13px 'IBM Plex Sans Thai',sans-serif">ก. รายได้</span><span style="font:500 11px 'IBM Plex Mono',monospace;color:oklch(0.80 0.14 195)">910K</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:7px"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.65)">ข. ค่าใช้จ่าย</span><span style="font:500 11px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.66)">100K</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:7px"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.65)">ค. ค่าลดหย่อน</span><span style="font:500 11px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.66)">134K</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:7px"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.65)">ง. ภาษีหัก ณ ที่จ่าย</span><span style="font:500 11px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.66)">58K</span></div>
+</div>
+<div style="height:1px;background:rgba(255,255,255,.14);margin:22px 0"></div>
+<div style="font:300 12px/1.6 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.68)">กรอกครบ 18 จาก 24 ช่อง</div>
+<div style="height:5px;border-radius:999px;background:rgba(255,255,255,.14);margin-top:9px;overflow:hidden"><div style="width:75%;height:100%;background:oklch(0.68 0.15 195);border-radius:999px"></div></div>
+<div style="margin-top:auto;padding-top:34px">
+<div style="font:300 12px/1.65 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.66)">ข้อมูลทั้งหมดคำนวณในเครื่องคุณ<br/>ไม่ถูกส่งออกไปที่ไหน</div>
+</div>
+</div>
+
+<div style="padding:34px 44px 0;background:#FBFAF7">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:20px;border-bottom:2px solid #1A1917">
+<div>
+<h1 style="margin:0 0 4px;font:600 27px/1.2 'IBM Plex Sans Thai',sans-serif;letter-spacing:-.02em">แบบแสดงรายการภาษี</h1>
+<div style="font:300 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">นายสมชาย ใจดี · เลขประจำตัวผู้เสียภาษี 3-1012-•••••-••-•</div>
+</div>
+<div style="display:flex;gap:9px">
+<span style="font:500 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;padding:9px 15px;border:1px solid #D5D0C6;border-radius:8px;background:#fff">นำเข้าไฟล์ 50 ทวิ</span>
+<span style="font:500 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;padding:9px 15px;border:1px solid #D5D0C6;border-radius:8px;background:#fff">ล้างทั้งหมด</span>
+</div>
+</div>
+
+<div style="padding:24px 0 6px;font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:oklch(0.56 0.15 195)">ก · เงินได้พึงประเมิน</div>
+<div style="display:flex;align-items:baseline;gap:14px;padding:13px 0;border-bottom:1px solid #EDEAE3"><span style="font:400 14px 'IBM Plex Sans Thai',sans-serif;color:#1A1917">เงินเดือน ค่าจ้าง 40(1)</span><span style="flex:1;border-bottom:1px dotted #CFCABF;transform:translateY(-4px)"></span><span style="font:500 15px 'IBM Plex Mono',monospace;min-width:110px;text-align:right">780,000</span></div>
+<div style="display:flex;align-items:baseline;gap:14px;padding:13px 0;border-bottom:1px solid #EDEAE3"><span style="font:400 14px 'IBM Plex Sans Thai',sans-serif;color:#1A1917">โบนัส</span><span style="flex:1;border-bottom:1px dotted #CFCABF;transform:translateY(-4px)"></span><span style="font:500 15px 'IBM Plex Mono',monospace;min-width:110px;text-align:right">130,000</span></div>
+<div style="display:flex;align-items:baseline;gap:14px;padding:13px 0;border-bottom:1px solid #EDEAE3"><span style="font:400 14px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">รับจ้างอิสระ 40(2)</span><span style="flex:1;border-bottom:1px dotted #CFCABF;transform:translateY(-4px)"></span><span style="font:400 15px 'IBM Plex Mono',monospace;min-width:110px;text-align:right;color:#8C877D">—</span></div>
+<div style="display:flex;align-items:baseline;gap:14px;padding:14px 0;border-bottom:1px solid #1A1917"><span style="font:600 14px 'IBM Plex Sans Thai',sans-serif">รวมเงินได้</span><span style="flex:1"></span><span style="font:600 16px 'IBM Plex Mono',monospace;min-width:110px;text-align:right">910,000</span></div>
+
+<div style="padding:26px 0 6px;font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:oklch(0.56 0.15 195)">ข · หักค่าใช้จ่าย</div>
+<div style="display:flex;align-items:baseline;gap:14px;padding:13px 0;border-bottom:1px solid #1A1917"><span style="font:400 14px 'IBM Plex Sans Thai',sans-serif">เหมาจ่าย 50% <span style="color:#7A756C;font-size:12.5px">(เพดาน 100,000)</span></span><span style="flex:1;border-bottom:1px dotted #CFCABF;transform:translateY(-4px)"></span><span style="font:600 15px 'IBM Plex Mono',monospace;min-width:110px;text-align:right">−100,000</span></div>
+
+<div style="padding:26px 0 6px;font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:oklch(0.56 0.15 195)">ค · หักค่าลดหย่อน</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 44px">
+<div>
+<div style="display:flex;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid #EDEAE3"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif">ส่วนตัว</span><span style="flex:1;border-bottom:1px dotted #CFCABF;transform:translateY(-4px)"></span><span style="font:500 14px 'IBM Plex Mono',monospace">60,000</span></div>
+<div style="display:flex;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid #EDEAE3"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">คู่สมรส</span><span style="flex:1;border-bottom:1px dotted #CFCABF;transform:translateY(-4px)"></span><span style="font:400 14px 'IBM Plex Mono',monospace;color:#8C877D">—</span></div>
+<div style="display:flex;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid #EDEAE3"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">บุตร × 0</span><span style="flex:1;border-bottom:1px dotted #CFCABF;transform:translateY(-4px)"></span><span style="font:400 14px 'IBM Plex Mono',monospace;color:#8C877D">—</span></div>
+<div style="display:flex;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid #EDEAE3"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif">ประกันสังคม</span><span style="flex:1;border-bottom:1px dotted #CFCABF;transform:translateY(-4px)"></span><span style="font:500 14px 'IBM Plex Mono',monospace">9,000</span></div>
+</div>
+<div>
+<div style="display:flex;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid #EDEAE3"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif">ประกันชีวิต</span><span style="flex:1;border-bottom:1px dotted #CFCABF;transform:translateY(-4px)"></span><span style="font:500 14px 'IBM Plex Mono',monospace">25,000</span></div>
+<div style="display:flex;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid #EDEAE3"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif">กองทุน SSF</span><span style="flex:1;border-bottom:1px dotted #CFCABF;transform:translateY(-4px)"></span><span style="font:500 14px 'IBM Plex Mono',monospace">40,000</span></div>
+<div style="display:flex;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid #EDEAE3"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">กองทุน RMF</span><span style="flex:1;border-bottom:1px dotted #CFCABF;transform:translateY(-4px)"></span><span style="font:400 14px 'IBM Plex Mono',monospace;color:#8C877D">—</span></div>
+<div style="display:flex;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid #EDEAE3"><span style="font:400 13.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">ดอกเบี้ยบ้าน</span><span style="flex:1;border-bottom:1px dotted #CFCABF;transform:translateY(-4px)"></span><span style="font:400 14px 'IBM Plex Mono',monospace;color:#8C877D">—</span></div>
+</div>
+</div>
+<div style="display:flex;align-items:baseline;gap:14px;padding:14px 0;border-top:1px solid #1A1917;border-bottom:1px solid #1A1917;margin-top:2px"><span style="font:600 14px 'IBM Plex Sans Thai',sans-serif">รวมค่าลดหย่อน</span><span style="flex:1"></span><span style="font:600 16px 'IBM Plex Mono',monospace;min-width:110px;text-align:right">−134,000</span></div>
+
+<div style="display:flex;align-items:baseline;gap:14px;padding:20px 0 26px"><span style="font:600 17px/1.4 'IBM Plex Sans Thai',sans-serif">เงินได้สุทธิ</span><span style="flex:1"></span><span style="font:600 26px 'IBM Plex Mono',monospace;letter-spacing:-.02em">676,000</span></div>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:20px 44px;background:#1A1917;color:#fff">
+<div style="display:flex;gap:44px">
+<div><div style="font:400 11.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.5);margin-bottom:3px">ภาษีที่คำนวณได้</div><div style="font:600 22px 'IBM Plex Mono',monospace">53,900</div></div>
+<div><div style="font:400 11.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.5);margin-bottom:3px">หัก ณ ที่จ่ายแล้ว</div><div style="font:600 22px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.7)">58,000</div></div>
+<div><div style="font:400 11.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.5);margin-bottom:3px">ขอคืนได้</div><div style="font:600 22px 'IBM Plex Mono',monospace;color:oklch(0.83 0.18 152)">+4,100</div></div>
+</div>
+<div style="display:flex;align-items:center;gap:14px">
+<span style="font:500 13px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.7);padding:11px 18px;border:1px solid rgba(255,255,255,.25);border-radius:8px">ดาวน์โหลด PDF</span>
+<span style="font:600 13.5px 'IBM Plex Sans Thai',sans-serif;color:#1A1917;background:#fff;padding:12px 26px;border-radius:8px">ดูรายละเอียดการคำนวณ</span>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>หน้าผลลัพธ์ — อธิบายว่าภาษีมาจากไหน ทีละขั้นบันได แล้วบอกว่าลดได้อีกเท่าไหร่</div>
+<div class="dv-card" style="width:1282px;background:#F6F4EF">
+
+<div style="padding:44px 52px 0">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:30px">
+<div>
+<div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#7A756C;text-transform:uppercase;margin-bottom:9px">ผลการคำนวณ · ปีภาษี 2568</div>
+<h1 style="margin:0;font:600 40px/1.42 'IBM Plex Sans Thai',sans-serif;max-width:19ch">ปีนี้คุณจ่ายภาษี <span style="font-family:'IBM Plex Mono',monospace">53,900</span> บาท</h1>
+</div>
+<div style="display:flex;gap:10px;padding-top:8px">
+<span style="font:500 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;padding:11px 18px;border:1px solid #D5D0C6;border-radius:9px;background:#fff">แชร์ผล</span>
+<span style="font:600 13px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:#1A1917;padding:12px 22px;border-radius:9px">บันทึกเป็น PDF</span>
+</div>
+</div>
+
+<sc-if value="{{ isRefund }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;gap:20px;background:oklch(0.95 0.065 152);border:1px solid oklch(0.83 0.11 152);border-radius:12px;padding:20px 26px;margin-bottom:26px">
+<div style="width:38px;height:38px;border-radius:999px;background:oklch(0.58 0.16 152);color:#fff;display:flex;align-items:center;justify-content:center;font:600 18px 'IBM Plex Mono',monospace;flex:none">↓</div>
+<div style="flex:1">
+<div style="font:600 16px 'IBM Plex Sans Thai',sans-serif;margin-bottom:2px">คุณขอคืนภาษีได้ <span style="font-family:'IBM Plex Mono',monospace">4,100</span> บาท</div>
+<div style="font:300 13.5px 'IBM Plex Sans Thai',sans-serif;color:#4A6B58">นายจ้างหัก ณ ที่จ่ายไว้ 58,000 มากกว่าภาษีจริง 53,900 — ยื่นขอคืนได้ทันทีเมื่อเปิดระบบ</div>
+</div>
+<span style="font:600 13px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:oklch(0.50 0.16 152);padding:11px 20px;border-radius:8px;flex:none">วิธีขอคืน</span>
+</div>
+</sc-if>
+<sc-if value="{{ isOwed }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:20px;background:oklch(0.96 0.05 45);border:1px solid oklch(0.84 0.11 45);border-radius:12px;padding:20px 26px;margin-bottom:26px">
+<div style="width:38px;height:38px;border-radius:999px;background:oklch(0.58 0.17 45);color:#fff;display:flex;align-items:center;justify-content:center;font:600 18px 'IBM Plex Mono',monospace;flex:none">!</div>
+<div style="flex:1">
+<div style="font:600 16px 'IBM Plex Sans Thai',sans-serif;margin-bottom:2px">คุณต้องชำระเพิ่ม <span style="font-family:'IBM Plex Mono',monospace">4,100</span> บาท</div>
+<div style="font:300 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6B4A3A">ผ่อนได้ 3 งวดโดยไม่มีดอกเบี้ย หากยอดเกิน 3,000 บาท</div>
+</div>
+<span style="font:600 13px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:oklch(0.52 0.17 45);padding:11px 20px;border-radius:8px;flex:none">ช่องทางชำระ</span>
+</div>
+</sc-if>
+
+<div style="display:grid;grid-template-columns:1fr 372px;gap:22px;padding-bottom:44px">
+<div style="display:flex;flex-direction:column;gap:22px">
+
+<sc-if value="{{ showBracketChart }}" hint-placeholder-val="{{ true }}">
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:26px 28px">
+<div style="font:600 16px 'IBM Plex Sans Thai',sans-serif;margin-bottom:4px">เงินได้สุทธิ 676,000 ถูกซอยเป็น 4 ขั้น</div>
+<div style="font:300 13px/1.5 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;margin-bottom:22px">ภาษีไทยเป็นแบบขั้นบันได เงินก้อนแรกได้รับยกเว้น ส่วนที่เกินจึงคิดอัตราสูงขึ้นทีละขั้น</div>
+
+<div style="display:flex;height:62px;border-radius:9px;overflow:hidden;margin-bottom:12px">
+<div style="width:22.2%;background:#E3DFD6;display:flex;flex-direction:column;justify-content:center;padding-left:14px"><span style="font:600 13px 'IBM Plex Mono',monospace;color:#6E6A63">0%</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:#7A756C">150,000</span></div>
+<div style="width:22.2%;background:oklch(0.87 0.09 195);display:flex;flex-direction:column;justify-content:center;padding-left:14px"><span style="font:600 13px 'IBM Plex Mono',monospace;color:oklch(0.35 0.11 195)">5%</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:oklch(0.44 0.09 195)">150,000</span></div>
+<div style="width:29.6%;background:oklch(0.70 0.13 195);display:flex;flex-direction:column;justify-content:center;padding-left:14px"><span style="font:600 13px 'IBM Plex Mono',monospace;color:#fff">10%</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.85)">200,000</span></div>
+<div style="width:26%;background:oklch(0.56 0.15 195);display:flex;flex-direction:column;justify-content:center;padding-left:14px"><span style="font:600 13px 'IBM Plex Mono',monospace;color:#fff">15%</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.85)">176,000</span></div>
+</div>
+<div style="display:flex;justify-content:space-between;font:400 11px 'IBM Plex Mono',monospace;color:#7A756C;margin-bottom:24px"><span>0</span><span>150K</span><span>300K</span><span>500K</span><span>676K</span></div>
+
+<div style="display:grid;grid-template-columns:1.6fr 0.7fr 1fr 1fr;font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#7A756C;padding-bottom:9px;border-bottom:1px solid #E3DFD6">
+<span>ช่วงเงินได้สุทธิ</span><span>อัตรา</span><span style="text-align:right">เงินในขั้น</span><span style="text-align:right">ภาษี</span>
+</div>
+<div style="display:grid;grid-template-columns:1.6fr 0.7fr 1fr 1fr;align-items:center;padding:11px 0;border-bottom:1px solid #F2EFE9;font-family:'IBM Plex Mono',monospace"><span style="font:400 13px 'IBM Plex Mono',monospace">0 – 150,000</span><span style="font:500 13px 'IBM Plex Mono',monospace;color:#6E6A63">ยกเว้น</span><span style="font:400 13px 'IBM Plex Mono',monospace;text-align:right">150,000</span><span style="font:500 13px 'IBM Plex Mono',monospace;text-align:right">0</span></div>
+<div style="display:grid;grid-template-columns:1.6fr 0.7fr 1fr 1fr;align-items:center;padding:11px 0;border-bottom:1px solid #F2EFE9"><span style="font:400 13px 'IBM Plex Mono',monospace">150,001 – 300,000</span><span style="font:500 13px 'IBM Plex Mono',monospace;color:#6E6A63">5%</span><span style="font:400 13px 'IBM Plex Mono',monospace;text-align:right">150,000</span><span style="font:500 13px 'IBM Plex Mono',monospace;text-align:right">7,500</span></div>
+<div style="display:grid;grid-template-columns:1.6fr 0.7fr 1fr 1fr;align-items:center;padding:11px 0;border-bottom:1px solid #F2EFE9"><span style="font:400 13px 'IBM Plex Mono',monospace">300,001 – 500,000</span><span style="font:500 13px 'IBM Plex Mono',monospace;color:#6E6A63">10%</span><span style="font:400 13px 'IBM Plex Mono',monospace;text-align:right">200,000</span><span style="font:500 13px 'IBM Plex Mono',monospace;text-align:right">20,000</span></div>
+<div style="display:grid;grid-template-columns:1.6fr 0.7fr 1fr 1fr;align-items:center;padding:11px 0;border-bottom:1px solid #F2EFE9;background:oklch(0.96 0.045 195);margin:0 -12px;padding-left:12px;padding-right:12px;border-radius:6px"><span style="font:600 13px 'IBM Plex Mono',monospace">500,001 – 750,000</span><span style="font:600 13px 'IBM Plex Mono',monospace;color:oklch(0.44 0.14 195)">15%</span><span style="font:500 13px 'IBM Plex Mono',monospace;text-align:right">176,000</span><span style="font:600 13px 'IBM Plex Mono',monospace;text-align:right;color:oklch(0.44 0.14 195)">26,400</span></div>
+<div style="display:grid;grid-template-columns:1.6fr 0.7fr 1fr 1fr;align-items:center;padding:11px 0;border-bottom:1px solid #F2EFE9;opacity:.4"><span style="font:400 13px 'IBM Plex Mono',monospace">750,001 – 1,000,000</span><span style="font:400 13px 'IBM Plex Mono',monospace">20%</span><span style="font:400 13px 'IBM Plex Mono',monospace;text-align:right">—</span><span style="font:400 13px 'IBM Plex Mono',monospace;text-align:right">—</span></div>
+<div style="display:grid;grid-template-columns:1.6fr 0.7fr 1fr 1fr;align-items:center;padding:11px 0;border-bottom:1px solid #F2EFE9;opacity:.4"><span style="font:400 13px 'IBM Plex Mono',monospace">1,000,001 – 2,000,000</span><span style="font:400 13px 'IBM Plex Mono',monospace">25%</span><span style="font:400 13px 'IBM Plex Mono',monospace;text-align:right">—</span><span style="font:400 13px 'IBM Plex Mono',monospace;text-align:right">—</span></div>
+<div style="display:grid;grid-template-columns:1.6fr 0.7fr 1fr 1fr;align-items:center;padding:13px 0 0"><span style="font:600 13.5px 'IBM Plex Sans Thai',sans-serif">รวมภาษีทั้งสิ้น</span><span></span><span></span><span style="font:600 17px 'IBM Plex Mono',monospace;text-align:right">53,900</span></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showAdviceCards }}" hint-placeholder-val="{{ true }}">
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:26px 28px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px">
+<div>
+<div style="font:600 16px 'IBM Plex Sans Thai',sans-serif;margin-bottom:3px">ถ้าอยากลดภาษีปีหน้า</div>
+<div style="font:300 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">คุณยังใช้สิทธิลดหย่อนไปแค่ 134,000 จากเพดานรวมที่ใช้ได้</div>
+</div>
+<span style="font:500 12.5px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.56 0.15 195)">ดูสิทธิทั้งหมด →</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+<div style="border:1px solid #E3DFD6;border-radius:10px;padding:18px 18px 16px">
+<div style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#7A756C;margin-bottom:9px">SSF</div>
+<div style="font:600 14.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:6px">ซื้อเพิ่มได้อีก 60,000</div>
+<div style="height:6px;border-radius:999px;background:#EDEAE3;overflow:hidden;margin-bottom:10px"><div style="width:40%;height:100%;background:oklch(0.56 0.15 195);border-radius:999px"></div></div>
+<div style="font:300 12.5px/1.5 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ประหยัดภาษี <span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:#1A1917">9,000</span> · ถือ 10 ปี</div>
+</div>
+<div style="border:1px solid #E3DFD6;border-radius:10px;padding:18px 18px 16px">
+<div style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#7A756C;margin-bottom:9px">RMF</div>
+<div style="font:600 14.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:6px">ยังไม่ได้ใช้เลย</div>
+<div style="height:6px;border-radius:999px;background:#EDEAE3;overflow:hidden;margin-bottom:10px"><div style="width:0%;height:100%;background:oklch(0.56 0.15 195)"></div></div>
+<div style="font:300 12.5px/1.5 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เพดาน 30% ของรายได้ · ถือถึงอายุ 55</div>
+</div>
+<div style="border:1px solid oklch(0.86 0.09 45);background:oklch(0.98 0.03 45);border-radius:10px;padding:18px 18px 16px">
+<div style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:oklch(0.60 0.16 45);margin-bottom:9px">ระวัง</div>
+<div style="font:600 14.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:6px">ประกันชีวิตใกล้เต็ม</div>
+<div style="height:6px;border-radius:999px;background:oklch(0.92 0.06 45);overflow:hidden;margin-bottom:10px"><div style="width:25%;height:100%;background:oklch(0.60 0.16 45);border-radius:999px"></div></div>
+<div style="font:300 12.5px/1.5 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ใช้ 25,000 จากเพดาน 100,000</div>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="background:#1A1917;color:#fff;border-radius:12px;padding:26px 24px">
+<div style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.55);margin-bottom:6px">อัตราภาษีเฉลี่ยจริง</div>
+<div style="display:flex;align-items:baseline;gap:6px;margin-bottom:20px"><span style="font:600 44px 'IBM Plex Mono',monospace;letter-spacing:-.03em">5.9</span><span style="font:500 20px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.6)">%</span></div>
+<div style="display:flex;flex-direction:column;gap:12px;padding-top:18px;border-top:1px solid rgba(255,255,255,.14)">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.6)">อัตราขั้นสูงสุด</span><span style="font:600 14px 'IBM Plex Mono',monospace">15%</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.6)">รายได้ต่อเดือน</span><span style="font:600 14px 'IBM Plex Mono',monospace">75,833</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.6)">ภาษีต่อเดือน</span><span style="font:600 14px 'IBM Plex Mono',monospace">4,492</span></div>
+</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:24px">
+<div style="font:600 14.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:16px">เทียบกับปีที่แล้ว</div>
+<div style="display:flex;align-items:flex-end;gap:14px;height:104px;margin-bottom:12px">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><span style="font:500 12px 'IBM Plex Mono',monospace;color:#6E6A63">47,200</span><div style="width:100%;height:64px;background:#E3DFD6;border-radius:6px 6px 0 0"></div></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px"><span style="font:600 12px 'IBM Plex Mono',monospace;color:oklch(0.44 0.14 195)">53,900</span><div style="width:100%;height:80px;background:oklch(0.56 0.15 195);border-radius:6px 6px 0 0"></div></div>
+</div>
+<div style="display:flex;gap:14px;font:400 11.5px 'IBM Plex Mono',monospace;color:#7A756C"><span style="flex:1;text-align:center">2567</span><span style="flex:1;text-align:center;color:#1A1917;font-weight:600">2568</span></div>
+<div style="margin-top:14px;padding-top:14px;border-top:1px solid #EDEAE3;font:300 12.5px/1.55 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เพิ่มขึ้น <span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:#1A1917">6,700</span> เพราะโบนัสมากกว่าเดิม</div>
+</div>
+
+<div style="background:#fff;border:1px dashed #D5D0C6;border-radius:12px;padding:20px 22px">
+<div style="font:600 13.5px 'IBM Plex Sans Thai',sans-serif;margin-bottom:8px">เอกสารที่ต้องเตรียม</div>
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;gap:9px;align-items:center"><span style="width:15px;height:15px;border-radius:4px;background:oklch(0.56 0.15 195);color:#fff;font:600 9px 'IBM Plex Mono',monospace;display:flex;align-items:center;justify-content:center">✓</span><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">หนังสือรับรองหัก ณ ที่จ่าย 50 ทวิ</span></div>
+<div style="display:flex;gap:9px;align-items:center"><span style="width:15px;height:15px;border-radius:4px;border:1px solid #D5D0C6"></span><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">หนังสือรับรองเบี้ยประกันชีวิต</span></div>
+<div style="display:flex;gap:9px;align-items:center"><span style="width:15px;height:15px;border-radius:4px;border:1px solid #D5D0C6"></span><span style="font:400 12.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">หนังสือรับรองการซื้อ SSF</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1d">
+<div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>มือถือ — ถาม-ตอบทีละคำถาม ตัวเลขใหญ่ ปุ่มโต ไม่ต้องซูม</div>
+<div class="dv-card" style="width:1282px;background:#EDEAE3;padding:34px 0">
+<div style="display:flex;gap:30px;justify-content:center">
+
+<div style="width:372px;height:790px;background:#1A1917;border-radius:42px;padding:9px;flex:none">
+<div style="width:100%;height:100%;background:#F6F4EF;border-radius:34px;overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 26px 8px;font:600 13px 'IBM Plex Mono',monospace"><span>9:41</span><div style="display:flex;gap:5px;align-items:center"><div style="width:16px;height:9px;border:1px solid #1A1917;border-radius:2px"></div><div style="width:18px;height:9px;border:1px solid #1A1917;border-radius:2px;position:relative"><div style="position:absolute;inset:1px;right:5px;background:#1A1917;border-radius:1px"></div></div></div></div>
+<div style="padding:16px 24px 0;display:flex;align-items:center;justify-content:space-between">
+<span style="font:400 22px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">←</span>
+<div style="flex:1;height:4px;background:#E3DFD6;border-radius:999px;margin:0 16px;overflow:hidden"><div style="width:45%;height:100%;background:oklch(0.56 0.15 195);border-radius:999px"></div></div>
+<span style="font:500 12px 'IBM Plex Mono',monospace;color:#7A756C">5/11</span>
+</div>
+<div style="padding:34px 24px 0;flex:1">
+<div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:oklch(0.56 0.15 195);margin-bottom:12px">ค่าลดหย่อน</div>
+<h2 style="margin:0 0 10px;font:600 27px/1.42 'IBM Plex Sans Thai',sans-serif">ปีนี้ซื้อกองทุน SSF ไปเท่าไหร่</h2>
+<p style="margin:0 0 26px;font:300 14.5px/1.6 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ดูจากหนังสือรับรองที่ บลจ. ส่งให้ทางอีเมล ถ้าไม่ได้ซื้อกดข้ามได้เลย</p>
+<div style="background:#fff;border:1.5px solid oklch(0.56 0.15 195);border-radius:14px;padding:20px 22px;box-shadow:0 0 0 4px oklch(0.92 0.07 195);margin-bottom:14px">
+<div style="font:400 12px 'IBM Plex Sans Thai',sans-serif;color:#7A756C;margin-bottom:6px">จำนวนเงิน</div>
+<div style="display:flex;align-items:baseline;gap:8px"><span style="font:600 34px 'IBM Plex Mono',monospace;letter-spacing:-.02em">40,000</span><span style="font:400 16px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">บาท</span></div>
+</div>
+<div style="display:flex;gap:9px;margin-bottom:22px">
+<span style="flex:1;text-align:center;font:500 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;background:#fff;border:1px solid #E3DFD6;border-radius:9px;padding:11px 0">+10,000</span>
+<span style="flex:1;text-align:center;font:500 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;background:#fff;border:1px solid #E3DFD6;border-radius:9px;padding:11px 0">+50,000</span>
+<span style="flex:1;text-align:center;font:500 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;background:#fff;border:1px solid #E3DFD6;border-radius:9px;padding:11px 0">เต็มสิทธิ</span>
+</div>
+<div style="background:oklch(0.96 0.045 195);border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start">
+<div style="width:22px;height:22px;border-radius:999px;background:oklch(0.56 0.15 195);color:#fff;font:600 12px 'IBM Plex Mono',monospace;display:flex;align-items:center;justify-content:center;flex:none">i</div>
+<div style="font:300 12.5px/1.6 'IBM Plex Sans Thai',sans-serif;color:#4A5F5A">SSF ลดหย่อนได้ไม่เกิน 30% ของรายได้ และไม่เกิน 200,000 บาท — สิทธิของคุณคือ <span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:#1A1917">200,000</span></div>
+</div>
+</div>
+<div style="padding:0 24px 26px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-top:1px solid #E3DFD6;margin-bottom:12px">
+<span style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ภาษีตอนนี้</span>
+<span style="font:600 19px 'IBM Plex Mono',monospace;color:oklch(0.56 0.15 195)">53,900</span>
+</div>
+<div style="display:flex;gap:10px">
+<span style="font:500 15px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63;padding:16px 22px;border:1px solid #D5D0C6;border-radius:12px">ข้าม</span>
+<span style="flex:1;text-align:center;font:600 15px 'IBM Plex Sans Thai',sans-serif;color:#fff;background:oklch(0.56 0.15 195);padding:16px 0;border-radius:12px">ถัดไป</span>
+</div>
+</div>
+</div>
+</div>
+
+<div style="width:372px;height:790px;background:#1A1917;border-radius:42px;padding:9px;flex:none">
+<div style="width:100%;height:100%;background:#1A1917;border-radius:34px;overflow:hidden;display:flex;flex-direction:column;color:#fff">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 26px 8px;font:600 13px 'IBM Plex Mono',monospace;color:#fff"><span>9:41</span><div style="display:flex;gap:5px;align-items:center"><div style="width:16px;height:9px;border:1px solid #fff;border-radius:2px"></div><div style="width:18px;height:9px;border:1px solid #fff;border-radius:2px;position:relative"><div style="position:absolute;inset:1px;right:5px;background:#fff;border-radius:1px"></div></div></div></div>
+<div style="padding:30px 26px 0;flex:1;display:flex;flex-direction:column">
+<div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,255,255,.68);margin-bottom:26px">ผลการคำนวณ 2568</div>
+<div style="font:300 15px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.6);margin-bottom:6px">ภาษีที่ต้องชำระทั้งปี</div>
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font:600 58px 'IBM Plex Mono',monospace;letter-spacing:-.04em;line-height:1">53,900</span></div>
+<div style="font:400 14px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.5);margin-bottom:26px">เฉลี่ยเดือนละ 4,492 บาท · 5.9% ของรายได้</div>
+
+<div style="background:oklch(0.34 0.09 152);border-radius:14px;padding:18px 20px;margin-bottom:22px">
+<div style="font:600 15px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.88 0.12 152);margin-bottom:3px">ขอคืนได้ 4,100 บาท</div>
+<div style="font:300 13px/1.55 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.6)">หัก ณ ที่จ่ายไว้เกินไป 58,000 → 53,900</div>
+</div>
+
+<div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,255,255,.66);margin-bottom:14px">ที่มาของตัวเลข</div>
+<div style="display:flex;flex-direction:column;gap:11px;margin-bottom:22px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 14px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.65)">เงินได้รวม</span><span style="font:500 15px 'IBM Plex Mono',monospace">910,000</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 14px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.65)">ค่าใช้จ่าย</span><span style="font:500 15px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.55)">−100,000</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:400 14px 'IBM Plex Sans Thai',sans-serif;color:rgba(255,255,255,.65)">ค่าลดหย่อน</span><span style="font:500 15px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.55)">−134,000</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:11px;border-top:1px solid rgba(255,255,255,.14)"><span style="font:600 14px 'IBM Plex Sans Thai',sans-serif">เงินได้สุทธิ</span><span style="font:600 17px 'IBM Plex Mono',monospace">676,000</span></div>
+</div>
+
+<div style="display:flex;height:38px;border-radius:8px;overflow:hidden;margin-bottom:9px">
+<div style="width:22.2%;background:rgba(255,255,255,.15)"></div>
+<div style="width:22.2%;background:oklch(0.44 0.11 195)"></div>
+<div style="width:29.6%;background:oklch(0.60 0.14 195)"></div>
+<div style="width:26%;background:oklch(0.80 0.13 195)"></div>
+</div>
+<div style="display:flex;font:400 10.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,.68)"><span style="width:22.2%">0%</span><span style="width:22.2%">5%</span><span style="width:29.6%">10%</span><span style="width:26%">15%</span></div>
+</div>
+<div style="padding:20px 26px 26px">
+<span style="display:block;text-align:center;font:600 15px 'IBM Plex Sans Thai',sans-serif;color:#1A1917;background:#fff;padding:16px 0;border-radius:12px">ดูวิธีลดภาษีปีหน้า</span>
+</div>
+</div>
+</div>
+
+<div style="width:372px;height:790px;background:#1A1917;border-radius:42px;padding:9px;flex:none">
+<div style="width:100%;height:100%;background:#F6F4EF;border-radius:34px;overflow:hidden;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 26px 8px;font:600 13px 'IBM Plex Mono',monospace"><span>9:41</span><div style="display:flex;gap:5px;align-items:center"><div style="width:16px;height:9px;border:1px solid #1A1917;border-radius:2px"></div><div style="width:18px;height:9px;border:1px solid #1A1917;border-radius:2px;position:relative"><div style="position:absolute;inset:1px;right:5px;background:#1A1917;border-radius:1px"></div></div></div></div>
+<div style="padding:26px 24px 0;flex:1;overflow:hidden">
+<h2 style="margin:0 0 6px;font:600 25px/1.42 'IBM Plex Sans Thai',sans-serif">ลองปรับดูสิ</h2>
+<p style="margin:0 0 22px;font:300 14px/1.6 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">เลื่อนดูว่าซื้อกองทุนเพิ่มแล้วภาษีลดเท่าไหร่</p>
+
+<div style="background:#fff;border:1px solid #E3DFD6;border-radius:14px;padding:20px 20px 22px;margin-bottom:14px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px"><span style="font:500 13.5px 'IBM Plex Sans Thai',sans-serif;color:#6E6A63">ซื้อ SSF/RMF เพิ่ม</span><span style="font:600 18px 'IBM Plex Mono',monospace">60,000</span></div>
+<div style="position:relative;height:8px;background:#EDEAE3;border-radius:999px;margin-bottom:10px">
+<div style="position:absolute;left:0;top:0;bottom:0;width:38%;background:oklch(0.56 0.15 195);border-radius:999px"></div>
+<div style="position:absolute;left:38%;top:50%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:999px;background:#fff;border:2px solid oklch(0.56 0.15 195);box-shadow:0 2px 6px rgba(0,0,0,.15)"></div>
+</div>
+<div style="display:flex;justify-content:space-between;font:400 11px 'IBM Plex Mono',monospace;color:#7A756C"><span>0</span><span>สิทธิสูงสุด 160,000</span></div>
+</div>
+
+<div style="background:oklch(0.95 0.065 152);border:1px solid oklch(0.84 0.11 152);border-radius:14px;padding:20px;margin-bottom:16px">
+<div style="font:400 13px 'IBM Plex Sans Thai',sans-serif;color:#4A6B58;margin-bottom:8px">ภาษีจะเหลือ</div>
+<div style="display:flex;align-items:baseline;gap:12px;margin-bottom:10px">
+<span style="font:600 36px 'IBM Plex Mono',monospace;color:oklch(0.45 0.15 152);letter-spacing:-.03em">44,900</span>
+<span style="font:400 16px 'IBM Plex Mono',monospace;color:#7A756C;text-decoration:line-through">53,900</span>
+</div>
+<div style="display:inline-flex;align-items:center;gap:6px;background:oklch(0.50 0.16 152);color:#fff;border-radius:999px;padding:6px 13px;font:600 12.5px 'IBM Plex Sans Thai',sans-serif">ประหยัด 9,000 บาท</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:9px">
+<div style="display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:14px 16px">
+<div style="width:34px;height:34px;border-radius:9px;background:#EDEAE3;flex:none"></div>
+<div style="flex:1"><div style="font:600 13.5px 'IBM Plex Sans Thai',sans-serif">เงินบริจาค</div><div style="font:300 12px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">ลดหย่อนได้ 1–2 เท่า</div></div>
+<span style="font:400 18px 'IBM Plex Sans Thai',sans-serif;color:#8C877D">›</span>
+</div>
+<div style="display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #E3DFD6;border-radius:12px;padding:14px 16px">
+<div style="width:34px;height:34px;border-radius:9px;background:#EDEAE3;flex:none"></div>
+<div style="flex:1"><div style="font:600 13.5px 'IBM Plex Sans Thai',sans-serif">ดอกเบี้ยบ้าน</div><div style="font:300 12px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">สูงสุด 100,000</div></div>
+<span style="font:400 18px 'IBM Plex Sans Thai',sans-serif;color:#8C877D">›</span>
+</div>
+</div>
+</div>
+<div style="display:flex;justify-content:space-around;padding:14px 0 22px;border-top:1px solid #E3DFD6;background:#fff">
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:20px;height:20px;border-radius:5px;background:oklch(0.56 0.15 195)"></div><span style="font:500 10.5px 'IBM Plex Sans Thai',sans-serif;color:oklch(0.44 0.14 195)">คำนวณ</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:20px;height:20px;border-radius:5px;background:#D5D0C6"></div><span style="font:400 10.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">วางแผน</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:20px;height:20px;border-radius:5px;background:#D5D0C6"></div><span style="font:400 10.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">เอกสาร</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div style="width:20px;height:20px;border-radius:5px;background:#D5D0C6"></div><span style="font:400 10.5px 'IBM Plex Sans Thai',sans-serif;color:#7A756C">ฉัน</span></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">ลองสั่งต่อได้ เช่น "เอา <a class="dv-oid" href="#1a">1a</a> แต่ใช้เลย์เอาต์สมุดบัญชีแบบ <a class="dv-oid" href="#1b">1b</a>" · "ทำหน้า Landing กับหน้าเปรียบเทียบฟรีแลนซ์ vs พนักงาน" · "ขอโทนเข้มทั้งเว็บแบบ <a class="dv-oid" href="#1d">1d</a> จอกลาง" · "ทำให้กดใช้งานได้จริง คำนวณสด"</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;resultMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ขอคืนภาษี&quot;,&quot;ต้องจ่ายเพิ่ม&quot;],&quot;default&quot;:&quot;ขอคืนภาษี&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;หน้าผลลัพธ์ 1c&quot;},&quot;showBracketChart&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;หน้าผลลัพธ์ 1c&quot;},&quot;showAdviceCards&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;หน้าผลลัพธ์ 1c&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const refund = (this.props.resultMode ?? "ขอคืนภาษี") === "ขอคืนภาษี";
+    return {
+      showBracketChart: this.props.showBracketChart ?? true,
+      showAdviceCards: this.props.showAdviceCards ?? true,
+      isRefund: refund,
+      isOwed: !refund,
+    };
+  }
+}
+</script>
+</body>
+</html>

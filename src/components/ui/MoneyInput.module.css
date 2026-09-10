@@ -1,0 +1,81 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+.label {
+  font: 500 12px/1.4 var(--sans);
+  color: var(--ink-muted);
+}
+.box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 9px;
+  padding: 12px 14px;
+  transition: border-color var(--t-state), box-shadow var(--t-state), padding var(--t-state);
+}
+.box:focus-within {
+  border: 1.5px solid var(--teal);
+  padding: 11.5px 13.5px;
+  box-shadow: var(--shadow-focus);
+}
+.box[data-invalid='true'] {
+  border-color: var(--clay);
+}
+.input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: 500 16px/1.4 var(--mono);
+  color: var(--ink);
+  text-align: left;
+}
+.input::placeholder {
+  color: var(--ink-ghost);
+}
+.suffix {
+  font: 400 13px/1.4 var(--sans);
+  color: var(--ink-faint);
+  flex: none;
+}
+.helper {
+  font: 400 11.5px/1.5 var(--sans);
+  color: var(--ink-faint);
+}
+.helperMono {
+  font-family: var(--mono);
+}
+
+/* big mobile variant */
+.big .box {
+  border-radius: 14px;
+  padding: 20px 22px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+.big .box:focus-within {
+  padding: 19.5px 21.5px;
+  box-shadow: var(--shadow-focus-lg);
+}
+.big .label {
+  order: -1;
+}
+.big .row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.big .input {
+  font: 600 34px/1.2 var(--mono);
+  letter-spacing: -0.02em;
+}
+.big .suffix {
+  font-size: 16px;
+}

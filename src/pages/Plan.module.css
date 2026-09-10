@@ -1,0 +1,348 @@
+.page {
+  min-height: 100vh;
+  background: var(--surface);
+}
+.inner {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 40px 44px 44px;
+}
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 24px;
+}
+.h1 {
+  font: 600 34px/1.42 var(--sans);
+  margin: 9px 0 6px;
+}
+.lead {
+  font: 300 15px/1.6 var(--sans);
+  color: var(--ink-muted);
+  max-width: 64ch;
+}
+.headBtns {
+  display: flex;
+  gap: 9px;
+  flex: none;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.plan {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.plan[data-rec='true'] {
+  border: 2px solid var(--teal);
+  box-shadow: var(--shadow-raised);
+}
+.pHead {
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--ground);
+}
+.plan[data-rec='true'] .pHead {
+  background: var(--teal-tint-2);
+}
+.pEyebrowRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.pEyebrow {
+  font: 500 10.5px/1.4 var(--mono);
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+}
+.plan[data-rec='true'] .pEyebrow {
+  color: var(--teal-deep);
+}
+.pName {
+  font: 600 19px/1.4 var(--sans);
+  margin-bottom: 5px;
+}
+.pBlurb {
+  font: 300 13px/1.55 var(--sans);
+  color: var(--ink-muted);
+}
+.pInputs {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  border-bottom: 1px solid var(--ground);
+}
+.pRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.pRowLabel {
+  font: 400 13px/1.4 var(--sans);
+  color: var(--ink-muted);
+}
+.pRowFig {
+  font: 600 13.5px/1.4 var(--mono);
+}
+.pRowFig[data-empty='true'] {
+  font-weight: 400;
+  color: var(--ink-ghost);
+}
+.pOut {
+  padding: 22px 24px 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.pOutLabel {
+  font: 400 12.5px/1.4 var(--sans);
+  color: var(--ink-muted);
+  margin-bottom: 4px;
+}
+.pTaxRow {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.pTax {
+  font: 600 34px/1.15 var(--mono);
+  letter-spacing: -0.03em;
+}
+.plan[data-rec='true'] .pTax {
+  color: var(--teal-deep);
+}
+.pStruck {
+  font: 400 15px/1.4 var(--mono);
+  color: var(--ink-ghost);
+  text-decoration: line-through;
+}
+.pStats {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ground);
+}
+.pStat {
+  display: flex;
+  justify-content: space-between;
+}
+.pStatLabel {
+  font: 400 12.5px/1.4 var(--sans);
+  color: var(--ink-muted);
+}
+.pStatFig {
+  font: 600 13px/1.4 var(--mono);
+}
+.pCta {
+  margin-top: 18px;
+}
+/* chart */
+.chart {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px 26px;
+  margin-top: 18px;
+}
+.chartHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+.chartTitle {
+  font: 600 15.5px/1.4 var(--sans);
+}
+.chartSub {
+  font: 400 12.5px/1.4 var(--sans);
+  color: var(--ink-muted);
+}
+.bars {
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+  height: 104px;
+  margin-bottom: 12px;
+}
+.bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  transition: height var(--t-fill), background var(--t-fill);
+  min-height: 2px;
+}
+.axis {
+  display: flex;
+  justify-content: space-between;
+  font: 400 11.5px/1.4 var(--mono);
+  color: var(--ink-faint);
+  padding-top: 11px;
+  border-top: 1px solid var(--ground);
+}
+.axis b {
+  font-weight: 600;
+}
+
+@media (max-width: 1099px) {
+  .inner {
+    padding: 32px 24px 40px;
+  }
+  .head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .h1 {
+    font-size: 28px;
+  }
+}
+@media (max-width: 699px) {
+  .grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    margin: 0 -24px;
+    padding: 4px 24px 12px;
+  }
+  .plan {
+    flex: 0 0 86%;
+    scroll-snap-align: start;
+  }
+  .plan[data-rec='true'] {
+    order: -1;
+  }
+  .chartSub {
+    display: none;
+  }
+}
+
+/* ---- mobile what-if (8c) ---- */
+.m {
+  min-height: 100vh;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+}
+.mBody {
+  padding: 26px 24px 24px;
+  flex: 1;
+}
+.mH2 {
+  font: 600 25px/1.42 var(--sans);
+  margin-bottom: 6px;
+}
+.mLead {
+  font: 300 14px/1.6 var(--sans);
+  color: var(--ink-muted);
+  margin-bottom: 22px;
+}
+.mSlider {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px 20px 22px;
+  margin-bottom: 14px;
+}
+.mSliderHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16px;
+}
+.mSliderLabel {
+  font: 500 13.5px/1.4 var(--sans);
+  color: var(--ink-muted);
+}
+.mSliderFig {
+  font: 600 18px/1.3 var(--mono);
+}
+.mScale {
+  display: flex;
+  justify-content: space-between;
+  font: 400 11px/1.4 var(--mono);
+  color: var(--ink-faint);
+  margin-top: 10px;
+}
+.mResult {
+  background: var(--green-tint-2);
+  border: 1px solid var(--green-border-2);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.mResultLabel {
+  font: 400 13px/1.4 var(--sans);
+  color: var(--green-text);
+  margin-bottom: 8px;
+}
+.mResultRow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.mResultFig {
+  font: 600 36px/1.15 var(--mono);
+  color: var(--green-deep);
+  letter-spacing: -0.03em;
+}
+.mResultStruck {
+  font: 400 16px/1.4 var(--mono);
+  color: var(--ink-faint);
+  text-decoration: line-through;
+}
+.mSave {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--green-mid);
+  color: #fff;
+  border-radius: 999px;
+  padding: 6px 13px;
+  font: 600 12.5px/1.4 var(--sans);
+}
+.mList {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.mItem {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: inherit;
+  min-height: 62px;
+}
+.mIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--ground);
+  flex: none;
+}
+.mItemTitle {
+  font: 600 13.5px/1.4 var(--sans);
+}
+.mItemSub {
+  font: 300 12px/1.4 var(--sans);
+  color: var(--ink-faint);
+}
+.mChev {
+  font: 400 18px/1 var(--sans);
+  color: var(--ink-ghost);
+}

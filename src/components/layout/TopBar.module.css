@@ -1,0 +1,71 @@
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gutter);
+  height: 68px;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+.left {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+.nav {
+  display: flex;
+  gap: 24px;
+}
+.nav a {
+  font: 400 13.5px/1.4 var(--sans);
+  color: var(--ink-muted);
+  border-radius: 4px;
+}
+.nav a:hover {
+  color: var(--ink);
+}
+.nav a[aria-current='page'] {
+  font-weight: 500;
+  color: var(--ink);
+}
+.right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.login {
+  font: 500 13.5px/1.4 var(--sans);
+  color: var(--ink-muted);
+  border-radius: 4px;
+}
+.login:hover {
+  color: var(--ink);
+}
+.cta {
+  font: 600 13.5px/1.4 var(--sans);
+  color: #fff;
+  background: var(--ink);
+  padding: 11px 20px;
+  border-radius: 8px;
+  transition: background var(--t-state);
+}
+.cta:hover {
+  background: #000;
+  color: #fff;
+}
+
+@media (max-width: 699px) {
+  .bar {
+    height: auto;
+    padding: 18px 24px 0;
+    background: transparent;
+    border: 0;
+  }
+  .nav,
+  .cta {
+    display: none;
+  }
+  .login {
+    font-size: 12.5px;
+  }
+}

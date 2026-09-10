@@ -1,0 +1,227 @@
+.body {
+  display: grid;
+  grid-template-columns: 1fr 372px;
+  background: var(--surface);
+  min-height: calc(100vh - 62px);
+}
+.main {
+  padding: 34px 34px 40px 40px;
+  min-width: 0;
+}
+.h1 {
+  margin: 8px 0 6px;
+  font: 600 32px/1.42 var(--sans);
+}
+.lead {
+  margin: 0 0 26px;
+  font: 300 15px/1.6 var(--sans);
+  color: var(--ink-muted);
+  max-width: 56ch;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 22px 24px;
+  margin-bottom: 16px;
+}
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  gap: 12px;
+}
+.cardHeadLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cardTitle {
+  font: 600 15px/1.4 var(--sans);
+}
+.cardMeta {
+  font: 400 12px/1.4 var(--sans);
+  color: var(--ink-faint);
+}
+.cardSub {
+  font: 300 13px/1.5 var(--sans);
+  color: var(--ink-muted);
+  margin: -14px 0 16px;
+}
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.grid2:last-child {
+  margin-bottom: 0;
+}
+.total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+}
+.totalLabel {
+  font: 500 13px/1.4 var(--sans);
+  color: var(--ink-muted);
+}
+.totalFig {
+  font: 600 18px/1.3 var(--mono);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.chip {
+  font: 400 12.5px/1.4 var(--sans);
+  color: var(--ink-muted);
+  border: 1px dashed var(--line-strong);
+  border-radius: 999px;
+  padding: 7px 13px;
+  background: transparent;
+  transition: background var(--t-state), color var(--t-state), border-color var(--t-state);
+}
+.chip:hover {
+  background: var(--sheet);
+  color: var(--ink);
+  border-color: var(--ink-ghost);
+}
+.radios {
+  display: flex;
+  gap: 12px;
+}
+.radioSub strong {
+  font: 600 12px var(--mono);
+  color: var(--ink);
+}
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 26px;
+  gap: 16px;
+}
+.footerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.autosave {
+  font: 400 13px/1.4 var(--sans);
+  color: var(--ink-faint);
+}
+.remove {
+  font: 400 12px/1.4 var(--sans);
+  color: var(--ink-faint);
+  border-radius: 4px;
+}
+.remove:hover {
+  color: var(--clay-deep);
+}
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.counterBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  font: 500 16px/1 var(--mono);
+  color: var(--ink-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.counterBtn:hover {
+  background: var(--sheet);
+  color: var(--ink);
+}
+.counterVal {
+  font: 600 16px/1 var(--mono);
+  min-width: 28px;
+  text-align: center;
+}
+.capHint {
+  font: 400 11.5px/1.5 var(--mono);
+  color: var(--ink-faint);
+}
+.capHint[data-over='true'] {
+  color: var(--clay-deep);
+}
+.verdict {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 16px;
+}
+.verdict[data-tone='refund'] {
+  background: var(--green-tint-2);
+  border: 1px solid var(--green-tint-border);
+}
+.verdict[data-tone='owed'] {
+  background: var(--clay-tint-2);
+  border: 1px solid var(--clay-border-3);
+}
+.verdict[data-tone='even'] {
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+.verdictIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 600 16px/1 var(--mono);
+  flex: none;
+}
+.verdictTitle {
+  font: 600 15px/1.4 var(--sans);
+}
+.verdictSub {
+  font: 300 13px/1.5 var(--sans);
+  color: var(--ink-muted);
+}
+
+@media (max-width: 1099px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+  .main {
+    padding: 28px 24px 32px;
+  }
+}
+@media (max-width: 699px) {
+  .h1 {
+    font-size: 27px;
+  }
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+  .radios {
+    flex-direction: column;
+  }
+  .footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .footerRight {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .autosave {
+    text-align: center;
+  }
+}

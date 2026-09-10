@@ -1,0 +1,120 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--link-hover);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Focus — always visible; 3px teal-tint ring is the standard treatment */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+input:focus-visible {
+  box-shadow: none;
+}
+
+.mono {
+  font-family: var(--mono);
+}
+.num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Eyebrow — mono, uppercase, letter-spaced */
+.eyebrow {
+  font: 500 11px var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.eyebrow--teal {
+  color: var(--teal);
+}
+.eyebrow--deep {
+  color: var(--teal-deep);
+}
+.eyebrow--sm {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Page scaffold */
+.page {
+  min-height: 100vh;
+  background: var(--surface);
+}
+.page__inner {
+  max-width: var(--page-max);
+  margin: 0 auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

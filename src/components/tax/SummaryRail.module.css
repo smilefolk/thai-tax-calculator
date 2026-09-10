@@ -1,0 +1,157 @@
+.rail {
+  border-left: 1px solid var(--line);
+  background: var(--card);
+  padding: 34px 30px;
+  position: sticky;
+  top: 62px;
+  align-self: start;
+  max-height: calc(100vh - 62px);
+  overflow: auto;
+}
+.eyebrow {
+  margin-bottom: 18px;
+}
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.rowLabel {
+  font: 400 13.5px/1.4 var(--sans);
+  color: var(--ink-muted);
+}
+.rowLabel small {
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+.rowFig {
+  font: 500 14px/1.4 var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.rowFig[data-muted='true'] {
+  color: var(--ink-muted);
+}
+.block {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.blockLabel {
+  font: 400 13px/1.4 var(--sans);
+  color: var(--ink-muted);
+  margin-bottom: 4px;
+}
+.net {
+  font: 600 30px/1.2 var(--mono);
+  letter-spacing: -0.02em;
+}
+.taxRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.tax {
+  font: 600 38px/1.15 var(--mono);
+  color: var(--teal);
+  letter-spacing: -0.03em;
+}
+.unit {
+  font: 400 14px/1.4 var(--sans);
+  color: var(--ink-faint);
+}
+.eff {
+  font: 400 12.5px/1.4 var(--sans);
+  color: var(--ink-faint);
+  margin-top: 5px;
+}
+.bracket {
+  padding-top: 20px;
+}
+.bracketHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 9px;
+}
+.bracketLabel {
+  font: 500 12.5px/1.4 var(--sans);
+  color: var(--ink-muted);
+}
+.bracketRate {
+  font: 600 12.5px/1.4 var(--mono);
+  color: var(--teal);
+}
+.bracketNote {
+  font: 300 12.5px/1.5 var(--sans);
+  color: var(--ink-muted);
+  margin-top: 9px;
+}
+.bracketNote strong {
+  font: 600 12.5px/1.5 var(--mono);
+  color: var(--ink);
+}
+.advice {
+  margin-top: 22px;
+  background: var(--clay-tint-3);
+  border: 1px solid var(--clay-border-2);
+  border-radius: 10px;
+  padding: 14px 15px;
+}
+.adviceTitle {
+  font: 600 12.5px/1.4 var(--sans);
+  color: var(--clay-mid);
+  margin-bottom: 5px;
+}
+.adviceBody {
+  font: 300 12.5px/1.55 var(--sans);
+  color: var(--ink-muted);
+}
+.adviceBody strong {
+  font: 600 12.5px/1.55 var(--mono);
+  color: var(--ink);
+}
+.adviceBody em {
+  font: 600 12.5px/1.55 var(--mono);
+  font-style: normal;
+  color: var(--clay-mid);
+}
+
+/* ---- narrow: sticky bottom bar ---- */
+.bottom {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  padding: 12px 24px calc(12px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.bottomLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.bottomLabel {
+  font: 400 12px/1.4 var(--sans);
+  color: var(--ink-muted);
+}
+.bottomTax {
+  font: 600 22px/1.2 var(--mono);
+  color: var(--teal);
+  letter-spacing: -0.02em;
+}
+.bottomMeta {
+  font: 400 11.5px/1.5 var(--mono);
+  color: var(--ink-faint);
+  text-align: right;
+}

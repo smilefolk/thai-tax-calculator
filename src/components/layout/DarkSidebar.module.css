@@ -1,0 +1,99 @@
+.side {
+  background: var(--ink);
+  color: #fff;
+  padding: 26px 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+.logo {
+  margin-bottom: 30px;
+}
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 26px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 7px;
+  color: rgba(255, 255, 255, 0.65);
+  font: 400 13px/1.4 var(--sans);
+  transition: background var(--t-state), color var(--t-state);
+}
+.row:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+.row[aria-current='page'] {
+  background: var(--on-dark-fill);
+  color: #fff;
+  font-weight: 500;
+}
+.marker {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  flex: none;
+}
+.row[aria-current='page'] .marker {
+  background: var(--teal-on-dark);
+}
+.eyebrow {
+  font: 500 10px/1.4 var(--mono);
+  letter-spacing: 0.12em;
+  color: var(--on-dark-3);
+  margin-bottom: 11px;
+}
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.legendRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 400 12.5px/1.4 var(--sans);
+  color: rgba(255, 255, 255, 0.72);
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  flex: none;
+}
+.promo {
+  margin-top: 26px;
+  padding: 15px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+}
+.promoTitle {
+  font: 600 12.5px/1.4 var(--sans);
+  color: var(--teal-on-dark-2);
+  margin-bottom: 5px;
+}
+.promoSub {
+  font: 300 11.5px/1.55 var(--sans);
+  color: rgba(255, 255, 255, 0.5);
+}
+.user {
+  margin-top: auto;
+  padding-top: 26px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.userName {
+  font: 500 12.5px/1.4 var(--sans);
+}
+.userPlan {
+  font: 400 11px/1.4 var(--sans);
+  color: rgba(255, 255, 255, 0.68);
+}
