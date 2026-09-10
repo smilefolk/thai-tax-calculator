@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react'
-import { derive } from '../lib/tax/calc'
+import { derive, familyDeductions } from '../lib/tax/calc'
 import { getTaxYearConfig } from '../lib/tax/config'
 import { blankReturn, workedExample } from '../lib/tax/defaults'
 import type {
@@ -89,13 +89,10 @@ function reducer(state: State, a: Action): State {
       )
     case 'setProfile': {
       const profile = { ...ret.filerProfile, ...a.profile }
-      // keep entered spouse/children figures in sync with the profile
-      const deductions = { ...ret.deductions }
-      const cfg = getTaxYearConfig(ret.taxYear)
-      deductions.spouse = profile.hasSpouse && !profile.spouseHasIncome ? cfg.caps.spouse : 0
-      deductions.children = profile.childrenCount * cfg.caps.childEach
-      deductions.parents = profile.parentsSupported * cfg.caps.parentEach
-      deductions.disabled = profile.disabledDependents * cfg.caps.disabledEach
+      // the 2561+ subset can never exceed the total
+      profile.childrenBornFrom2561 = Math.min(profile.childrenBornFrom2561, profile.childrenCount)
+      // keep entered family figures in sync with the profile
+      const deductions = { ...ret.deductions, ...familyDeductions(profile, getTaxYearConfig(ret.taxYear)) }
       return touch({ ...ret, filerProfile: profile, deductions })
     }
     case 'setWithholding':

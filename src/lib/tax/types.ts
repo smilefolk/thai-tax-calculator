@@ -15,6 +15,11 @@ export interface FilerProfile {
   hasSpouse: boolean
   spouseHasIncome: boolean
   childrenCount: number
+  /**
+   * How many of `childrenCount` were born in/after พ.ศ. 2561 — assumed to be the
+   * youngest, so from the 2nd child onward they earn the higher allowance.
+   */
+  childrenBornFrom2561: number
   parentsSupported: number
   disabledDependents: number
 }
@@ -101,6 +106,8 @@ export interface DeductionCaps {
   personal: number
   spouse: number
   childEach: number
+  /** 2nd child onward born in/after พ.ศ. 2561 */
+  childEachFrom2561: number
   parentEach: number
   disabledEach: number
   socialSecurity: number

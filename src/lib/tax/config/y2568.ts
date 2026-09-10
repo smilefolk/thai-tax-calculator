@@ -41,6 +41,7 @@ export const y2568: TaxYearConfig = {
     personal: 60_000,
     spouse: 60_000,
     childEach: 30_000,
+    childEachFrom2561: 60_000,
     parentEach: 30_000,
     disabledEach: 60_000,
     socialSecurity: 9_000,
@@ -49,6 +50,7 @@ export const y2568: TaxYearConfig = {
     parentHealthInsurance: 15_000,
     ssf: { rateOfIncome: 0.3, cap: 200_000 },
     rmf: { rateOfIncome: 0.3, cap: 500_000 },
+    // PVD: 15% ของค่าจ้าง (เงินได้ 40(1) เท่านั้น)
     pvd: { rateOfIncome: 0.15, cap: 500_000 },
     nsf: 30_000,
     retirementCombined: 500_000,

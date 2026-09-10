@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { amountToDropBracket, derive, effectiveExpenseMethod, expenseByEntry, savingsFor, taxByBracket, taxOnNet } from './calc'
+import { amountToDropBracket, derive, effectiveExpenseMethod, expenseByEntry, familyDeductions, savingsFor, taxByBracket, taxOnNet } from './calc'
 import { getTaxYearConfig } from './config'
-import { blankReturn, workedExample } from './defaults'
+import { blankReturn, emptyProfile, workedExample } from './defaults'
 import { buildPlans, savingsCurve } from './plans'
 import type { IncomeEntry } from './types'
 
@@ -161,6 +161,44 @@ describe('deduction caps', () => {
     r.deductions = { ...r.deductions, children: 90_000 }
     const it = derive(r, cfg).deductionItems.find((i) => i.key === 'children')!
     expect(it.allowed).toBe(60_000)
+  })
+
+  it('2nd child onward born 2561+ gets 60,000; the first child never does', () => {
+    const cap = (childrenCount: number, childrenBornFrom2561: number) =>
+      familyDeductions({ ...emptyProfile, childrenCount, childrenBornFrom2561 }, cfg).children
+    expect(cap(1, 1)).toBe(30_000) // only child, even if born 2562
+    expect(cap(2, 2)).toBe(90_000) // both born 2562 → 30,000 + 60,000
+    expect(cap(2, 1)).toBe(90_000) // eldest born earlier, youngest 2561+
+    expect(cap(3, 1)).toBe(120_000) // 30 + 30 + 60
+    expect(cap(3, 3)).toBe(150_000) // 30 + 60 + 60
+    expect(cap(2, 5)).toBe(90_000) // subset can't exceed the total
+    expect(cap(0, 0)).toBe(0)
+  })
+
+  it('familyDeductions mirrors what the engine will allow', () => {
+    const r = workedExample()
+    r.filerProfile = { ...r.filerProfile, hasSpouse: true, childrenCount: 2, childrenBornFrom2561: 1, parentsSupported: 2, disabledDependents: 1 }
+    r.deductions = { ...r.deductions, ...familyDeductions(r.filerProfile, cfg) }
+    const items = derive(r, cfg).deductionItems
+    for (const k of ['spouse', 'children', 'parents', 'disabled'] as const) {
+      const it = items.find((i) => i.key === k)!
+      expect(it.allowed).toBe(it.cap)
+    }
+    expect(items.find((i) => i.key === 'children')!.allowed).toBe(90_000)
+    expect(items.find((i) => i.key === 'parents')!.allowed).toBe(60_000)
+  })
+
+  it('PVD is capped at 15% of 40(1) wages, not of total income', () => {
+    const r = workedExample()
+    r.income = [
+      { id: 'salary', category: '40(1)', amount: 300_000, expenseMethod: 'standard', actualExpense: 0 },
+      { id: 'bonus', category: '40(1)', amount: 0, expenseMethod: 'standard', actualExpense: 0 },
+      { id: 'biz', category: '40(8)', amount: 2_000_000, expenseMethod: 'standard', actualExpense: 0 },
+    ]
+    r.deductions = { ...r.deductions, ssf: 0, pvd: 100_000 }
+    const pvd = derive(r, cfg).deductionItems.find((i) => i.key === 'pvd')!
+    expect(pvd.cap).toBe(45_000)
+    expect(pvd.allowed).toBe(45_000)
   })
 
   it('health insurance sits inside the life-insurance ceiling', () => {

@@ -25,6 +25,7 @@ export const emptyProfile: FilerProfile = {
   hasSpouse: false,
   spouseHasIncome: false,
   childrenCount: 0,
+  childrenBornFrom2561: 0,
   parentsSupported: 0,
   disabledDependents: 0,
 }

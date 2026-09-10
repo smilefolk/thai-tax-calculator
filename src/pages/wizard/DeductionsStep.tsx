@@ -28,7 +28,7 @@ const GROUPS: { title: string; meta?: string; fields: Field[] }[] = [
     fields: [
       { key: 'ssf', label: 'กองทุน SSF', hint: '30% ของรายได้ ไม่เกิน 200,000' },
       { key: 'rmf', label: 'กองทุน RMF', hint: '30% ของรายได้' },
-      { key: 'pvd', label: 'กองทุนสำรองเลี้ยงชีพ (PVD)', hint: '15% ของค่าจ้าง' },
+      { key: 'pvd', label: 'กองทุนสำรองเลี้ยงชีพ (PVD)', hint: '15% ของค่าจ้าง (เงินได้ 40(1))' },
       { key: 'nsf', label: 'กองทุนการออมแห่งชาติ (กอช.)' },
     ],
   },
