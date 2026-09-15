@@ -6,8 +6,8 @@ import { Button } from '../components/ui/Button'
 import { Slider } from '../components/ui/Slider'
 import { useIsMobile } from '../hooks/useMediaQuery'
 import { dash, money } from '../lib/format'
-import { savingsFor } from '../lib/tax/calc'
-import { buildPlans, retirementRoom, savingsCurve, type Liquidity } from '../lib/tax/plans'
+import { derive, savingsFor } from '../lib/tax/calc'
+import { buildPlans, retirementRoom, savingsCurve, type Liquidity, type PlanOutcome } from '../lib/tax/plans'
 import { useTaxReturn } from '../store/taxReturn'
 import s from './Plan.module.css'
 
@@ -26,23 +26,18 @@ function barColor(t: number): string {
 }
 
 function DesktopPlan() {
-  const { derived: d, cfg, ret, dispatch } = useTaxReturn()
+  const { derived: current, cfg, ret, dispatch } = useTaxReturn()
+  const applied = ret.appliedPlan
+  // plans are always built from the pre-plan baseline, so applying one never stacks
+  const d = useMemo(() => (applied ? derive({ ...ret, deductions: { ...ret.deductions, ...applied.baseline } }, cfg) : current), [applied, ret, cfg, current])
   const plans = useMemo(() => buildPlans(d, cfg), [d, cfg])
   const c = plans[2]
   const b = plans[1]
   const maxLocked = Math.max(c.locked, b.locked, 1)
   const curve = useMemo(() => savingsCurve(d, cfg, maxLocked, 20), [d, cfg, maxLocked])
-  const [chosen, setChosen] = useState<string | null>(null)
 
-  const choose = (id: string) => {
-    const p = plans.find((x) => x.id === id)!
-    // apply the plan to the draft so every other screen reflects it
-    dispatch({ type: 'setDeduction', key: 'ssf', value: ret.deductions.ssf + p.ssfExtra })
-    dispatch({ type: 'setDeduction', key: 'rmf', value: ret.deductions.rmf + p.rmfExtra })
-    dispatch({ type: 'setDeduction', key: 'lifeInsurance', value: ret.deductions.lifeInsurance + p.lifeExtra })
-    dispatch({ type: 'setDeduction', key: 'donations', value: ret.deductions.donations + p.donation })
-    setChosen(id)
-  }
+  const choose = (p: PlanOutcome) =>
+    dispatch({ type: 'applyPlan', id: p.id, extras: { ssfExtra: p.ssfExtra, rmfExtra: p.rmfExtra, lifeExtra: p.lifeExtra, donation: p.donation } })
 
   return (
     <div className={s.page}>
@@ -65,23 +60,30 @@ function DesktopPlan() {
             </div>
           </div>
 
-          {chosen && (
-            <div role="status" style={{ marginBottom: 18, font: '400 13px/1.5 var(--sans)', color: 'var(--teal-deep)', background: 'var(--teal-tint)', border: '1px solid var(--teal-tint-border)', borderRadius: 10, padding: '10px 14px' }}>
-              บันทึกแผน {chosen} ลงในร่างของคุณแล้ว — ภาษีใหม่ {money(d.taxDue)} บาท ·{' '}
-              <Link to="/result" style={{ fontWeight: 500 }}>
-                ดูผลลัพธ์ →
-              </Link>
+          {applied && (
+            <div role="status" className={s.appliedNote}>
+              <span>
+                ใช้แผน {applied.id} อยู่ — ค่าลดหย่อนในร่างรวมแผนนี้แล้ว ภาษีใหม่ <strong className="num">{money(current.taxDue)}</strong> บาท
+              </span>
+              <span className={s.appliedActions}>
+                <Link to="/result">ดูผลลัพธ์ →</Link>
+                <button type="button" onClick={() => dispatch({ type: 'clearPlan' })}>
+                  ยกเลิกแผน
+                </button>
+              </span>
             </div>
           )}
 
           <div className={s.grid}>
             {plans.map((p) => (
-              <article key={p.id} className={s.plan} data-rec={p.recommended} aria-label={`แผน ${p.id} ${p.name}`}>
+              <article key={p.id} className={s.plan} data-rec={p.recommended} data-applied={applied?.id === p.id} aria-label={`แผน ${p.id} ${p.name}`}>
                 <div className={s.pHead}>
                   <div className={s.pEyebrowRow}>
                     <span className={s.pEyebrow}>แผน {p.id}</span>
-                    {p.recommended && (
-                      <span style={{ font: '600 10.5px/1.4 var(--sans)', color: '#fff', background: 'var(--teal)', padding: '4px 10px', borderRadius: 999 }}>แนะนำ</span>
+                    {applied?.id === p.id ? (
+                      <span style={{ font: '600 10.5px/1.4 var(--sans)', color: '#fff', background: 'var(--ink)', padding: '4px 10px', borderRadius: 999 }}>ใช้อยู่</span>
+                    ) : (
+                      p.recommended && <span style={{ font: '600 10.5px/1.4 var(--sans)', color: '#fff', background: 'var(--teal)', padding: '4px 10px', borderRadius: 999 }}>แนะนำ</span>
                     )}
                   </div>
                   <div className={s.pName}>{p.name}</div>
@@ -130,11 +132,17 @@ function DesktopPlan() {
                       </span>
                     </div>
                   </div>
-                  {p.recommended && (
+                  {p.id !== 'A' && (
                     <div className={s.pCta}>
-                      <Button variant="primary" block style={{ padding: '13px 0', fontSize: 13.5 }} onClick={() => choose(p.id)}>
-                        เลือกแผนนี้
-                      </Button>
+                      {applied?.id === p.id ? (
+                        <Button variant="secondary" block style={{ padding: '13px 0', fontSize: 13.5 }} onClick={() => dispatch({ type: 'clearPlan' })}>
+                          ยกเลิกแผนนี้
+                        </Button>
+                      ) : (
+                        <Button variant={p.recommended ? 'primary' : 'secondaryInk'} block style={{ padding: '13px 0', fontSize: 13.5 }} onClick={() => choose(p)}>
+                          {applied ? 'เปลี่ยนมาใช้แผนนี้' : 'เลือกแผนนี้'}
+                        </Button>
+                      )}
                     </div>
                   )}
                 </div>

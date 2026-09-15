@@ -45,6 +45,48 @@
   border: 2px solid var(--teal);
   box-shadow: var(--shadow-raised);
 }
+.plan[data-applied='true'] {
+  border: 2px solid var(--ink);
+  box-shadow: none;
+}
+.plan[data-applied='true'] .pHead {
+  background: var(--sheet);
+}
+.appliedNote {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+  font: 400 13px/1.5 var(--sans);
+  color: var(--ink);
+  background: var(--teal-tint);
+  border: 1px solid var(--teal-tint-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+.appliedNote strong {
+  font-weight: 600;
+}
+.appliedActions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.appliedActions a,
+.appliedActions button {
+  font: 500 13px/1.4 var(--sans);
+  color: var(--teal-deep);
+  border-radius: 4px;
+}
+.appliedActions button {
+  color: var(--clay-deep);
+}
+.appliedActions button:hover,
+.appliedActions a:hover {
+  text-decoration: underline;
+}
 .pHead {
   padding: 22px 24px 18px;
   border-bottom: 1px solid var(--ground);
