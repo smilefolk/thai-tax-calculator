@@ -3,10 +3,11 @@ import { DarkSidebar } from '../components/layout/DarkSidebar'
 import { PhoneTabBar } from '../components/layout/PhoneTabBar'
 import { Avatar, Pill, ProgressBar } from '../components/ui/Bits'
 import { Button } from '../components/ui/Button'
-import { priorYears, user, type FilingRecord } from '../data/history'
+import { priorYearFor, priorYears, user, type FilingRecord } from '../data/history'
 import { useIsMobile } from '../hooks/useMediaQuery'
 import { daysUntil, greeting, thaiDate } from '../lib/dates'
 import { money, signed } from '../lib/format'
+import { formFor } from '../lib/tax/calc'
 import { availableTaxYears } from '../lib/tax/config'
 import { buildPlans } from '../lib/tax/plans'
 import { useTaxReturn } from '../store/taxReturn'
@@ -14,11 +15,11 @@ import s from './Dashboard.module.css'
 
 function useDashboard() {
   const { derived: d, ret, cfg } = useTaxReturn()
-  const current: FilingRecord = { taxYear: ret.taxYear, form: ret.income.every((e) => e.category === '40(1)') ? 'ภ.ง.ด. 91' : 'ภ.ง.ด. 90', tax: d.taxDue, balance: d.balance, status: 'draft' }
+  const current: FilingRecord = { taxYear: ret.taxYear, form: formFor(ret.income), tax: d.taxDue, balance: d.balance, status: 'draft' }
   const history = [current, ...priorYears.filter((p) => p.taxYear !== ret.taxYear)].sort((a, b) => b.taxYear - a.taxYear)
   const fiveYears = history.slice(0, 5).reverse()
   const maxTax = Math.max(...fiveYears.map((h) => h.tax), 1)
-  const last = priorYears.find((p) => p.taxYear === ret.taxYear - 1)
+  const last = priorYearFor(ret.taxYear)
   const delta = last ? d.taxDue - last.tax : 0
   const days = daysUntil(cfg.filingDeadline)
   const usedRatio = d.totalAllowanceCeiling > 0 ? 1 - d.totalUnusedAllowance / d.totalAllowanceCeiling : 0

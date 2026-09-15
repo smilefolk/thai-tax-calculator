@@ -1,5 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import { amountToDropBracket, derive, effectiveExpenseMethod, expenseByEntry, familyDeductions, savingsFor, taxByBracket, taxOnNet } from './calc'
+import {
+  amountToDropBracket,
+  derive,
+  effectiveExpenseMethod,
+  expenseByEntry,
+  familyDeductions,
+  formFor,
+  maxParents,
+  retirementHeadroom,
+  savingsFor,
+  ssfSuggestion,
+  taxByBracket,
+  taxOnNet,
+} from './calc'
 import { getTaxYearConfig } from './config'
 import { blankReturn, emptyProfile, workedExample } from './defaults'
 import { buildPlans, savingsCurve } from './plans'
@@ -255,5 +268,74 @@ describe('deduction caps', () => {
     expect(d.taxDue).toBe(0)
     expect(d.verdict).toBe('even')
     expect(d.marginalBracket).toBeNull()
+  })
+
+  it('#10 nothing taxed yet → progress 0 at the start of the exempt band, 150,000 to the first rate', () => {
+    const d = derive(blankReturn(), cfg)
+    expect(d.bracketProgress).toBe(0)
+    expect(d.nextBracketDistance).toBe(150_000)
+    expect(d.nextBracket?.rate).toBe(0.05)
+    // one baht of net income → still (almost) 0, never a jump from 100% down
+    const r = blankReturn()
+    r.income[0].amount = 120_002 // − 50% expenses − 60,000 personal = net 1
+    const d1 = derive(r, cfg)
+    expect(d1.netIncome).toBe(1)
+    expect(d1.marginalBracket?.rate).toBe(0)
+    expect(d1.bracketProgress).toBeCloseTo(1 / 150_000, 6)
+  })
+
+  it('#6 remaining life-insurance room is net of health insurance (same 100,000 ceiling)', () => {
+    const r = workedExample()
+    r.deductions = { ...r.deductions, lifeInsurance: 75_000, healthInsurance: 25_000 }
+    const d = derive(r, cfg)
+    expect(d.unusedAllowanceByType.lifeInsurance).toBe(0)
+    expect(d.unusedAllowanceByType.healthInsurance).toBe(0)
+    // adding life insurance now saves nothing, and plan C must not suggest any
+    expect(buildPlans(d, cfg)[2].lifeExtra).toBe(0)
+    r.deductions = { ...r.deductions, lifeInsurance: 50_000, healthInsurance: 20_000 }
+    const d2 = derive(r, cfg)
+    expect(d2.unusedAllowanceByType.lifeInsurance).toBe(30_000)
+    expect(d2.unusedAllowanceByType.healthInsurance).toBe(5_000)
+  })
+
+  it('#7 SSF/RMF suggestion respects the combined 500,000 retirement ceiling', () => {
+    const r = workedExample()
+    r.income = [
+      { id: 'salary', category: '40(1)', amount: 3_000_000, expenseMethod: 'standard', actualExpense: 0, enteredAs: 'annual' },
+      { id: 'bonus', category: '40(1)', amount: 130_000, expenseMethod: 'standard', actualExpense: 0 },
+    ]
+    r.deductions = { ...r.deductions, ssf: 0, pvd: 450_000, nsf: 30_000 }
+    const d = derive(r, cfg)
+    expect(d.retirementUsed).toBe(480_000)
+    expect(d.retirementRoom).toBe(20_000)
+    expect(retirementHeadroom(d, cfg)).toBe(20_000)
+    const s = ssfSuggestion(d, cfg)
+    expect(s.amount).toBe(20_000)
+    expect(s.saved).toBe(savingsFor(20_000, d, cfg))
+    // and the same figure feeds plan B
+    expect(buildPlans(d, cfg)[1].ssfExtra).toBeLessThanOrEqual(20_000)
+  })
+
+  it('ssfSuggestion reproduces the handoff nudge for the worked example', () => {
+    const d = derive(workedExample(), cfg)
+    expect(ssfSuggestion(d, cfg)).toEqual({ amount: 60_000, saved: 9_000 })
+  })
+
+  it('#16 parents: own two only unless the spouse has no income', () => {
+    expect(maxParents(emptyProfile)).toBe(2)
+    expect(maxParents({ ...emptyProfile, hasSpouse: true, spouseHasIncome: true })).toBe(2)
+    expect(maxParents({ ...emptyProfile, hasSpouse: true, spouseHasIncome: false })).toBe(4)
+    const r = workedExample()
+    r.filerProfile = { ...r.filerProfile, parentsSupported: 4 }
+    r.deductions = { ...r.deductions, ...familyDeductions(r.filerProfile, cfg) }
+    expect(derive(r, cfg).deductionItems.find((i) => i.key === 'parents')!.allowed).toBe(60_000)
+    r.filerProfile = { ...r.filerProfile, hasSpouse: true, spouseHasIncome: false }
+    r.deductions = { ...r.deductions, ...familyDeductions(r.filerProfile, cfg) }
+    expect(derive(r, cfg).deductionItems.find((i) => i.key === 'parents')!.allowed).toBe(120_000)
+  })
+
+  it('formFor: salary only → ภ.ง.ด. 91, anything else → 90', () => {
+    expect(formFor(workedExample().income)).toBe('ภ.ง.ด. 91')
+    expect(formFor([...workedExample().income, { id: 'x', category: '40(6)', amount: 1, expenseMethod: 'standard', actualExpense: 0 }])).toBe('ภ.ง.ด. 90')
   })
 })

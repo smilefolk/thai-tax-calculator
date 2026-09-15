@@ -2,24 +2,29 @@ import { effectiveExpenseMethod, familyDeductions } from './calc'
 import { availableTaxYears, DEFAULT_TAX_YEAR, getTaxYearConfig } from './config'
 import { blankReturn, BONUS_ID, emptyDeductions, SALARY_ID } from './defaults'
 import type {
+  AppliedPlan,
   Attachment,
   AttachmentKind,
   AttachmentStatus,
   DeductionKey,
   Deductions,
+  EntryMode,
   ExpenseMethod,
   FilerProfile,
   IncomeCategory,
   IncomeEntry,
+  PlanId,
+  PlanKey,
   TaxReturn,
-  ViewMode,
   WizardStep,
 } from './types'
 
 const CATEGORIES: readonly IncomeCategory[] = ['40(1)', '40(2)', '40(4)', '40(5)', '40(6)', '40(8)']
 const METHODS: readonly ExpenseMethod[] = ['standard', 'actual']
 const STEPS: readonly WizardStep[] = ['filer', 'income', 'deductions', 'summary']
-const VIEW_MODES: readonly ViewMode[] = ['wizard', 'ledger']
+const ENTRY_MODES: readonly EntryMode[] = ['monthly', 'annual']
+const PLAN_IDS: readonly PlanId[] = ['A', 'B', 'C']
+export const PLAN_KEYS: readonly PlanKey[] = ['ssf', 'rmf', 'lifeInsurance', 'donations']
 const FILING_METHODS: readonly TaxReturn['filingMethod'][] = ['online', 'download']
 const ATTACHMENT_KINDS: readonly AttachmentKind[] = ['withholding-cert', 'life-insurance', 'ssf', 'rmf', 'other']
 const ATTACHMENT_STATUSES: readonly AttachmentStatus[] = ['pending', 'uploading', 'verified', 'error', 'missing']
@@ -64,12 +69,19 @@ export function normalizeReturn(raw: unknown): TaxReturn | null {
     const category = oneOf(e.category, CATEGORIES, null)
     if (!category) continue
     seen.add(e.id)
+    const amount = money(e.amount)
     const entry: IncomeEntry = {
       id: e.id,
       category: e.id === SALARY_ID || e.id === BONUS_ID ? '40(1)' : category,
-      amount: money(e.amount),
+      amount,
       expenseMethod: oneOf(e.expenseMethod, METHODS, 'standard'),
       actualExpense: money(e.actualExpense),
+    }
+    // only the salary row has an entry mode; older drafts without one keep 'monthly' when the
+    // figure still divides by 12, otherwise the figure was clearly typed as an annual total
+    if (e.id === SALARY_ID) {
+      entry.enteredAs = oneOf(e.enteredAs, ENTRY_MODES, amount % 12 === 0 ? 'monthly' : 'annual')
+      if (entry.enteredAs === 'monthly' && amount % 12 !== 0) entry.enteredAs = 'annual'
     }
     // drop an `actual` election the category doesn't permit (e.g. a pre-#1 salary draft)
     entry.expenseMethod = effectiveExpenseMethod(entry, cfg)
@@ -101,6 +113,16 @@ export function normalizeReturn(raw: unknown): TaxReturn | null {
     }
   }
 
+  // an applied plan is only meaningful with a complete numeric baseline
+  let appliedPlan: AppliedPlan | undefined
+  if (isObj(raw.appliedPlan) && isObj(raw.appliedPlan.baseline)) {
+    const id = oneOf(raw.appliedPlan.id, PLAN_IDS, null)
+    const b = raw.appliedPlan.baseline
+    if (id && PLAN_KEYS.every((k) => typeof b[k] === 'number' && Number.isFinite(b[k]))) {
+      appliedPlan = { id, baseline: { ssf: money(b.ssf), rmf: money(b.rmf), lifeInsurance: money(b.lifeInsurance), donations: money(b.donations) } }
+    }
+  }
+
   const u = isObj(raw.ui) ? raw.ui : {}
   return {
     taxYear,
@@ -110,7 +132,8 @@ export function normalizeReturn(raw: unknown): TaxReturn | null {
     withholding,
     attachments,
     filingMethod: oneOf(raw.filingMethod, FILING_METHODS, base.filingMethod),
-    ui: { currentStep: oneOf(u.currentStep, STEPS, base.ui.currentStep), viewMode: oneOf(u.viewMode, VIEW_MODES, base.ui.viewMode) },
+    ...(appliedPlan ? { appliedPlan } : {}),
+    ui: { currentStep: oneOf(u.currentStep, STEPS, base.ui.currentStep) },
   }
 }
 

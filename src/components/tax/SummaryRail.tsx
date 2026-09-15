@@ -1,18 +1,13 @@
-import { savingsFor } from '../../lib/tax/calc'
+import { ssfSuggestion } from '../../lib/tax/calc'
 import { money, neg, pct, pctInt } from '../../lib/format'
 import { useTaxReturn } from '../../store/taxReturn'
 import { ProgressBar } from '../ui/Bits'
 import s from './SummaryRail.module.css'
 
-/** Suggested extra SSF/RMF: a third of the money in the marginal band, rounded to 10k, within room. */
+/** The shared SSF/RMF nudge — respects every ceiling, including the combined retirement one. */
 export function useAdvice() {
   const { derived: d, cfg } = useTaxReturn()
-  const m = d.marginalBracket
-  const inBand = m ? d.netIncome - m.from : 0
-  const room = (d.unusedAllowanceByType.ssf ?? 0) + (d.unusedAllowanceByType.rmf ?? 0)
-  const amount = Math.min(room, Math.max(0, Math.round(inBand / 3 / 10_000) * 10_000))
-  const saved = amount > 0 ? savingsFor(amount, d, cfg) : 0
-  return { amount, saved }
+  return ssfSuggestion(d, cfg)
 }
 
 export function SummaryRail({ estimateDeductions }: { estimateDeductions?: boolean }) {
@@ -57,18 +52,16 @@ export function SummaryRail({ estimateDeductions }: { estimateDeductions?: boole
       <div className={s.bracket}>
         <div className={s.bracketHead}>
           <span className={s.bracketLabel}>ขั้นภาษีปัจจุบัน</span>
-          <span className={s.bracketRate}>{m ? pctInt(m.rate) : 'ยกเว้น'}</span>
+          <span className={s.bracketRate}>{m && m.rate > 0 ? pctInt(m.rate) : 'ยกเว้น'}</span>
         </div>
         <ProgressBar value={d.bracketProgress} label="ตำแหน่งในขั้นภาษีปัจจุบัน" />
         <div className={s.bracketNote}>
-          {m && d.nextBracket ? (
+          {d.nextBracket ? (
             <>
-              อีก <strong>{money(d.nextBracketDistance)}</strong> จะขยับขึ้นขั้น {pctInt(d.nextBracket.rate)}
+              อีก <strong>{money(d.nextBracketDistance)}</strong> จะ{m && m.rate > 0 ? 'ขยับขึ้น' : 'เริ่มเสียภาษี'}ขั้น {pctInt(d.nextBracket.rate)}
             </>
-          ) : m ? (
-            'อยู่ในขั้นสูงสุดแล้ว'
           ) : (
-            'เงินได้สุทธิยังไม่ถึงเกณฑ์เสียภาษี'
+            'อยู่ในขั้นสูงสุดแล้ว'
           )}
         </div>
       </div>

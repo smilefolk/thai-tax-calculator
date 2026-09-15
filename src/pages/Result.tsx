@@ -1,12 +1,16 @@
+import { PhoneTabBar } from '../components/layout/PhoneTabBar'
+import { TopBar } from '../components/layout/TopBar'
 import { BracketAxis, BracketBar, BracketRateRow } from '../components/tax/BracketBar'
 import { CheckMark, ProgressBar } from '../components/ui/Bits'
 import { Button } from '../components/ui/Button'
-import { priorYears } from '../data/history'
+import { Logo } from '../components/ui/Logo'
+import { priorYearFor } from '../data/history'
 import { useIsMobile } from '../hooks/useMediaQuery'
 import { money, pct, pctInt } from '../lib/format'
-import { savingsFor } from '../lib/tax/calc'
+import { ssfSuggestion } from '../lib/tax/calc'
 import { useTaxReturn } from '../store/taxReturn'
 import s from './Result.module.css'
+import { TOTAL_QUESTIONS } from './wizard/questions'
 
 function useAdviceCards() {
   const { derived: d, cfg, ret } = useTaxReturn()
@@ -14,12 +18,14 @@ function useAdviceCards() {
   const ssf = it('ssf')
   const rmf = it('rmf')
   const life = it('lifeInsurance')
-  const inBand = d.marginalBracket ? d.netIncome - d.marginalBracket.from : 0
-  const ssfSuggest = Math.min(Math.max(0, Math.round(inBand / 3 / 10_000) * 10_000), ssf.cap - ssf.allowed)
+  const health = it('healthInsurance')
+  // the same nudge the rail shows — capped by the combined retirement ceiling
+  const suggest = ssfSuggestion(d, cfg)
   return {
-    ssf: { used: ssf.allowed, cap: ssf.cap, suggest: ssfSuggest, saved: savingsFor(ssfSuggest, d, cfg) },
+    ssf: { used: ssf.allowed, cap: ssf.cap, suggest: Math.min(suggest.amount, ssf.cap - ssf.allowed), saved: suggest.saved },
     rmf: { used: rmf.allowed, cap: rmf.cap },
-    life: { used: life.allowed, cap: life.cap, entered: ret.deductions.lifeInsurance },
+    // health insurance shares the 100,000 ceiling, so it counts as "used" here
+    life: { used: life.allowed + health.allowed, cap: life.cap, entered: ret.deductions.lifeInsurance + ret.deductions.healthInsurance, room: d.unusedAllowanceByType.lifeInsurance ?? 0 },
   }
 }
 
@@ -27,9 +33,9 @@ function DesktopResult() {
   const { derived: d, ret, cfg } = useTaxReturn()
   const abs = Math.abs(d.balance)
   const adv = useAdviceCards()
-  const last = priorYears[0]
-  const delta = d.taxDue - last.tax
-  const maxBar = Math.max(d.taxDue, last.tax) || 1
+  const last = priorYearFor(ret.taxYear)
+  const delta = last ? d.taxDue - last.tax : 0
+  const maxBar = Math.max(d.taxDue, last?.tax ?? 0) || 1
   const docs = [
     { label: 'หนังสือรับรองหัก ณ ที่จ่าย 50 ทวิ', done: ret.attachments.some((a) => a.kind === 'withholding-cert' && a.status === 'verified'), need: true },
     { label: 'หนังสือรับรองเบี้ยประกันชีวิต', done: ret.attachments.some((a) => a.kind === 'life-insurance' && a.status === 'verified'), need: ret.deductions.lifeInsurance > 0 },
@@ -39,6 +45,9 @@ function DesktopResult() {
 
   return (
     <div className={s.page}>
+      <div className="page__inner">
+        <TopBar />
+      </div>
       <div className={s.inner}>
         <div className={s.head}>
           <div>
@@ -50,6 +59,9 @@ function DesktopResult() {
             </h1>
           </div>
           <div className={s.headBtns}>
+            <Button variant="secondary" size="md" style={{ borderRadius: 9 }} to="/calc/summary">
+              ← แก้ไขข้อมูล
+            </Button>
             <Button variant="secondary" size="md" style={{ borderRadius: 9 }} onClick={() => navigator.share?.({ title: 'ผลคำนวณภาษี', text: `ภาษีปี ${ret.taxYear} ของฉัน ${money(d.taxDue)} บาท` }).catch(() => {})}>
               แชร์ผล
             </Button>
@@ -157,13 +169,17 @@ function DesktopResult() {
               <div className={s.adviceGrid}>
                 <div className={s.advCard}>
                   <div className={s.advEyebrow}>SSF</div>
-                  <div className={s.advTitle}>{adv.ssf.suggest > 0 ? `ซื้อเพิ่มได้อีก ${money(adv.ssf.suggest)}` : adv.ssf.used >= adv.ssf.cap ? 'ใช้เต็มสิทธิแล้ว' : 'ยังไม่ได้ใช้เลย'}</div>
+                  <div className={s.advTitle}>
+                    {adv.ssf.suggest > 0 ? `ซื้อเพิ่มได้อีก ${money(adv.ssf.suggest)}` : adv.ssf.used >= adv.ssf.cap || d.retirementRoom === 0 ? 'ใช้เต็มสิทธิแล้ว' : adv.ssf.used === 0 ? 'ยังไม่ได้ใช้เลย' : `ใช้ไป ${money(adv.ssf.used)}`}
+                  </div>
                   <ProgressBar value={adv.ssf.cap ? adv.ssf.used / adv.ssf.cap : 0} height={6} className={s.advBar} label="SSF ใช้ไปแล้ว" />
                   <div className={s.advSub}>
                     {adv.ssf.suggest > 0 ? (
                       <>
                         ประหยัดภาษี <strong>{money(adv.ssf.saved)}</strong> · ถือ 10 ปี
                       </>
+                    ) : d.retirementRoom === 0 ? (
+                      <>กองทุนเกษียณรวมถึงเพดาน {money(cfg.caps.retirementCombined)} แล้ว</>
                     ) : (
                       <>เพดาน {money(adv.ssf.cap)} · ถือ 10 ปี</>
                     )}
@@ -182,10 +198,10 @@ function DesktopResult() {
                   return (
                     <div className={s.advCard} data-tone={warn ? 'clay' : undefined}>
                       <div className={s.advEyebrow}>{warn ? 'ระวัง' : 'ประกันชีวิต'}</div>
-                      <div className={s.advTitle}>{over ? 'ประกันชีวิตเกินเพดาน' : ratio >= 1 ? 'ประกันชีวิตเต็มสิทธิแล้ว' : ratio >= 0.7 ? 'ประกันชีวิตใกล้เต็ม' : `ยังซื้อเพิ่มได้อีก ${money(adv.life.cap - adv.life.used)}`}</div>
+                      <div className={s.advTitle}>{over ? 'ประกันชีวิตเกินเพดาน' : adv.life.room === 0 ? 'ประกันชีวิตเต็มสิทธิแล้ว' : ratio >= 0.7 ? 'ประกันชีวิตใกล้เต็ม' : `ยังซื้อเพิ่มได้อีก ${money(adv.life.room)}`}</div>
                       <ProgressBar value={ratio} height={6} className={s.advBar} color={warn ? 'var(--clay)' : undefined} track={warn ? 'var(--clay-track)' : undefined} label="ประกันชีวิตใช้ไปแล้ว" />
                       <div className={s.advSub}>
-                        ใช้ {money(adv.life.used)} จากเพดาน {money(adv.life.cap)}
+                        ใช้ {money(adv.life.used)} จากเพดาน {money(adv.life.cap)} (รวมประกันสุขภาพ)
                       </div>
                     </div>
                   )
@@ -217,36 +233,38 @@ function DesktopResult() {
               </div>
             </div>
 
-            <div className={s.cmp}>
-              <div className={s.cmpTitle}>เทียบกับปีที่แล้ว</div>
-              <div className={s.bars}>
-                <div className={s.barCol}>
-                  <span className={s.barVal}>{money(last.tax)}</span>
-                  <div className={s.bar} style={{ height: `${(last.tax / maxBar) * 80}px` }} />
+            {last && (
+              <div className={s.cmp}>
+                <div className={s.cmpTitle}>เทียบกับปีที่แล้ว</div>
+                <div className={s.bars}>
+                  <div className={s.barCol}>
+                    <span className={s.barVal}>{money(last.tax)}</span>
+                    <div className={s.bar} style={{ height: `${(last.tax / maxBar) * 80}px` }} />
+                  </div>
+                  <div className={s.barCol} data-current>
+                    <span className={s.barVal}>{money(d.taxDue)}</span>
+                    <div className={s.bar} style={{ height: `${(d.taxDue / maxBar) * 80}px` }} />
+                  </div>
                 </div>
-                <div className={s.barCol} data-current>
-                  <span className={s.barVal}>{money(d.taxDue)}</span>
-                  <div className={s.bar} style={{ height: `${(d.taxDue / maxBar) * 80}px` }} />
+                <div className={s.barLabels}>
+                  <span>{last.taxYear}</span>
+                  <span data-current>{ret.taxYear}</span>
+                </div>
+                <div className={s.cmpNote}>
+                  {delta > 0 ? (
+                    <>
+                      เพิ่มขึ้น <strong>{money(delta)}</strong> จากปีก่อน
+                    </>
+                  ) : delta < 0 ? (
+                    <>
+                      ลดลง <strong>{money(-delta)}</strong> จากปีก่อน
+                    </>
+                  ) : (
+                    'เท่ากับปีก่อน'
+                  )}
                 </div>
               </div>
-              <div className={s.barLabels}>
-                <span>{last.taxYear}</span>
-                <span data-current>{ret.taxYear}</span>
-              </div>
-              <div className={s.cmpNote}>
-                {delta > 0 ? (
-                  <>
-                    เพิ่มขึ้น <strong>{money(delta)}</strong> {d.incomeByCategory['40(1)'] > 0 ? 'เพราะรายได้สูงกว่าเดิม' : ''}
-                  </>
-                ) : delta < 0 ? (
-                  <>
-                    ลดลง <strong>{money(-delta)}</strong> จากปีก่อน
-                  </>
-                ) : (
-                  'เท่ากับปีก่อน'
-                )}
-              </div>
-            </div>
+            )}
 
             <div className={s.docs}>
               <div className={s.docsTitle}>เอกสารที่ต้องเตรียม</div>
@@ -269,6 +287,13 @@ function MobileResult() {
   const abs = Math.abs(d.balance)
   return (
     <div className={s.m}>
+      <div className={s.mTop}>
+        <Button variant="link" size="none" className={s.mBack} to={`/calc/q/${TOTAL_QUESTIONS}`} aria-label="กลับไปแก้ไขข้อมูล">
+          ←
+        </Button>
+        <Logo size="sm" onDark />
+        <span className={s.mTopSpacer} aria-hidden="true" />
+      </div>
       <main className={s.mBody}>
         <div className={s.mEyebrow}>ผลการคำนวณ {ret.taxYear}</div>
         <div className={s.mLabel}>ภาษีที่ต้องชำระทั้งปี</div>
@@ -321,7 +346,11 @@ function MobileResult() {
         <Button variant="onDarkWhite" size="xl" block to="/plan">
           ดูวิธีลดภาษีปีหน้า
         </Button>
+        <Button variant="link" size="none" className={s.mEdit} to={`/calc/q/${TOTAL_QUESTIONS}`}>
+          ← กลับไปแก้ไขข้อมูล
+        </Button>
       </div>
+      <PhoneTabBar active="คำนวณ" />
     </div>
   )
 }

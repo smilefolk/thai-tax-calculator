@@ -1,15 +1,19 @@
 import type { DeductionKey, WizardStep } from '../../lib/tax/types'
 
 /**
- * The mobile flow asks one question per screen. Eleven questions, grouped
+ * The mobile flow asks one question per screen. Thirteen questions, grouped
  * by the same four steps the desktop wizard uses.
  */
 export type QuestionKind =
-  | { kind: 'money-income'; incomeId: 'salary' | 'bonus'; monthly?: boolean }
+  /** the salary row: the screen offers a monthly × 12 / annual-total toggle */
+  | { kind: 'salary' }
+  | { kind: 'money-income'; incomeId: 'bonus' }
   | { kind: 'deduction'; key: DeductionKey }
   | { kind: 'withholding' }
   | { kind: 'spouse' }
   | { kind: 'children' }
+  | { kind: 'parents' }
+  | { kind: 'disabled' }
 
 export interface Question {
   n: number
@@ -30,7 +34,7 @@ export const questions: Question[] = [
     title: 'เงินเดือนต่อเดือนเท่าไหร่',
     lead: 'ยอดก่อนหักภาษีและประกันสังคม ดูจากสลิปเงินเดือนหรือหนังสือรับรอง 50 ทวิ',
     skippable: false,
-    q: { kind: 'money-income', incomeId: 'salary', monthly: true },
+    q: { kind: 'salary' },
   },
   {
     n: 2,
@@ -61,6 +65,24 @@ export const questions: Question[] = [
   },
   {
     n: 5,
+    step: 'filer',
+    group: 'ผู้ยื่น',
+    title: 'อุปการะบิดามารดากี่คน',
+    lead: 'บิดามารดาอายุ 60 ปีขึ้นไปที่มีรายได้ไม่เกิน 30,000 บาทต่อปี ลดหย่อนได้คนละ 30,000 บาท',
+    skippable: true,
+    q: { kind: 'parents' },
+  },
+  {
+    n: 6,
+    step: 'filer',
+    group: 'ผู้ยื่น',
+    title: 'อุปการะผู้พิการหรือทุพพลภาพกี่คน',
+    lead: 'ผู้ที่มีบัตรประจำตัวคนพิการหรือใบรับรองทุพพลภาพและมีรายได้ไม่เกิน 30,000 บาท ลดหย่อนได้คนละ 60,000 บาท',
+    skippable: true,
+    q: { kind: 'disabled' },
+  },
+  {
+    n: 7,
     step: 'deductions',
     group: 'ค่าลดหย่อน',
     title: 'ปีนี้ซื้อกองทุน SSF ไปเท่าไหร่',
@@ -70,7 +92,7 @@ export const questions: Question[] = [
     q: { kind: 'deduction', key: 'ssf' },
   },
   {
-    n: 6,
+    n: 8,
     step: 'deductions',
     group: 'ค่าลดหย่อน',
     title: 'ซื้อกองทุน RMF ไปเท่าไหร่',
@@ -80,7 +102,7 @@ export const questions: Question[] = [
     q: { kind: 'deduction', key: 'rmf' },
   },
   {
-    n: 7,
+    n: 9,
     step: 'deductions',
     group: 'ค่าลดหย่อน',
     title: 'จ่ายเบี้ยประกันชีวิตไปเท่าไหร่',
@@ -90,7 +112,7 @@ export const questions: Question[] = [
     q: { kind: 'deduction', key: 'lifeInsurance' },
   },
   {
-    n: 8,
+    n: 10,
     step: 'deductions',
     group: 'ค่าลดหย่อน',
     title: 'ประกันสังคมทั้งปีเท่าไหร่',
@@ -100,7 +122,7 @@ export const questions: Question[] = [
     q: { kind: 'deduction', key: 'socialSecurity' },
   },
   {
-    n: 9,
+    n: 11,
     step: 'deductions',
     group: 'ค่าลดหย่อน',
     title: 'ดอกเบี้ยกู้ซื้อบ้านทั้งปี',
@@ -110,7 +132,7 @@ export const questions: Question[] = [
     q: { kind: 'deduction', key: 'homeLoanInterest' },
   },
   {
-    n: 10,
+    n: 12,
     step: 'deductions',
     group: 'ค่าลดหย่อน',
     title: 'เงินบริจาคทั่วไปทั้งปี',
@@ -120,7 +142,7 @@ export const questions: Question[] = [
     q: { kind: 'deduction', key: 'donations' },
   },
   {
-    n: 11,
+    n: 13,
     step: 'summary',
     group: 'ภาษีหัก ณ ที่จ่าย',
     title: 'ถูกหักภาษี ณ ที่จ่ายไว้เท่าไหร่',

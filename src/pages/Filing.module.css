@@ -156,6 +156,29 @@
   border-color: var(--teal);
   color: var(--teal-deep);
 }
+.notice {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -14px 0 22px;
+  font: 400 12.5px/1.5 var(--sans);
+  color: var(--teal-deep);
+  background: var(--teal-tint);
+  border: 1px solid var(--teal-tint-border);
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+.noticeClose {
+  font: 400 12px/1 var(--sans);
+  color: var(--ink-faint);
+  padding: 2px 4px;
+  border-radius: 4px;
+  flex: none;
+}
+.noticeClose:hover {
+  color: var(--ink);
+}
 .foot {
   display: flex;
   align-items: center;

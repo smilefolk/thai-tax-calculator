@@ -48,6 +48,23 @@
 .amount {
   margin-bottom: 14px;
 }
+.modeToggle {
+  margin-bottom: 14px;
+}
+.subHint {
+  font: 300 12.5px/1.55 var(--sans);
+  color: var(--ink-faint);
+  margin: -4px 0 14px;
+}
+.skipped {
+  font: 400 12.5px/1.5 var(--sans);
+  color: var(--ink-muted);
+  background: var(--card);
+  border: 1px dashed var(--line-strong);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
 .chips {
   display: flex;
   gap: 9px;

@@ -18,6 +18,11 @@ export const priorYears: FilingRecord[] = [
   { taxYear: 2564, form: 'ภ.ง.ด. 91', tax: 31_400, balance: -600, status: 'paid' },
 ]
 
+/** The filed record for the year before `taxYear`, if we have one. */
+export function priorYearFor(taxYear: number): FilingRecord | undefined {
+  return priorYears.find((p) => p.taxYear === taxYear - 1)
+}
+
 export const user = {
   name: 'สมชาย ใจดี',
   title: 'นายสมชาย ใจดี',

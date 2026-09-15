@@ -30,7 +30,7 @@ export function Button({ variant = 'primary', size = 'none', block, to, classNam
     .join(' ')
   if (to) {
     return (
-      <Link to={to} className={cls} style={rest.style} aria-disabled={rest.disabled}>
+      <Link to={to} className={cls} style={rest.style} aria-disabled={rest.disabled} aria-label={rest['aria-label']} title={rest.title}>
         {children}
       </Link>
     )

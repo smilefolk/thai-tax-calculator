@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { money } from '../../lib/format'
 import s from './Bits.module.css'
+import { useMoneyField } from './useMoneyField'
 
 export function ProgressBar({
   value,
@@ -100,14 +101,7 @@ export function LedgerRow({
       <span className={s.leader} aria-hidden="true" />
       {editable ? (
         <span className={s.ledgerFig} data-empty={empty}>
-          <input
-            className={s.ledgerInput}
-            inputMode="numeric"
-            aria-label={typeof label === 'string' ? label : undefined}
-            placeholder="—"
-            value={value ? money(value) : ''}
-            onChange={(e) => onChange?.(Number(e.target.value.replace(/[^\d]/g, '')) || 0)}
-          />
+          <LedgerInput label={typeof label === 'string' ? label : undefined} value={value} onChange={onChange ?? (() => {})} />
         </span>
       ) : (
         <span className={s.ledgerFig} data-empty={empty}>
@@ -115,6 +109,24 @@ export function LedgerRow({
         </span>
       )}
     </div>
+  )
+}
+
+/** Inline money editor for a ledger row — same parse/format rules as MoneyInput. */
+function LedgerInput({ label, value, onChange }: { label?: string; value: number; onChange: (n: number) => void }) {
+  const field = useMoneyField(value, onChange)
+  return (
+    <input
+      className={s.ledgerInput}
+      inputMode="numeric"
+      autoComplete="off"
+      aria-label={label}
+      placeholder="—"
+      value={field.text}
+      onFocus={field.onFocus}
+      onBlur={field.onBlur}
+      onChange={(e) => field.onChangeText(e.target.value)}
+    />
   )
 }
 

@@ -88,6 +88,22 @@ export function salaryExpenseCap(cfg: TaxYearConfig): number {
   return r.type === 'standard' && r.cap != null ? r.cap : 0
 }
 
+/** Standard-expense rate for 40(1) (0.5 in 2568) — UI copy must read it from here, never inline. */
+export function salaryExpenseRate(cfg: TaxYearConfig): number {
+  const r = cfg.expenseRules['40(1)']
+  return r.type === 'standard' ? r.rate : 0
+}
+
+/** Only salary/wage income → ภ.ง.ด. 91; anything else → ภ.ง.ด. 90 */
+export function isSalaryOnly(income: IncomeEntry[]): boolean {
+  return income.every((e) => e.category === '40(1)')
+}
+
+export type FormCode = 'ภ.ง.ด. 90' | 'ภ.ง.ด. 91'
+export function formFor(income: IncomeEntry[]): FormCode {
+  return isSalaryOnly(income) ? 'ภ.ง.ด. 91' : 'ภ.ง.ด. 90'
+}
+
 /* ---------------- deductions ---------------- */
 
 export interface DeductionContext {
@@ -96,6 +112,14 @@ export interface DeductionContext {
   salaryIncome: number
   profile: FilerProfile
   cfg: TaxYearConfig
+}
+
+/**
+ * Parents the filer may claim: their own two, plus the spouse's two only when the
+ * spouse has no income (otherwise the spouse claims their own parents on their own return).
+ */
+export function maxParents(profile: FilerProfile): number {
+  return profile.hasSpouse && !profile.spouseHasIncome ? 4 : 2
 }
 
 /** Maximum allowed for one deduction key given the filer's situation. */
@@ -115,7 +139,7 @@ export function deductionCap(key: DeductionKey, ctx: DeductionContext): number {
       return n * caps.childEach + upgraded * (caps.childEachFrom2561 - caps.childEach)
     }
     case 'parents':
-      return profile.parentsSupported * caps.parentEach
+      return Math.min(clamp0(profile.parentsSupported), maxParents(profile)) * caps.parentEach
     case 'disabled':
       return profile.disabledDependents * caps.disabledEach
     case 'socialSecurity':
@@ -286,15 +310,21 @@ export function derive(ret: TaxReturn, cfg: TaxYearConfig): DerivedTax {
 
   const marginal = rows.find((r) => r.isMarginal) ?? null
   const marginalIdx = marginal ? rows.indexOf(marginal) : -1
-  const nextBracket = marginalIdx >= 0 && marginalIdx + 1 < rows.length ? rows[marginalIdx + 1] : null
-  const nextDistance = marginal && Number.isFinite(marginal.to) ? marginal.to - net : Infinity
-  const bracketProgress =
-    marginal && Number.isFinite(marginal.to) ? (net - marginal.from) / (marginal.to - marginal.from) : 1
+  // nothing taxed yet (net = 0) → sit at the very start of the exempt band, not at the top of it
+  const nextBracket = marginal ? (marginalIdx + 1 < rows.length ? rows[marginalIdx + 1] : null) : (rows[1] ?? null)
+  const nextDistance = marginal ? (Number.isFinite(marginal.to) ? marginal.to - net : Infinity) : rows[0].to - net
+  const bracketProgress = marginal ? (Number.isFinite(marginal.to) ? (net - marginal.from) / (marginal.to - marginal.from) : 1) : 0
 
   const unused: Partial<Record<DeductionKey, number>> = {}
   for (const it of items) {
     if (Number.isFinite(it.cap)) unused[it.key] = clamp0(it.cap - it.allowed)
   }
+  // life + health insurance share the 100,000 ceiling, so room left for either is what both leave
+  const lifeAllowed = items.find((i) => i.key === 'lifeInsurance')?.allowed ?? 0
+  const healthAllowed = items.find((i) => i.key === 'healthInsurance')?.allowed ?? 0
+  const lifeFamilyRoom = clamp0(cfg.caps.lifeInsurance - lifeAllowed - healthAllowed)
+  unused.lifeInsurance = lifeFamilyRoom
+  unused.healthInsurance = Math.min(clamp0(cfg.caps.healthInsurance - healthAllowed), lifeFamilyRoom)
   const headlineKeys: DeductionKey[] = ['ssf', 'rmf', 'lifeInsurance', 'homeLoanInterest']
   let totalUnused = 0
   let totalCeiling = 0
@@ -305,11 +335,11 @@ export function derive(ret: TaxReturn, cfg: TaxYearConfig): DerivedTax {
     totalCeiling += it.cap
   }
   // retirement family can't exceed the combined ceiling in total
-  const retUsed = RETIREMENT_KEYS.reduce((s, k) => s + (items.find((i) => i.key === k)?.allowed ?? 0), 0)
-  const retRoom = clamp0(cfg.caps.retirementCombined - retUsed)
+  const retirementUsed = RETIREMENT_KEYS.reduce((s, k) => s + (items.find((i) => i.key === k)?.allowed ?? 0), 0)
+  const retirementRoom = clamp0(cfg.caps.retirementCombined - retirementUsed)
   const ssfRmfUnused = (unused.ssf ?? 0) + (unused.rmf ?? 0)
-  if (ssfRmfUnused > retRoom) {
-    totalUnused -= ssfRmfUnused - retRoom
+  if (ssfRmfUnused > retirementRoom) {
+    totalUnused -= ssfRmfUnused - retirementRoom
   }
 
   return {
@@ -332,6 +362,8 @@ export function derive(ret: TaxReturn, cfg: TaxYearConfig): DerivedTax {
     nextBracketDistance: nextDistance,
     bracketProgress: Math.max(0, Math.min(1, bracketProgress)),
     unusedAllowanceByType: unused,
+    retirementUsed,
+    retirementRoom,
     totalUnusedAllowance: round(totalUnused),
     totalAllowanceCeiling: round(totalCeiling),
     monthlyIncome: round(gross / 12),
@@ -350,4 +382,28 @@ export function amountToDropBracket(derived: DerivedTax): number {
   const m = derived.marginalBracket
   if (!m || m.from === 0) return 0
   return derived.netIncome - m.from
+}
+
+const roundTo = (n: number, step: number) => Math.round(n / step) * step
+
+/**
+ * Extra SSF/RMF the filer could still deduct this year, after every ceiling:
+ * each fund's own cap, the combined retirement ceiling, and never below the exempt band.
+ */
+export function retirementHeadroom(derived: DerivedTax, cfg: TaxYearConfig): number {
+  const u = derived.unusedAllowanceByType
+  const room = Math.min((u.ssf ?? 0) + (u.rmf ?? 0), derived.retirementRoom)
+  const useful = clamp0(derived.netIncome - cfg.brackets[0].to)
+  return Math.min(room, useful)
+}
+
+/**
+ * The one SSF/RMF nudge every screen shows: roughly a third of the money sitting in
+ * the marginal band, rounded to 10,000, inside `retirementHeadroom`.
+ */
+export function ssfSuggestion(derived: DerivedTax, cfg: TaxYearConfig): { amount: number; saved: number } {
+  const m = derived.marginalBracket
+  const inBand = m ? derived.netIncome - m.from : 0
+  const amount = clamp0(Math.min(retirementHeadroom(derived, cfg), roundTo(inBand / 3, 10_000)))
+  return { amount, saved: amount > 0 ? savingsFor(amount, derived, cfg) : 0 }
 }

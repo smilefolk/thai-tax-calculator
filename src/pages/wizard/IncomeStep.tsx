@@ -1,8 +1,9 @@
 import { InkChip } from '../../components/ui/Bits'
 import { MoneyInput } from '../../components/ui/MoneyInput'
 import { RadioCard } from '../../components/ui/RadioCard'
+import { Segmented } from '../../components/ui/Segmented'
 import { money, pctInt } from '../../lib/format'
-import { salaryExpenseCap } from '../../lib/tax/calc'
+import { salaryExpenseCap, salaryExpenseRate } from '../../lib/tax/calc'
 import { BONUS_ID, SALARY_ID } from '../../lib/tax/defaults'
 import type { IncomeCategory, IncomeEntry } from '../../lib/tax/types'
 import { useTaxReturn } from '../../store/taxReturn'
@@ -80,11 +81,12 @@ export function IncomeStep() {
   const salary = ret.income.find((e) => e.id === SALARY_ID)!
   const bonus = ret.income.find((e) => e.id === BONUS_ID)!
   const others = ret.income.filter((e) => e.id !== SALARY_ID && e.id !== BONUS_ID)
-  const monthly = Math.round(salary.amount / 12)
+  const salaryMode = salary.enteredAs ?? 'annual'
+  // in monthly mode amount ≡ monthly × 12 (the reducer guarantees it), so this never rounds
+  const monthly = salary.amount / 12
   const cat1 = d.incomeByCategory['40(1)']
   const cap = salaryExpenseCap(cfg)
-  const salaryRule = cfg.expenseRules['40(1)']
-  const salaryRate = salaryRule.type === 'standard' ? salaryRule.rate : 0
+  const salaryRate = salaryExpenseRate(cfg)
   const standardAmount = ret.income.filter((e) => e.category === '40(1)').reduce((sum, e) => sum + (d.expenseByEntry[e.id] ?? 0), 0)
   const atCap = standardAmount >= cap
   const availableOther = OTHER.filter((o) => !others.some((e) => e.category === o.category))
@@ -103,15 +105,47 @@ export function IncomeStep() {
           </div>
           <span className={s.cardMeta}>จากหนังสือรับรอง 50 ทวิ</span>
         </div>
-        <div className={s.grid2}>
-          <MoneyInput
-            label="เงินเดือนต่อเดือน"
-            value={monthly}
-            autoFocus
-            onChange={(n) => dispatch({ type: 'setIncome', id: SALARY_ID, amount: n * 12 })}
-            helper={`× 12 เดือน = ${money(monthly * 12)}`}
-            helperMono
+        <div className={s.modeRow}>
+          <Segmented
+            ariaLabel="วิธีกรอกเงินเดือน"
+            value={salaryMode}
+            onChange={(mode) => dispatch({ type: 'setIncomeMode', id: SALARY_ID, mode })}
+            options={[
+              { value: 'monthly', label: 'ต่อเดือน × 12' },
+              { value: 'annual', label: 'ยอดรวมทั้งปี ตาม 50 ทวิ' },
+            ]}
           />
+          <span className={s.modeHint}>
+            {salaryMode === 'monthly' ? 'ได้เท่ากันทุกเดือน — ทางลัด' : 'ปรับเงินเดือนกลางปี เข้า-ออกงาน หรือมี OT ที่ไม่เท่ากัน'}
+          </span>
+        </div>
+        <div className={s.grid2}>
+          {salaryMode === 'monthly' ? (
+            <MoneyInput
+              key="monthly"
+              label="เงินเดือนต่อเดือน"
+              value={monthly}
+              autoFocus
+              onChange={(n) => dispatch({ type: 'setIncomeMonthly', id: SALARY_ID, monthly: n })}
+              helper={
+                <>
+                  <span className="num">× 12 เดือน = {money(salary.amount)}</span> · รายได้แต่ละเดือนไม่เท่ากัน?{' '}
+                  <button type="button" className={s.inlineLink} onClick={() => dispatch({ type: 'setIncomeMode', id: SALARY_ID, mode: 'annual' })}>
+                    กรอกยอดรวมทั้งปีแทน
+                  </button>
+                </>
+              }
+            />
+          ) : (
+            <MoneyInput
+              key="annual"
+              label="เงินเดือน ค่าจ้าง รวมทั้งปี"
+              value={salary.amount}
+              autoFocus
+              onChange={(n) => dispatch({ type: 'setIncome', id: SALARY_ID, amount: n })}
+              helper="ยอดรวมทุกเดือนตามหนังสือรับรอง 50 ทวิ ไม่รวมโบนัส"
+            />
+          )}
           <MoneyInput
             label="โบนัส / ค่าคอมมิชชั่น"
             value={bonus.amount}

@@ -3,12 +3,21 @@ export type IncomeCategory = '40(1)' | '40(2)' | '40(4)' | '40(5)' | '40(6)' | '
 
 export type ExpenseMethod = 'standard' | 'actual'
 
+/** How the user entered a 40(1) figure — drives which field the wizard shows and which is the source of truth. */
+export type EntryMode = 'monthly' | 'annual'
+
 export interface IncomeEntry {
   id: string
   category: IncomeCategory
+  /** annual figure — always what the engine uses */
   amount: number
   expenseMethod: ExpenseMethod
   actualExpense: number
+  /**
+   * 'monthly' → `amount` was set as (monthly × 12) and the UI edits the monthly figure;
+   * 'annual' (or unset) → `amount` was typed directly (e.g. from the 50 ทวิ total).
+   */
+  enteredAs?: EntryMode
 }
 
 export interface FilerProfile {
@@ -57,19 +66,30 @@ export interface Attachment {
   status: AttachmentStatus
 }
 
-export type ViewMode = 'wizard' | 'ledger'
 export type WizardStep = 'filer' | 'income' | 'deductions' | 'summary'
 
 export interface TaxReturn {
   taxYear: number
   filerProfile: FilerProfile
   income: IncomeEntry[]
-  /** Raw user-entered deductions (before caps). `null` = skipped / not applicable. */
+  /** Raw user-entered deductions (before caps); the engine applies every ceiling in `derive()`. */
   deductions: Deductions
   withholding: { amount: number; sources: string[] }
   attachments: Attachment[]
   filingMethod: 'online' | 'download'
-  ui: { currentStep: WizardStep; viewMode: ViewMode }
+  /**
+   * A deduction plan the user applied from the planning page. `baseline` is what the
+   * four plan-driven deductions were before, so applying is idempotent and reversible.
+   */
+  appliedPlan?: AppliedPlan
+  ui: { currentStep: WizardStep }
+}
+
+export type PlanId = 'A' | 'B' | 'C'
+export type PlanKey = 'ssf' | 'rmf' | 'lifeInsurance' | 'donations'
+export interface AppliedPlan {
+  id: PlanId
+  baseline: Pick<Deductions, PlanKey>
 }
 
 /** ---------- Year-keyed rule config ---------- */
@@ -177,6 +197,10 @@ export interface DerivedTax {
   /** progress within the marginal bracket 0..1 */
   bracketProgress: number
   unusedAllowanceByType: Partial<Record<DeductionKey, number>>
+  /** SSF + RMF + PVD + NSF already counted against the combined ceiling */
+  retirementUsed: number
+  /** what is left under the combined retirement ceiling — every SSF/RMF suggestion must respect this */
+  retirementRoom: number
   /** headline "remaining allowance" figure: SSF + RMF + life + home loan remaining */
   totalUnusedAllowance: number
   /** total cap of the allowance families counted above */

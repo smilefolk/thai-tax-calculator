@@ -1,40 +1,50 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { DarkSidebar } from '../components/layout/DarkSidebar'
 import { LedgerRow, ProgressBar } from '../components/ui/Bits'
 import { Button } from '../components/ui/Button'
 import { user } from '../data/history'
 import { abbrev, money, pctInt, signed } from '../lib/format'
-import { effectiveExpenseMethod, salaryExpenseCap } from '../lib/tax/calc'
+import { effectiveExpenseMethod, formFor, salaryExpenseCap, salaryExpenseRate } from '../lib/tax/calc'
 import { BONUS_ID, SALARY_ID } from '../lib/tax/defaults'
 import type { DeductionKey } from '../lib/tax/types'
 import { useTaxReturn } from '../store/taxReturn'
 import s from './Ledger.module.css'
 import { LABELS } from './wizard/SummaryStep'
 
-const LEFT: DeductionKey[] = ['personal', 'spouse', 'children', 'socialSecurity']
-const RIGHT: DeductionKey[] = ['lifeInsurance', 'ssf', 'rmf', 'homeLoanInterest']
-const EXTRA: DeductionKey[] = ['parents', 'disabled', 'healthInsurance', 'parentHealthInsurance', 'pvd', 'nsf', 'stimulusSchemes', 'donations', 'doubleDonations']
+/** always shown — family figures (read-only, from the profile) then the common insurance/fund rows */
+const LEFT: DeductionKey[] = ['personal', 'spouse', 'children', 'parents', 'disabled', 'socialSecurity']
+const RIGHT: DeductionKey[] = ['lifeInsurance', 'healthInsurance', 'ssf', 'rmf', 'pvd', 'homeLoanInterest']
+/** shown only once they carry a value */
+const EXTRA: DeductionKey[] = ['parentHealthInsurance', 'nsf', 'stimulusSchemes', 'donations', 'doubleDonations']
+const PROFILE_KEYS: DeductionKey[] = ['personal', 'spouse', 'children', 'parents', 'disabled']
 
 export function Ledger() {
   const { ret, derived: d, dispatch, cfg, clearAll } = useTaxReturn()
   const [active, setActive] = useState<'a' | 'b' | 'c' | 'd'>('a')
   const secRefs = { a: useRef<HTMLDivElement>(null), b: useRef<HTMLDivElement>(null), c: useRef<HTMLDivElement>(null), d: useRef<HTMLDivElement>(null) }
 
-  useEffect(() => {
-    dispatch({ type: 'setViewMode', mode: 'ledger' })
-    return () => dispatch({ type: 'setViewMode', mode: 'wizard' })
-  }, [dispatch])
-
   const salary = ret.income.find((e) => e.id === SALARY_ID)!
   const bonus = ret.income.find((e) => e.id === BONUS_ID)!
   const others = ret.income.filter((e) => e.id !== SALARY_ID && e.id !== BONUS_ID)
-  const onlySalary = ret.income.every((e) => e.category === '40(1)')
-  const form = onlySalary ? 'ภ.ง.ด. 91' : 'ภ.ง.ด. 90'
-  const salaryRule = cfg.expenseRules['40(1)']
+  const form = formFor(ret.income)
+  const profile = ret.filerProfile
 
   const item = (k: DeductionKey) => d.deductionItems.find((i) => i.key === k)!
   const setD = (k: DeductionKey) => (n: number) => dispatch({ type: 'setDeduction', key: k, value: n })
-  const isProfileKey = (k: DeductionKey) => ['personal', 'spouse', 'children', 'parents', 'disabled'].includes(k)
+  const isProfileKey = (k: DeductionKey) => PROFILE_KEYS.includes(k)
+  // family rows read "บุตร × 2" — the count lives in the profile, the figure is derived
+  const familyLabel = (k: DeductionKey) => {
+    switch (k) {
+      case 'children':
+        return `บุตร × ${profile.childrenCount}`
+      case 'parents':
+        return `บิดามารดา × ${profile.parentsSupported}`
+      case 'disabled':
+        return `ผู้พิการ × ${profile.disabledDependents}`
+      default:
+        return LABELS[k]
+    }
+  }
 
   // completion: fields with a value / fields that could have one
   const fields = [salary.amount, bonus.amount, ret.withholding.amount, ...d.deductionItems.filter((i) => !isProfileKey(i.key)).map((i) => i.entered)]
@@ -113,7 +123,19 @@ export function Ledger() {
         <div ref={secRefs.a} className={['eyebrow eyebrow--teal', s.section].join(' ')} style={{ letterSpacing: '.12em', textTransform: 'none', scrollMarginTop: 16 }}>
           ก · เงินได้พึงประเมิน
         </div>
-        <LedgerRow label="เงินเดือน ค่าจ้าง 40(1)" value={salary.amount} editable onChange={(n) => dispatch({ type: 'setIncome', id: SALARY_ID, amount: n })} />
+        <LedgerRow
+          label={
+            <>
+              เงินเดือน ค่าจ้าง 40(1)
+              {salary.enteredAs === 'monthly' && salary.amount > 0 && (
+                <span style={{ color: 'var(--ink-faint)', fontSize: 12.5 }}> · {money(salary.amount / 12)} × 12</span>
+              )}
+            </>
+          }
+          value={salary.amount}
+          editable
+          onChange={(n) => dispatch({ type: 'setIncome', id: SALARY_ID, amount: n })}
+        />
         <LedgerRow label="โบนัส" value={bonus.amount} editable onChange={(n) => dispatch({ type: 'setIncome', id: BONUS_ID, amount: n })} />
         {others.length === 0 ? (
           <LedgerRow label="รับจ้างอิสระ 40(2)" value={0} muted />
@@ -128,7 +150,7 @@ export function Ledger() {
         <LedgerRow
           label={
             <>
-              {effectiveExpenseMethod(salary, cfg) === 'standard' ? `เหมาจ่าย ${pctInt(salaryRule.type === 'standard' ? salaryRule.rate : 0)}` : 'ตามจริง'}{' '}
+              {effectiveExpenseMethod(salary, cfg) === 'standard' ? `เหมาจ่าย ${pctInt(salaryExpenseRate(cfg))}` : 'ตามจริง'}{' '}
               <span style={{ color: 'var(--ink-faint)', fontSize: 12.5 }}>(เพดาน {money(salaryExpenseCap(cfg))})</span>
             </>
           }
@@ -142,9 +164,13 @@ export function Ledger() {
         </div>
         <div className={s.section2}>
           <div>
-            {LEFT.map((k) => (
-              <LedgerRow key={k} label={k === 'children' ? `บุตร × ${ret.filerProfile.childrenCount}` : LABELS[k]} value={item(k).allowed} compact editable={!isProfileKey(k)} onChange={setD(k)} muted={item(k).allowed === 0} />
-            ))}
+            {LEFT.map((k) =>
+              isProfileKey(k) ? (
+                <LedgerRow key={k} label={familyLabel(k)} value={item(k).allowed} compact muted={item(k).allowed === 0} />
+              ) : (
+                <LedgerRow key={k} label={LABELS[k]} value={ret.deductions[k]} compact editable onChange={setD(k)} muted={ret.deductions[k] === 0} />
+              ),
+            )}
           </div>
           <div>
             {RIGHT.map((k) => (

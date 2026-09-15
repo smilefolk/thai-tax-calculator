@@ -8,11 +8,17 @@ export function thaiDate(iso: string): string {
   return `${d} ${THAI_MONTHS_SHORT[m - 1]} ${toBE(y)}`
 }
 
-/** whole days from `now` until the ISO date (end of that day); negative when past */
+const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate())
+
+/**
+ * Calendar days from `now` until the ISO date: the deadline itself is 0,
+ * the day after is −1 — never −0, so `days < 0` reads as "already closed".
+ */
 export function daysUntil(iso: string, now: Date = new Date()): number {
   const [y, m, d] = iso.split('-').map(Number)
-  const target = new Date(y, m - 1, d, 23, 59, 59)
-  return Math.ceil((target.getTime() - now.getTime()) / 86_400_000)
+  const target = new Date(y, m - 1, d)
+  const diff = Math.round((target.getTime() - startOfDay(now).getTime()) / 86_400_000)
+  return diff === 0 ? 0 : diff
 }
 
 export function greeting(now: Date = new Date()): string {

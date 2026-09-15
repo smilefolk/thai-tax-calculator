@@ -58,7 +58,7 @@ describe('normalizeReturn', () => {
     expect(r.withholding).toEqual({ amount: 0, sources: ['50 ทวิ'] })
     expect(r.attachments).toEqual([{ id: 'a', kind: 'ssf', filename: 'f.pdf', size: 0, status: 'pending' }])
     expect(r.filingMethod).toBe('online')
-    expect(r.ui).toEqual({ currentStep: 'filer', viewMode: 'wizard' })
+    expect(r.ui).toEqual({ currentStep: 'filer' })
   })
 
   it('re-syncs profile-driven deductions and drops a disallowed actual-expense election', () => {
@@ -76,5 +76,29 @@ describe('normalizeDeductionKeys', () => {
   it('keeps only real keys', () => {
     expect(normalizeDeductionKeys(['ssf', 'nope', 3, 'rmf'])).toEqual(['ssf', 'rmf'])
     expect(normalizeDeductionKeys('ssf')).toEqual([])
+  })
+})
+
+describe('normalizeReturn — #19/#9 entry mode and #5 applied plan', () => {
+  it('infers the salary entry mode from divisibility when a draft predates it', () => {
+    const monthly = normalizeReturn({ income: [{ id: SALARY_ID, category: '40(1)', amount: 780_000 }] })!
+    expect(monthly.income[0].enteredAs).toBe('monthly')
+    const annual = normalizeReturn({ income: [{ id: SALARY_ID, category: '40(1)', amount: 425_000 }] })!
+    expect(annual.income[0].enteredAs).toBe('annual')
+    // a stored 'monthly' flag on a figure that no longer divides by 12 is corrected
+    const fixed = normalizeReturn({ income: [{ id: SALARY_ID, category: '40(1)', amount: 425_000, enteredAs: 'monthly' }] })!
+    expect(fixed.income[0].enteredAs).toBe('annual')
+    // the bonus row never carries a mode
+    expect(monthly.income[1].enteredAs).toBeUndefined()
+  })
+
+  it('keeps an applied plan only when its baseline is complete', () => {
+    const base = workedExample()
+    const ok = normalizeReturn({ ...base, appliedPlan: { id: 'B', baseline: { ssf: 40_000, rmf: 0, lifeInsurance: 25_000, donations: 0 } } })!
+    expect(ok.appliedPlan).toEqual({ id: 'B', baseline: { ssf: 40_000, rmf: 0, lifeInsurance: 25_000, donations: 0 } })
+    const bad = normalizeReturn({ ...base, appliedPlan: { id: 'B', baseline: { ssf: 40_000 } } })!
+    expect(bad.appliedPlan).toBeUndefined()
+    const badId = normalizeReturn({ ...base, appliedPlan: { id: 'Z', baseline: { ssf: 0, rmf: 0, lifeInsurance: 0, donations: 0 } } })!
+    expect(badId.appliedPlan).toBeUndefined()
   })
 })

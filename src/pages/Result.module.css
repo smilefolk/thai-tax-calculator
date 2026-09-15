@@ -376,9 +376,44 @@
   display: flex;
   flex-direction: column;
 }
+.mTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 0 12px;
+}
+.mBack {
+  font: 400 22px/1 var(--sans);
+  color: rgba(255, 255, 255, 0.75) !important;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+.mBack:hover {
+  color: #fff !important;
+  background: var(--on-dark-fill);
+}
+.mTopSpacer {
+  width: 44px;
+}
 .mBody {
-  padding: 30px 26px 0;
+  padding: 16px 26px 0;
   flex: 1;
+}
+.mEdit {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
+  min-height: 44px;
+  align-items: center;
+  font: 500 13.5px/1.4 var(--sans);
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.mEdit:hover {
+  color: #fff !important;
 }
 .mEyebrow {
   font: 500 11px/1.4 var(--mono);
@@ -462,5 +497,5 @@
   font: 600 17px/1.4 var(--mono);
 }
 .mFoot {
-  padding: 20px 26px calc(26px + env(safe-area-inset-bottom));
+  padding: 20px 26px 16px;
 }
