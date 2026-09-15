@@ -26,13 +26,13 @@ npm run build      # production build → dist/
 | `src/components/DraftErrorBoundary.tsx` | ถ้า render พัง เสนอปุ่ม "ล้างร่างแล้วเริ่มใหม่" แทนหน้าขาว |
 | `src/styles/tokens.css` | design tokens ทั้งหมด (สี oklch, ฟอนต์, เงา, motion) |
 | `src/components/` | primitives (Button, MoneyInput, Slider, RadioCard, BracketBar, LedgerRow…) และ layout |
-| `src/pages/` | Landing · wizard (4 สเต็ป + 11 คำถามมือถือ) · Ledger · Result · Plan · Dashboard · Filing |
+| `src/pages/` | Landing · wizard (4 สเต็ป + 13 คำถามมือถือ) · Ledger · Result · Plan · Dashboard · Filing |
 
 ## เส้นทาง (routes)
 
 - `/` หน้าแรก
 - `/calc/filer` `/calc/income` `/calc/deductions` `/calc/summary` — wizard เดสก์ท็อป
-- `/calc/q/1` … `/calc/q/11` — โฟลว์มือถือทีละคำถาม (redirect อัตโนมัติตามขนาดจอ)
+- `/calc/q/1` … `/calc/q/13` — โฟลว์มือถือทีละคำถาม (redirect อัตโนมัติตามขนาดจอ)
 - `/calc/ledger` — มุมมองสมุดบัญชี แก้ตัวเลขในบรรทัดได้
 - `/result` `/plan` `/dashboard` `/file`
 
@@ -46,6 +46,12 @@ npm run build      # production build → dist/
 - **Countdown วันยื่น** คำนวณจากวันจริงเทียบกับ `filingDeadline` ใน config — ถ้าเลยกำหนดจะแสดง 0 วัน
 - **เงินได้ 40(1)/40(2) หักค่าใช้จ่ายแบบเหมาเท่านั้น** — ต่างจาก handoff ที่วาด radio "ตามจริง" ไว้
   เพราะกฎหมายไม่ให้เลือก (`actualAllowed: false` ใน config; engine ignore ค่า `actual` ที่ค้างใน draft)
+- **เงินเดือนกรอกได้ 2 โหมด** — "ต่อเดือน × 12" (ค่าเริ่มต้น) หรือ "ยอดรวมทั้งปี ตาม 50 ทวิ" สำหรับคนที่รายได้แต่ละเดือน
+  ไม่เท่ากัน โหมดเก็บที่ `IncomeEntry.enteredAs`; แก้ยอดทั้งปีใน Ledger จะสลับเป็นโหมดรายปีให้เอง จึงไม่มีการ ÷12 ปัดเศษทับค่าอีก
+- **แผนลดหย่อน (หน้าวางแผน)** เก็บ `appliedPlan` + baseline ในร่าง — กด "เลือกแผนนี้" ซ้ำไม่บวกทับ เปลี่ยนแผนคือแทนที่
+  และ "ยกเลิกแผน" คืนค่าเดิม; ถ้าแก้ SSF/RMF/ประกันชีวิต/บริจาคเองหลังใช้แผน จะถือว่าเป็นค่าที่ผู้ใช้ตั้งเองและลบ marker ทิ้ง
+- **บิดามารดา** นับได้ 2 คน (ของตัวเอง) เว้นแต่คู่สมรสไม่มีเงินได้จึงนับของคู่สมรสได้อีก 2 — บังคับทั้งใน engine และ counter
+- **ทุกคำแนะนำ SSF/RMF** มาจาก `ssfSuggestion()` ตัวเดียว (แถบสรุป, หน้าผลลัพธ์, แผน B) และเคารพเพดานรวมกองทุนเกษียณ 500,000
 - ระบบสมาชิก, e-Filing, นำเข้าไฟล์ 50 ทวิ และโมดูลภาษีอื่นอีก 5 ตัว เป็น UI สาธิต/ยังไม่เปิด
 
 > ⚠️ อัตราและเพดานใน `config/y2568.ts` มาจาก handoff และความรู้ทั่วไป
