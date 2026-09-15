@@ -40,7 +40,7 @@ export const BONUS_ID = 'bonus'
  */
 export function workedExample(): TaxReturn {
   const income: IncomeEntry[] = [
-    { id: SALARY_ID, category: '40(1)', amount: 780_000, expenseMethod: 'standard', actualExpense: 0 },
+    { id: SALARY_ID, category: '40(1)', amount: 780_000, expenseMethod: 'standard', actualExpense: 0, enteredAs: 'monthly' },
     { id: BONUS_ID, category: '40(1)', amount: 130_000, expenseMethod: 'standard', actualExpense: 0 },
   ]
   return {
@@ -54,7 +54,7 @@ export function workedExample(): TaxReturn {
       { id: 'a2', kind: 'life-insurance', filename: 'ประกันชีวิต-AIA.pdf', size: 96 * 1024, status: 'verified' },
     ],
     filingMethod: 'online',
-    ui: { currentStep: 'income', viewMode: 'wizard' },
+    ui: { currentStep: 'income' },
   }
 }
 
@@ -63,13 +63,13 @@ export function blankReturn(): TaxReturn {
     taxYear: DEFAULT_TAX_YEAR,
     filerProfile: { ...emptyProfile },
     income: [
-      { id: SALARY_ID, category: '40(1)', amount: 0, expenseMethod: 'standard', actualExpense: 0 },
+      { id: SALARY_ID, category: '40(1)', amount: 0, expenseMethod: 'standard', actualExpense: 0, enteredAs: 'monthly' },
       { id: BONUS_ID, category: '40(1)', amount: 0, expenseMethod: 'standard', actualExpense: 0 },
     ],
     deductions: { ...emptyDeductions },
     withholding: { amount: 0, sources: [] },
     attachments: [],
     filingMethod: 'online',
-    ui: { currentStep: 'filer', viewMode: 'wizard' },
+    ui: { currentStep: 'filer' },
   }
 }

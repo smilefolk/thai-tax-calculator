@@ -2,16 +2,20 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useReducer,
 import { derive, familyDeductions } from '../lib/tax/calc'
 import { availableTaxYears, getTaxYearConfig } from '../lib/tax/config'
 import { blankReturn, workedExample } from '../lib/tax/defaults'
-import { normalizeDeductionKeys, normalizeReturn } from '../lib/tax/normalize'
+import { normalizeDeductionKeys, normalizeReturn, PLAN_KEYS } from '../lib/tax/normalize'
+import type { PlanInputs } from '../lib/tax/plans'
 import type {
   Attachment,
   AttachmentStatus,
   DeductionKey,
   DerivedTax,
+  EntryMode,
   ExpenseMethod,
   FilerProfile,
   IncomeCategory,
   IncomeEntry,
+  PlanId,
+  PlanKey,
   TaxReturn,
   TaxYearConfig,
   WizardStep,
@@ -19,9 +23,9 @@ import type {
 
 const STORAGE_KEY = 'pasee-ngai:draft:v1'
 /** bump when the persisted shape changes in a way normalizeReturn() can't repair */
-const PERSIST_VERSION = 2
+const PERSIST_VERSION = 3
 
-interface State {
+export interface State {
   ret: TaxReturn
   savedAt: number
   /** deduction keys the user explicitly skipped (mobile "ข้าม") */
@@ -41,9 +45,13 @@ export function clearDraftStorage() {
   }
 }
 
-type Action =
+export type Action =
   | { type: 'reset'; ret: TaxReturn }
+  /** annual figure typed directly — for the salary row this also switches it to 'annual' mode */
   | { type: 'setIncome'; id: string; amount: number }
+  /** monthly figure typed — amount becomes monthly × 12 and the row stays in 'monthly' mode */
+  | { type: 'setIncomeMonthly'; id: string; monthly: number }
+  | { type: 'setIncomeMode'; id: string; mode: EntryMode }
   | { type: 'setIncomeMethod'; id: string; method: ExpenseMethod; actualExpense?: number }
   | { type: 'addIncome'; category: IncomeCategory }
   | { type: 'removeIncome'; id: string }
@@ -53,13 +61,16 @@ type Action =
   | { type: 'setWithholding'; amount: number }
   | { type: 'setStep'; step: WizardStep }
   | { type: 'setTaxYear'; year: number }
-  | { type: 'setViewMode'; mode: TaxReturn['ui']['viewMode'] }
   | { type: 'setFilingMethod'; method: TaxReturn['filingMethod'] }
+  /** apply a deduction plan on top of the pre-plan baseline (idempotent — re-applying never stacks) */
+  | { type: 'applyPlan'; id: PlanId; extras: PlanInputs }
+  /** restore the four plan-driven deductions to what they were before any plan */
+  | { type: 'clearPlan' }
   | { type: 'addAttachment'; attachment: Attachment }
   | { type: 'setAttachmentStatus'; id: string; status: AttachmentStatus }
   | { type: 'removeAttachment'; id: string }
 
-function reducer(state: State, a: Action): State {
+export function reducer(state: State, a: Action): State {
   const ret = state.ret
   const touch = (next: TaxReturn, extra: Partial<State> = {}): State => ({
     ...state,
@@ -71,7 +82,28 @@ function reducer(state: State, a: Action): State {
     case 'reset':
       return { ret: a.ret, savedAt: Date.now(), skipped: [] }
     case 'setIncome':
-      return touch({ ...ret, income: ret.income.map((e) => (e.id === a.id ? { ...e, amount: a.amount } : e)) })
+      return touch({
+        ...ret,
+        income: ret.income.map((e) => (e.id === a.id ? { ...e, amount: a.amount, ...(e.enteredAs ? { enteredAs: 'annual' as const } : {}) } : e)),
+      })
+    case 'setIncomeMonthly':
+      return touch({
+        ...ret,
+        income: ret.income.map((e) => (e.id === a.id ? { ...e, amount: a.monthly * 12, enteredAs: 'monthly' } : e)),
+      })
+    case 'setIncomeMode': {
+      const target = ret.income.find((e) => e.id === a.id)
+      if (!target || target.enteredAs === a.mode) return state
+      return touch({
+        ...ret,
+        income: ret.income.map((e) => {
+          if (e.id !== a.id) return e
+          // monthly mode means amount ≡ monthly × 12, so snap once on the way in; annual keeps the figure as is
+          const amount = a.mode === 'monthly' ? Math.round(e.amount / 12) * 12 : e.amount
+          return { ...e, amount, enteredAs: a.mode }
+        }),
+      })
+    }
     case 'setIncomeMethod':
       return touch({
         ...ret,
@@ -91,11 +123,13 @@ function reducer(state: State, a: Action): State {
     }
     case 'removeIncome':
       return touch({ ...ret, income: ret.income.filter((e) => e.id !== a.id) })
-    case 'setDeduction':
-      return touch(
-        { ...ret, deductions: { ...ret.deductions, [a.key]: a.value } },
-        { skipped: state.skipped.filter((k) => k !== a.key) },
-      )
+    case 'setDeduction': {
+      // a manual edit to a plan-driven figure makes the applied plan's baseline meaningless
+      const dropPlan = ret.appliedPlan && (PLAN_KEYS as readonly DeductionKey[]).includes(a.key)
+      const next: TaxReturn = { ...ret, deductions: { ...ret.deductions, [a.key]: a.value } }
+      if (dropPlan) delete next.appliedPlan
+      return touch(next, { skipped: state.skipped.filter((k) => k !== a.key) })
+    }
     case 'skipDeduction':
       return touch(
         { ...ret, deductions: { ...ret.deductions, [a.key]: 0 } },
@@ -115,10 +149,21 @@ function reducer(state: State, a: Action): State {
       return { ...state, ret: { ...ret, ui: { ...ret.ui, currentStep: a.step } } }
     case 'setTaxYear':
       return availableTaxYears().includes(a.year) ? touch({ ...ret, taxYear: a.year }) : state
-    case 'setViewMode':
-      return { ...state, ret: { ...ret, ui: { ...ret.ui, viewMode: a.mode } } }
     case 'setFilingMethod':
       return touch({ ...ret, filingMethod: a.method })
+    case 'applyPlan': {
+      const baseline = ret.appliedPlan?.baseline ?? planBaseline(ret)
+      const extras: Record<PlanKey, number> = { ssf: a.extras.ssfExtra, rmf: a.extras.rmfExtra, lifeInsurance: a.extras.lifeExtra, donations: a.extras.donation }
+      const deductions = { ...ret.deductions }
+      for (const k of PLAN_KEYS) deductions[k] = baseline[k] + extras[k]
+      return touch({ ...ret, deductions, appliedPlan: { id: a.id, baseline } })
+    }
+    case 'clearPlan': {
+      if (!ret.appliedPlan) return state
+      const next: TaxReturn = { ...ret, deductions: { ...ret.deductions, ...ret.appliedPlan.baseline } }
+      delete next.appliedPlan
+      return touch(next)
+    }
     case 'addAttachment':
       return touch({ ...ret, attachments: [...ret.attachments.filter((x) => x.kind !== a.attachment.kind || x.kind === 'other'), a.attachment] })
     case 'setAttachmentStatus':
@@ -132,6 +177,12 @@ function reducer(state: State, a: Action): State {
 }
 
 const fresh = (): State => ({ ret: workedExample(), savedAt: Date.now(), skipped: [] })
+
+/** The four plan-driven deductions as they stand — what `applyPlan` adds extras on top of. */
+export function planBaseline(ret: TaxReturn): Record<PlanKey, number> {
+  const src = ret.appliedPlan?.baseline ?? ret.deductions
+  return { ssf: src.ssf, rmf: src.rmf, lifeInsurance: src.lifeInsurance, donations: src.donations }
+}
 
 /**
  * Restore the autosaved draft. Every field is run through normalizeReturn()
