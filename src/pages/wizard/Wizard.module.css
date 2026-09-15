@@ -49,6 +49,27 @@
   color: var(--ink-muted);
   margin: -14px 0 16px;
 }
+.modeRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: -4px 0 16px;
+}
+.modeHint {
+  font: 300 12.5px/1.5 var(--sans);
+  color: var(--ink-faint);
+}
+.inlineLink {
+  font: inherit;
+  color: var(--teal-deep);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  border-radius: 3px;
+}
+.inlineLink:hover {
+  color: var(--teal-deeper);
+}
 .grid2 {
   display: grid;
   grid-template-columns: 1fr 1fr;

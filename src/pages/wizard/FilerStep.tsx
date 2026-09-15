@@ -1,6 +1,7 @@
 import { InkChip } from '../../components/ui/Bits'
 import { RadioCard } from '../../components/ui/RadioCard'
 import { money } from '../../lib/format'
+import { formFor, maxParents } from '../../lib/tax/calc'
 import { useTaxReturn } from '../../store/taxReturn'
 import s from './Wizard.module.css'
 import { StepFooter, StepIntro } from './WizardLayout'
@@ -31,8 +32,8 @@ export function FilerStep() {
   const { ret, dispatch, cfg, derived } = useTaxReturn()
   const p = ret.filerProfile
   const setP = (patch: Partial<typeof p>) => dispatch({ type: 'setProfile', profile: patch })
-  const onlySalary = ret.income.every((e) => e.category === '40(1)')
-  const form = onlySalary ? 'ภ.ง.ด. 91' : 'ภ.ง.ด. 90'
+  const form = formFor(ret.income)
+  const parentsMax = maxParents(p)
   const familyTotal = derived.deductionItems.filter((i) => ['personal', 'spouse', 'children', 'parents', 'disabled'].includes(i.key)).reduce((a, i) => a + i.allowed, 0)
 
   return (
@@ -77,7 +78,13 @@ export function FilerStep() {
               hint={`นับเฉพาะบุตรคนที่ 2 ขึ้นไป · รวมลดหย่อนบุตร ${money(derived.deductionItems.find((i) => i.key === 'children')?.allowed ?? 0)}`}
             />
           )}
-          <Counter label="บิดามารดาที่อุปการะ" value={p.parentsSupported} onChange={(n) => setP({ parentsSupported: n })} max={4} hint={`อายุ 60+ รายได้ไม่เกิน 30,000 · คนละ ${money(cfg.caps.parentEach)}`} />
+          <Counter
+            label="บิดามารดาที่อุปการะ"
+            value={Math.min(p.parentsSupported, parentsMax)}
+            onChange={(n) => setP({ parentsSupported: n })}
+            max={parentsMax}
+            hint={`อายุ 60+ รายได้ไม่เกิน 30,000 · คนละ ${money(cfg.caps.parentEach)} · ${parentsMax === 4 ? 'ของตัวเองและคู่สมรสรวม 4 คน' : 'เฉพาะบิดามารดาของตัวเอง 2 คน'}`}
+          />
           <Counter label="ผู้พิการ / ทุพพลภาพ" value={p.disabledDependents} onChange={(n) => setP({ disabledDependents: n })} max={4} hint={`คนละ ${money(cfg.caps.disabledEach)}`} />
         </div>
       </section>
@@ -93,7 +100,7 @@ export function FilerStep() {
           <span className={s.cardMeta}>ระบบเลือกให้จากประเภทเงินได้</span>
         </div>
         <div className={s.cardSub} style={{ margin: 0 }}>
-          {onlySalary ? 'มีเฉพาะเงินเดือน ค่าจ้าง โบนัส (40(1)) → ยื่น ภ.ง.ด. 91' : 'มีเงินได้ประเภทอื่นนอกจากเงินเดือน → ยื่น ภ.ง.ด. 90'}
+          {form === 'ภ.ง.ด. 91' ? 'มีเฉพาะเงินเดือน ค่าจ้าง โบนัส (40(1)) → ยื่น ภ.ง.ด. 91' : 'มีเงินได้ประเภทอื่นนอกจากเงินเดือน → ยื่น ภ.ง.ด. 90'}
         </div>
       </section>
 

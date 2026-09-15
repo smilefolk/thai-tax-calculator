@@ -1,29 +1,52 @@
+import type { ReactNode } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { ProgressBar } from '../../components/ui/Bits'
 import { Button } from '../../components/ui/Button'
 import { MoneyInput } from '../../components/ui/MoneyInput'
 import { RadioCard } from '../../components/ui/RadioCard'
+import { Segmented } from '../../components/ui/Segmented'
 import { useIsMobile } from '../../hooks/useMediaQuery'
 import { money } from '../../lib/format'
+import { maxParents } from '../../lib/tax/calc'
 import { BONUS_ID, SALARY_ID } from '../../lib/tax/defaults'
+import type { DeductionKey } from '../../lib/tax/types'
 import { useTaxReturn } from '../../store/taxReturn'
 import s from './MobileFlow.module.css'
 import { questions, TOTAL_QUESTIONS, type Question } from './questions'
 
-function useQuestionModel(q: Question) {
+interface MoneyModel {
+  value: number
+  cap: number
+  set: (n: number) => void
+  skip: () => void
+  label: string
+  /** deduction key backing this question, when it is one */
+  key?: DeductionKey
+}
+
+function useMoneyModel(q: Question): MoneyModel {
   const { ret, derived, dispatch } = useTaxReturn()
   const k = q.q
   switch (k.kind) {
-    case 'money-income': {
-      const id = k.incomeId === 'salary' ? SALARY_ID : BONUS_ID
-      const entry = ret.income.find((e) => e.id === id)!
-      const value = k.monthly ? Math.round(entry.amount / 12) : entry.amount
+    case 'salary': {
+      const entry = ret.income.find((e) => e.id === SALARY_ID)!
+      const monthly = entry.enteredAs === 'monthly'
       return {
-        value,
+        value: monthly ? entry.amount / 12 : entry.amount,
         cap: Infinity,
-        set: (n: number) => dispatch({ type: 'setIncome', id, amount: k.monthly ? n * 12 : n }),
-        skip: () => dispatch({ type: 'setIncome', id, amount: 0 }),
-        label: k.monthly ? 'เงินเดือน' : 'จำนวนเงิน',
+        set: (n: number) => dispatch(monthly ? { type: 'setIncomeMonthly', id: SALARY_ID, monthly: n } : { type: 'setIncome', id: SALARY_ID, amount: n }),
+        skip: () => dispatch({ type: 'setIncome', id: SALARY_ID, amount: 0 }),
+        label: monthly ? 'เงินเดือนต่อเดือน' : 'เงินเดือน ค่าจ้าง รวมทั้งปี',
+      }
+    }
+    case 'money-income': {
+      const entry = ret.income.find((e) => e.id === BONUS_ID)!
+      return {
+        value: entry.amount,
+        cap: Infinity,
+        set: (n: number) => dispatch({ type: 'setIncome', id: BONUS_ID, amount: n }),
+        skip: () => dispatch({ type: 'setIncome', id: BONUS_ID, amount: 0 }),
+        label: 'จำนวนเงิน',
       }
     }
     case 'deduction': {
@@ -34,6 +57,7 @@ function useQuestionModel(q: Question) {
         set: (n: number) => dispatch({ type: 'setDeduction', key: k.key, value: n }),
         skip: () => dispatch({ type: 'skipDeduction', key: k.key }),
         label: 'จำนวนเงิน',
+        key: k.key,
       }
     }
     case 'withholding':
@@ -49,14 +73,49 @@ function useQuestionModel(q: Question) {
   }
 }
 
+function SalaryModeToggle() {
+  const { ret, dispatch } = useTaxReturn()
+  const entry = ret.income.find((e) => e.id === SALARY_ID)!
+  return (
+    <div className={s.modeToggle}>
+      <Segmented
+        size="lg"
+        ariaLabel="วิธีกรอกเงินเดือน"
+        value={entry.enteredAs ?? 'annual'}
+        onChange={(mode) => dispatch({ type: 'setIncomeMode', id: SALARY_ID, mode })}
+        options={[
+          { value: 'monthly', label: 'ต่อเดือน × 12' },
+          { value: 'annual', label: 'ยอดรวมทั้งปี' },
+        ]}
+      />
+    </div>
+  )
+}
+
 function MoneyQuestion({ q }: { q: Question }) {
-  const m = useQuestionModel(q)
+  const m = useMoneyModel(q)
+  const { ret, skipped } = useTaxReturn()
   const finiteCap = Number.isFinite(m.cap) && m.cap > 0
+  const isSalary = q.q.kind === 'salary'
+  const salaryMonthly = isSalary && ret.income.find((e) => e.id === SALARY_ID)!.enteredAs === 'monthly'
+  const wasSkipped = m.key ? skipped.includes(m.key) : false
   return (
     <>
+      {isSalary && <SalaryModeToggle />}
       <div className={s.amount}>
         <MoneyInput big label={m.label} value={m.value} onChange={m.set} autoFocus suffix="บาท" />
       </div>
+      {isSalary && (
+        <div className={s.subHint} aria-live="polite">
+          {salaryMonthly ? (
+            <>
+              <span className="num">× 12 เดือน = {money(m.value * 12)}</span> · รายได้แต่ละเดือนไม่เท่ากัน? เลือก "ยอดรวมทั้งปี"
+            </>
+          ) : (
+            'ยอดรวมทุกเดือนตามหนังสือรับรอง 50 ทวิ ไม่รวมโบนัส'
+          )}
+        </div>
+      )}
       <div className={s.chips} role="group" aria-label="เติมเร็ว">
         <button type="button" className={s.chip} onClick={() => m.set(m.value + 10_000)}>
           +10,000
@@ -74,6 +133,11 @@ function MoneyQuestion({ q }: { q: Question }) {
           </button>
         )}
       </div>
+      {wasSkipped && m.value === 0 && (
+        <div className={s.skipped} role="status">
+          ข้ามไว้ — ไม่ได้นับรายการนี้ กรอกได้ทุกเมื่อถ้ามี
+        </div>
+      )}
       {q.info && (
         <div className={s.info}>
           <span className={s.infoIcon} aria-hidden="true">
@@ -129,6 +193,17 @@ function CountRow({ label, value, max, onChange }: { label: string; value: numbe
   )
 }
 
+function InfoBlock({ children }: { children: ReactNode }) {
+  return (
+    <div className={s.info}>
+      <span className={s.infoIcon} aria-hidden="true">
+        i
+      </span>
+      <div className={s.infoText}>{children}</div>
+    </div>
+  )
+}
+
 function ChildrenQuestion() {
   const { ret, derived, dispatch, cfg } = useTaxReturn()
   const p = ret.filerProfile
@@ -146,22 +221,62 @@ function ChildrenQuestion() {
           />
         </div>
       )}
-      <div className={s.info}>
-        <span className={s.infoIcon} aria-hidden="true">
-          i
-        </span>
-        <div className={s.infoText}>
-          ลดหย่อนบุตรได้คนละ {money(cfg.caps.childEach)} บาท คนที่ 2 เป็นต้นไปที่เกิดปี 2561+ ได้ {money(cfg.caps.childEachFrom2561)} — ตอนนี้ได้ <strong>{money(allowed)}</strong>
-        </div>
-      </div>
+      <InfoBlock>
+        ลดหย่อนบุตรได้คนละ {money(cfg.caps.childEach)} บาท คนที่ 2 เป็นต้นไปที่เกิดปี 2561+ ได้ {money(cfg.caps.childEachFrom2561)} — ตอนนี้ได้ <strong>{money(allowed)}</strong>
+      </InfoBlock>
     </>
   )
+}
+
+function ParentsQuestion() {
+  const { ret, derived, dispatch, cfg } = useTaxReturn()
+  const p = ret.filerProfile
+  const max = maxParents(p)
+  const allowed = derived.deductionItems.find((i) => i.key === 'parents')?.allowed ?? 0
+  return (
+    <>
+      <CountRow label="บิดามารดาที่อุปการะ" value={Math.min(p.parentsSupported, max)} max={max} onChange={(n) => dispatch({ type: 'setProfile', profile: { parentsSupported: n } })} />
+      <InfoBlock>
+        {max === 4 ? 'นับบิดามารดาของตัวเองและของคู่สมรสได้รวม 4 คน' : 'นับได้เฉพาะบิดามารดาของตัวเอง 2 คน (ของคู่สมรสจะใช้สิทธิในแบบของคู่สมรสเอง)'} · คนละ {money(cfg.caps.parentEach)} — ตอนนี้ได้{' '}
+        <strong>{money(allowed)}</strong>
+      </InfoBlock>
+    </>
+  )
+}
+
+function DisabledQuestion() {
+  const { ret, derived, dispatch, cfg } = useTaxReturn()
+  const p = ret.filerProfile
+  const allowed = derived.deductionItems.find((i) => i.key === 'disabled')?.allowed ?? 0
+  return (
+    <>
+      <CountRow label="ผู้พิการ / ทุพพลภาพที่อุปการะ" value={p.disabledDependents} max={4} onChange={(n) => dispatch({ type: 'setProfile', profile: { disabledDependents: n } })} />
+      <InfoBlock>
+        คนละ {money(cfg.caps.disabledEach)} บาท ต้องมีชื่อเป็นผู้ดูแลในบัตรประจำตัวคนพิการ — ตอนนี้ได้ <strong>{money(allowed)}</strong>
+      </InfoBlock>
+    </>
+  )
+}
+
+function QuestionBody({ q }: { q: Question }) {
+  switch (q.q.kind) {
+    case 'spouse':
+      return <SpouseQuestion />
+    case 'children':
+      return <ChildrenQuestion />
+    case 'parents':
+      return <ParentsQuestion />
+    case 'disabled':
+      return <DisabledQuestion />
+    default:
+      return <MoneyQuestion key={q.n} q={q} />
+  }
 }
 
 export function MobileFlow() {
   const { n } = useParams()
   const nav = useNavigate()
-  const { derived, dispatch } = useTaxReturn()
+  const { ret, derived, dispatch } = useTaxReturn()
   const mobile = useIsMobile()
   const idx = Number(n)
   const q = questions.find((x) => x.n === idx)
@@ -175,6 +290,8 @@ export function MobileFlow() {
     else nav(`/calc/q/${idx + 1}`)
   }
   const back = () => (idx <= 1 ? nav('/') : nav(`/calc/q/${idx - 1}`))
+  const salaryAnnual = q.q.kind === 'salary' && ret.income.find((e) => e.id === SALARY_ID)!.enteredAs !== 'monthly'
+  const title = salaryAnnual ? 'เงินเดือน ค่าจ้างทั้งปีเท่าไหร่' : q.title
 
   return (
     <div className={s.screen}>
@@ -193,9 +310,9 @@ export function MobileFlow() {
         <div className={['eyebrow eyebrow--teal', s.group].join(' ')} style={{ textTransform: 'none' }}>
           {q.group}
         </div>
-        <h2 className={s.h2}>{q.title}</h2>
+        <h2 className={s.h2}>{title}</h2>
         <p className={s.lead}>{q.lead}</p>
-        {q.q.kind === 'spouse' ? <SpouseQuestion /> : q.q.kind === 'children' ? <ChildrenQuestion /> : <MoneyQuestion key={q.n} q={q} />}
+        <QuestionBody q={q} />
       </main>
       <footer className={s.footer}>
         <div className={s.running} role="status" aria-live="polite">
@@ -203,9 +320,7 @@ export function MobileFlow() {
           <span className={s.runningFig}>{money(derived.taxDue)}</span>
         </div>
         <div className={s.btns}>
-          {q.skippable && (
-            <SkipButton q={q} onDone={next} />
-          )}
+          {q.skippable && <SkipButton q={q} onDone={next} />}
           <Button variant="primary" size="xl" onClick={next}>
             {idx >= TOTAL_QUESTIONS ? 'ดูผลลัพธ์' : 'ถัดไป'}
           </Button>
@@ -216,12 +331,25 @@ export function MobileFlow() {
 }
 
 function SkipButton({ q, onDone }: { q: Question; onDone: () => void }) {
-  const m = useQuestionModel(q)
+  const m = useMoneyModel(q)
   const { dispatch } = useTaxReturn()
   const skip = () => {
-    if (q.q.kind === 'spouse') dispatch({ type: 'setProfile', profile: { hasSpouse: false, spouseHasIncome: false } })
-    else if (q.q.kind === 'children') dispatch({ type: 'setProfile', profile: { childrenCount: 0, childrenBornFrom2561: 0 } })
-    else m.skip()
+    switch (q.q.kind) {
+      case 'spouse':
+        dispatch({ type: 'setProfile', profile: { hasSpouse: false, spouseHasIncome: false } })
+        break
+      case 'children':
+        dispatch({ type: 'setProfile', profile: { childrenCount: 0, childrenBornFrom2561: 0 } })
+        break
+      case 'parents':
+        dispatch({ type: 'setProfile', profile: { parentsSupported: 0 } })
+        break
+      case 'disabled':
+        dispatch({ type: 'setProfile', profile: { disabledDependents: 0 } })
+        break
+      default:
+        m.skip()
+    }
     onDone()
   }
   return (
