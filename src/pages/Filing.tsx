@@ -5,6 +5,7 @@ import { Logo } from '../components/ui/Logo'
 import { RadioCard } from '../components/ui/RadioCard'
 import { user } from '../data/history'
 import { bytes, money } from '../lib/format'
+import { formFor } from '../lib/tax/calc'
 import type { Attachment, AttachmentKind } from '../lib/tax/types'
 import { useTaxReturn } from '../store/taxReturn'
 import s from './Filing.module.css'
@@ -50,11 +51,12 @@ export function Filing() {
   const { ret, derived: d, dispatch } = useTaxReturn()
   const required = useRequiredDocs()
   const fileInput = useRef<HTMLInputElement>(null)
-  const pendingKind = useRef<AttachmentKind>('other')
+  const pendingKind = useRef<AttachmentKind | null>(null)
   const [over, setOver] = useState(false)
   const [showPw, setShowPw] = useState(false)
   const [authNote, setAuthNote] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
+  const [notice, setNotice] = useState<string | null>(null)
 
   const verified = (kind: AttachmentKind) => ret.attachments.find((a) => a.kind === kind && a.status !== 'error')
   const missing = required.filter((r) => !verified(r.kind))
@@ -70,23 +72,44 @@ export function Filing() {
     return () => timers.forEach(clearTimeout)
   }, [ret.attachments, dispatch])
 
-  const addFiles = (files: FileList | null, kind: AttachmentKind) => {
-    if (!files) return
-    for (const f of Array.from(files)) {
+  const KIND_LABEL: Record<AttachmentKind, string> = {
+    'withholding-cert': 'หนังสือรับรอง 50 ทวิ',
+    'life-insurance': 'หนังสือรับรองประกันชีวิต',
+    ssf: 'หนังสือรับรอง SSF',
+    rmf: 'หนังสือรับรอง RMF',
+    other: 'เอกสารอื่น',
+  }
+
+  /**
+   * Several files at once fill the missing slots in order (first file → first missing
+   * document, …); anything beyond that is kept as "other" so nothing is dropped silently.
+   * `firstKind` pins the first file to a specific slot (the per-document "อัปโหลด" button).
+   */
+  const addFiles = (files: FileList | null, firstKind: AttachmentKind | null) => {
+    if (!files || files.length === 0) return
+    const queue = [...(firstKind ? [firstKind] : []), ...missing.map((m) => m.kind).filter((k) => k !== firstKind)]
+    const replaced: string[] = []
+    const assigned: string[] = []
+    Array.from(files).forEach((f, i) => {
+      const kind = queue[i] ?? 'other'
+      const existing = ret.attachments.find((a) => a.kind === kind && kind !== 'other')
+      if (existing) replaced.push(`${existing.filename} → ${f.name}`)
+      assigned.push(`${f.name} (${KIND_LABEL[kind]})`)
       dispatch({
         type: 'addAttachment',
-        attachment: { id: `f-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, kind, filename: f.name, size: f.size, status: 'pending' },
+        attachment: { id: `f-${Date.now()}-${Math.random().toString(36).slice(2, 6)}-${i}`, kind, filename: f.name, size: f.size, status: 'pending' },
       })
-    }
+    })
+    setNotice([files.length > 1 ? `เพิ่ม ${files.length} ไฟล์: ${assigned.join(', ')}` : null, replaced.length ? `แทนที่ไฟล์เดิม: ${replaced.join(', ')}` : null].filter(Boolean).join(' · ') || null)
   }
-  const pick = (kind: AttachmentKind) => {
+  const pick = (kind: AttachmentKind | null) => {
     pendingKind.current = kind
     fileInput.current?.click()
   }
   const onDrop = (e: DragEvent) => {
     e.preventDefault()
     setOver(false)
-    addFiles(e.dataTransfer.files, missing[0]?.kind ?? 'other')
+    addFiles(e.dataTransfer.files, null)
   }
 
   return (
@@ -106,7 +129,7 @@ export function Filing() {
         <section className={s.card} aria-labelledby="file-h">
           <div className="eyebrow">ขั้นตอนสุดท้าย</div>
           <h2 id="file-h" className={s.h2}>
-            ยื่นแบบ {ret.income.every((e) => e.category === '40(1)') ? 'ภ.ง.ด. 91' : 'ภ.ง.ด. 90'} ปีภาษี {ret.taxYear}
+            ยื่นแบบ {formFor(ret.income)} ปีภาษี {ret.taxYear}
           </h2>
           <p className={s.lead}>เราตรวจครบทุกช่องแล้ว เลือกได้ว่าจะยื่นผ่านระบบให้เลย หรือดาวน์โหลดไปกรอกในเว็บกรมสรรพากรเอง</p>
 
@@ -160,8 +183,8 @@ export function Filing() {
               data-over={over}
               role="button"
               tabIndex={0}
-              onClick={() => pick(missing[0]?.kind ?? 'other')}
-              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && pick(missing[0]?.kind ?? 'other')}
+              onClick={() => pick(null)}
+              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && pick(null)}
               onDragOver={(e) => {
                 e.preventDefault()
                 setOver(true)
@@ -170,9 +193,17 @@ export function Filing() {
               onDrop={onDrop}
               aria-label="ลากไฟล์มาวางที่นี่ หรือกดเพื่อเลือกไฟล์"
             >
-              + ลากไฟล์มาวางที่นี่
+              + ลากไฟล์มาวางที่นี่{missing.length > 1 ? ` (ได้ทีละหลายไฟล์ เรียงตาม${missing.map((m) => m.label).join(', ')})` : ''}
             </div>
           </div>
+          {notice && (
+            <div className={s.notice} role="status">
+              {notice}
+              <button type="button" className={s.noticeClose} onClick={() => setNotice(null)} aria-label="ปิดข้อความ">
+                ✕
+              </button>
+            </div>
+          )}
 
           <div className={s.foot}>
             <div>
