@@ -1,6 +1,6 @@
-import { useEffect, useId, useState, type ReactNode } from 'react'
-import { money, parseMoney } from '../../lib/format'
+import { useId, type ReactNode } from 'react'
 import s from './MoneyInput.module.css'
+import { useMoneyField } from './useMoneyField'
 
 interface Props {
   label?: string
@@ -34,13 +34,7 @@ export function MoneyInput({
 }: Props) {
   const autoId = useId()
   const inputId = id ?? autoId
-  const [text, setText] = useState(value ? money(value) : '')
-  const [focused, setFocused] = useState(false)
-
-  // keep the box in sync when the model changes from elsewhere (chips, sliders, reset)
-  useEffect(() => {
-    if (!focused) setText(value ? money(value) : '')
-  }, [value, focused])
+  const field = useMoneyField(value, onChange)
 
   const inputEl = (
     <input
@@ -49,20 +43,13 @@ export function MoneyInput({
       inputMode="numeric"
       autoComplete="off"
       placeholder={placeholder}
-      value={text}
+      value={field.text}
       autoFocus={autoFocus}
       aria-label={aria['aria-label'] ?? label}
       aria-invalid={invalid || undefined}
-      onFocus={() => setFocused(true)}
-      onBlur={() => {
-        setFocused(false)
-        setText(value ? money(value) : '')
-      }}
-      onChange={(e) => {
-        const raw = e.target.value
-        setText(raw)
-        onChange(parseMoney(raw))
-      }}
+      onFocus={field.onFocus}
+      onBlur={field.onBlur}
+      onChange={(e) => field.onChangeText(e.target.value)}
     />
   )
 
