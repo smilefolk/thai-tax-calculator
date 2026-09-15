@@ -1,4 +1,4 @@
-import { taxOnNet } from './calc'
+import { retirementHeadroom, ssfSuggestion, taxOnNet } from './calc'
 import type { DerivedTax, TaxYearConfig } from './types'
 
 export interface PlanInputs {
@@ -36,13 +36,9 @@ interface Room {
 
 function room(d: DerivedTax, cfg: TaxYearConfig): Room {
   const u = d.unusedAllowanceByType
-  const retirementUsed = (['ssf', 'rmf', 'pvd', 'nsf'] as const).reduce(
-    (s, k) => s + (d.deductionItems.find((i) => i.key === k)?.allowed ?? 0),
-    0,
-  )
-  const retirementRoom = clamp0(cfg.caps.retirementCombined - retirementUsed)
-  const ssf = Math.min(u.ssf ?? 0, retirementRoom)
-  const rmf = Math.min(u.rmf ?? 0, clamp0(retirementRoom - ssf))
+  const ssf = Math.min(u.ssf ?? 0, d.retirementRoom)
+  const rmf = Math.min(u.rmf ?? 0, clamp0(d.retirementRoom - ssf))
+  // already net of health insurance (same 100,000 ceiling) — see derive()
   const life = u.lifeInsurance ?? 0
   const exempt = cfg.brackets[0].to
   const useful = clamp0(d.netIncome - exempt)
@@ -66,12 +62,11 @@ export function evaluatePlan(inputs: PlanInputs, d: DerivedTax, cfg: TaxYearConf
  */
 export function buildPlans(d: DerivedTax, cfg: TaxYearConfig): PlanOutcome[] {
   const r = room(d, cfg)
-  const inBand = d.marginalBracket ? d.netIncome - d.marginalBracket.from : 0
 
   const A: PlanInputs = { ssfExtra: 0, rmfExtra: 0, lifeExtra: 0, donation: 0 }
 
   const B: PlanInputs = {
-    ssfExtra: Math.min(r.ssf, roundTo(inBand / 3, 10_000), r.useful),
+    ssfExtra: Math.min(r.ssf, ssfSuggestion(d, cfg).amount),
     rmfExtra: 0,
     lifeExtra: Math.min(roundTo(r.life * 0.2, 5_000), r.life),
     donation: Math.min(roundTo(d.taxDue * 0.1, 5_000), r.donation),
@@ -142,6 +137,5 @@ export function savingsCurve(d: DerivedTax, cfg: TaxYearConfig, maxLocked: numbe
 
 /** Remaining SSF+RMF room usable by the mobile what-if slider. */
 export function retirementRoom(d: DerivedTax, cfg: TaxYearConfig): number {
-  const r = room(d, cfg)
-  return Math.min(r.ssf + r.rmf, Math.max(r.useful, 0))
+  return retirementHeadroom(d, cfg)
 }

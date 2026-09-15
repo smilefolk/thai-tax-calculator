@@ -46,7 +46,7 @@ const GROUPS: { title: string; meta?: string; fields: Field[] }[] = [
 export function DeductionsStep() {
   const { ret, derived: d, dispatch, cfg } = useTaxReturn()
   const item = (k: DeductionKey) => d.deductionItems.find((i) => i.key === k)!
-  const retirementUsed = (['ssf', 'rmf', 'pvd', 'nsf'] as DeductionKey[]).reduce((a, k) => a + item(k).allowed, 0)
+  const retirementUsed = d.retirementUsed
 
   return (
     <>
